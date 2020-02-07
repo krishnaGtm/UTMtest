@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{44EF24B2-690C-47CB-B70F-D668ED8C5582}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Enza.UTM.Entities</RootNamespace>
+    <AssemblyName>Enza.UTM.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppRoles.cs" />
+    <Compile Include="Args\Abstract\RequestArgs.cs" />
+    <Compile Include="Args\CNTManageInfoRequestArgs.cs" />
+    <Compile Include="Args\CNTManageMarkersRequestArgs.cs" />
+    <Compile Include="Args\CNTAssignMarkersRequestArgs.cs" />
+    <Compile Include="Args\CNTTypeRequestArgs.cs" />
+    <Compile Include="Args\CNTStartMaterialRequestArgs.cs" />
+    <Compile Include="Args\CNTLabLocationRequestArgs.cs" />
+    <Compile Include="Args\CNTProcessRequestArgs.cs" />
+    <Compile Include="Args\AssignDeterminationForS2SRequestArgs.cs" />
+    <Compile Include="Args\CNTRequestArgs.cs" />
+    <Compile Include="Args\S2SManageMarkersRequestArgs.cs" />
+    <Compile Include="Args\SaveMaterialTypeTestProtocolsRequestArgs.cs" />
+    <Compile Include="Args\GetMaterialTypeTestProtocolsRequestArgs.cs" />
+    <Compile Include="Args\S2SGetDataRequestArgs.cs" />
+    <Compile Include="Args\PlatePlanRequestArgs.cs" />
+    <Compile Include="Args\DeleteEmailConfigRequestArgs.cs" />
+    <Compile Include="Args\EmailConfigRequestArgs.cs" />
+    <Compile Include="Args\DeleteTestRequestArgs.cs" />
+    <Compile Include="Args\AddMaterialRequestArgs.cs" />
+    <Compile Include="Args\AvailableThreeGBProjectsRequestArgs.cs" />
+    <Compile Include="Args\DeleteReplicateMaterialRequestArgs.cs" />
+    <Compile Include="Args\BreedingOverviewResult.cs" />
+    <Compile Include="Args\BreedingOverviewRequestArgs.cs" />
+    <Compile Include="Args\ExternalDeterminationRequestArgs.cs" />
+    <Compile Include="Args\ExternalTestImportRequestArgs.cs" />
+    <Compile Include="Args\SaveNrOfSamplesRequestArgs.cs" />
+    <Compile Include="Args\SendToS2SRequestArgs.cs" />
+    <Compile Include="Args\SendTo3GBCockpitRequestArgs.cs" />
+    <Compile Include="Args\S2SRequestArgs.cs" />
+    <Compile Include="Args\ThreeGBImportRequestArgs.cs" />
+    <Compile Include="Args\SaveTraitDeterminationRelationRequestArgs.cs" />
+    <Compile Include="Args\SaveTraitDeterminationResultRequestArgs.cs" />
+    <Compile Include="Args\TraitDeterminationResultRequestArgs.cs" />
+    <Compile Include="Args\RelationTraitDeterminationRequestArgs.cs" />
+    <Compile Include="Args\AssignFixedPositionRequestArgs.cs" />
+    <Compile Include="Args\CompleteTestRequestArgs.cs" />
+    <Compile Include="Args\DeleteMaterialRequestArgs.cs" />
+    <Compile Include="Args\PhenomeImportRequestArgs.cs" />
+    <Compile Include="Args\GetAvailPlatesTestsRequestArgs.cs" />
+    <Compile Include="Args\MaterialLookupRequestArgs.cs" />
+    <Compile Include="Args\MaterialsWithMarkerRequestArgs.cs" />
+    <Compile Include="Args\DataWithMarkerRequestArgs.cs" />
+    <Compile Include="Args\AssignDeterminationRequestArgs.cs" />
+    <Compile Include="Args\DeterminationRequestArgs.cs" />
+    <Compile Include="Args\ExcelDataRequestArgs.cs" />
+    <Compile Include="Args\ReceiveScoreArgs.cs" />
+    <Compile Include="Args\ReplicateMaterialRequestArgs.cs" />
+    <Compile Include="Args\ReserveCapacityRequestArgs.cs" />
+    <Compile Include="Args\ReservePlateplansInLIMSCallbackRequestArgs.cs" />
+    <Compile Include="Args\ReservePlatesInLIMSRequestArgs.cs" />
+    <Compile Include="Args\FillPlatesInLimsRequestArgs.cs" />
+    <Compile Include="Args\ReOrderMaterialPositionRequestArgs.cs" />
+    <Compile Include="Args\SaveCapacityRequestArgs.cs" />
+    <Compile Include="Args\SavePlannedDateRequestArgs.cs" />
+    <Compile Include="Args\SaveRemarkRequestArgs.cs" />
+    <Compile Include="Args\PrintPlateLabelRequestArgs.cs" />
+    <Compile Include="Args\GetTestDetailRequestArgs.cs" />
+    <Compile Include="Args\SaveSlotTestRequestArgs.cs" />
+    <Compile Include="Args\UpdateSlotPeriodRequestArgs.cs" />
+    <Compile Include="Args\UpdateTestArgs.cs" />
+    <Compile Include="Args\UpdateTestStatusRequestArgs.cs" />
+    <Compile Include="Args\MoveSlotRequestArgs.cs" />
+    <Compile Include="Args\EditSlotRequestArgs.cs" />
+    <Compile Include="Args\WellLookupRequestArgs.cs" />
+    <Compile Include="BreedingStation.cs" />
+    <Compile Include="CapacityLookup.cs" />
+    <Compile Include="Columns.cs" />
+    <Compile Include="Crop.cs" />
+    <Compile Include="EmailConfig.cs" />
+    <Compile Include="EmailDataArgs.cs" />
+    <Compile Include="MaterialWell.cs" />
+    <Compile Include="PlanPeriod.cs" />
+    <Compile Include="PlateLabel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Results\CreateSelectionJobResp.cs" />
+    <Compile Include="Results\CreatedDH.cs" />
+    <Compile Include="Results\S2SDH1Info.cs" />
+    <Compile Include="Results\S2SGetProgramCodesByCropResult.cs" />
+    <Compile Include="Results\S2SCreateSowingListResult.cs" />
+    <Compile Include="Results\S2SCreateSowingListData.cs" />
+    <Compile Include="Results\S2SFillRateDetail.cs" />
+    <Compile Include="Results\DeleteMaterialResult.cs" />
+    <Compile Include="Results\ExternalTestExportDataResult.cs" />
+    <Compile Include="Results\ImportDataResult.cs" />
+    <Compile Include="Results\PhenomeSSOResult.cs" />
+    <Compile Include="Results\EditSlotResult.cs" />
+    <Compile Include="Results\ThreeGBMaterialResult.cs" />
+    <Compile Include="Results\PhenoneImportDataResult.cs" />
+    <Compile Include="Results\RelationTraitDetermination.cs" />
+    <Compile Include="Results\TraitResult.cs" />
+    <Compile Include="Results\GetAvailPlatesTestsResult.cs" />
+    <Compile Include="Results\GetDisplayPeriodResult.cs" />
+    <Compile Include="Results\PhenomeColumnsResponse.cs" />
+    <Compile Include="Results\PhenomeDataResponse.cs" />
+    <Compile Include="Results\PhenomeFieldDetailResponse.cs" />
+    <Compile Include="Results\PhenomeResponse.cs" />
+    <Compile Include="Results\PrintLabelResult.cs" />
+    <Compile Include="Results\MaterialLookupResult.cs" />
+    <Compile Include="Results\MaterialStateResult.cs" />
+    <Compile Include="Results\MaterialsWithMarkerResult.cs" />
+    <Compile Include="Results\DeterminationResult.cs" />
+    <Compile Include="Results\DataWithMarkerResult.cs" />
+    <Compile Include="Results\ExcelDataResult.cs" />
+    <Compile Include="ExcelFile.cs" />
+    <Compile Include="Results\MaterialTypeResult.cs" />
+    <Compile Include="Results\PlateForLimsResult.cs" />
+    <Compile Include="Results\PunchlistResult.cs" />
+    <Compile Include="Results\ReserveCapacityResult.cs" />
+    <Compile Include="Results\SlotApprovalResult.cs" />
+    <Compile Include="Results\SlotForTestResult.cs" />
+    <Compile Include="Results\MigrationDataResult.cs" />
+    <Compile Include="Results\TestResultCumulate.cs" />
+    <Compile Include="Results\PlatePlanResult.cs" />
+    <Compile Include="Results\S2SCapacitySlotResult.cs" />
+    <Compile Include="Results\DHSyncConfig.cs" />
+    <Compile Include="Results\MissingConversionResult.cs" />
+    <Compile Include="Results\GetMethodResult.cs" />
+    <Compile Include="Results\WellTypeResult.cs" />
+    <Compile Include="Slot.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="TestMaterialDetermination.cs" />
+    <Compile Include="ContainerType.cs" />
+    <Compile Include="TestMaterialDeterminationWithAlliceScore.cs" />
+    <Compile Include="TestProtocol.cs" />
+    <Compile Include="TestType.cs" />
+    <Compile Include="TextValuePair.cs" />
+    <Compile Include="CreateDHInfo.cs" />
+    <Compile Include="TraitValue.cs" />
+    <Compile Include="S2SDonorMaterial.cs" />
+    <Compile Include="TraitDeterminationValue.cs" />
+    <Compile Include="Well.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Enza.UTM.Common\Enza.UTM.Common.csproj">
+      <Project>{15A83210-040C-4245-A102-ED1845AB574B}</Project>
+      <Name>Enza.UTM.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

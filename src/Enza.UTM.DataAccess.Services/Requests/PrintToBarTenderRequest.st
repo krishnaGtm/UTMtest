@@ -1,0 +1,23 @@
+﻿<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://contract.enzazaden.com/BarTender/v1" xmlns:bar="http://contract.enzazaden.com/BarTender">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <v1:printToBarTenderRequest>
+      <v1:User>$Model.User$</v1:User>
+      <v1:LabelType>$Model.LabelType$</v1:LabelType>
+      <v1:PrinterName></v1:PrinterName>
+      <v1:Copies>$Model.Copies$</v1:Copies>
+      <bar:Labels>
+        $Model.Labels:{label|
+        <bar:Label>
+          $label.LabelData:{key|
+          <bar:LabelData>
+            <bar:DataName>$key$</bar:DataName>
+            <bar:DataValue>$label.LabelData.(key)$</bar:DataValue>
+          </bar:LabelData>
+          }$
+        </bar:Label>
+        }$
+      </bar:Labels>
+    </v1:printToBarTenderRequest>
+  </soapenv:Body>
+</soapenv:Envelope>

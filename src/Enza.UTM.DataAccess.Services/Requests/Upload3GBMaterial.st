@@ -1,0 +1,35 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bpm="http://schemas.enzazaden.com/domain/3gb/bpm">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <bpm:Upload3GBMaterial>
+      <bpm:PlantLists>
+        $Model.PlantLists:{p|
+        <bpm:PlantList>
+          <bpm:BreEZysAdministrationCode>$p.BreEZysAdministrationCode$</bpm:BreEZysAdministrationCode>
+          <bpm:ThreeGBTaskID>$p.ThreeGBTaskID$</bpm:ThreeGBTaskID>
+          <!--<bpm:ThreeGBPlantID>?</bpm:ThreeGBPlantID>-->
+          <bpm:PlantNumber>$p.PlantNumber$</bpm:PlantNumber>
+          <bpm:BreedingProject>$p.BreedingProject$</bpm:BreedingProject>
+          <bpm:PlantID>$p.PlantID$</bpm:PlantID>
+          <bpm:Generation>$p.Generation$</bpm:Generation>          
+          <bpm:TwoGBPlatePlanID>$p.TwoGBPlatePlanID$</bpm:TwoGBPlatePlanID>
+          <bpm:TwoGBPlateNumber>$p.TwoGBPlateNumber$</bpm:TwoGBPlateNumber>
+          <bpm:TwoGBRow>$p.TwoGBRow$</bpm:TwoGBRow>
+          <bpm:TwoGBColumn>$p.TwoGBColumn$</bpm:TwoGBColumn>
+          <bpm:TwoGBWeek>$p.TwoGBWeek$</bpm:TwoGBWeek>
+          <bpm:TwoGBInfo>
+            $p.TwoGBResults:{r|
+            <bpm:TwoGBResults>
+              <bpm:MarkerName>$r.MarkerName$</bpm:MarkerName>
+              <bpm:Result>$r.Result$</bpm:Result>
+            </bpm:TwoGBResults>
+            }$
+          </bpm:TwoGBInfo>
+          <bpm:Purpose>$p.Purpose$</bpm:Purpose>
+          <bpm:Remark>$p.Remark$</bpm:Remark>
+        </bpm:PlantList>
+        }$
+      </bpm:PlantLists>
+    </bpm:Upload3GBMaterial>
+  </soapenv:Body>
+</soapenv:Envelope>

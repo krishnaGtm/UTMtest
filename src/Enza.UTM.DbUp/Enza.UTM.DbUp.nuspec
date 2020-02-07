@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Enza.UTM.DbUp</id>
+    <version>1.024</version>
+    <authors>svc_teamcity_buildag</authors>
+    <owners>svc_teamcity_buildag</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://example.com/</licenseUrl>
+    <projectUrl>http://example.com/</projectUrl>
+    <description>The Enza.UTM.DbUp deployment package, built on 1-11-2017</description>
+    <releaseNotes></releaseNotes>
+    <tags>OctopusDeploy</tags>
+  </metadata>
+  <files>
+    <file src="Scripts\*.*" target="Scripts\" />
+  </files>
+</package>

@@ -1,0 +1,29 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://contract.enzazaden.com/LIMS/v1">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <v1:ReservePlatesWrapper>
+      <v1:ReservePlatesInLIMS>
+        <v1:ContainerType>$Model.ContainerType$</v1:ContainerType>
+        <v1:CountryCode>$Model.CountryCode$</v1:CountryCode>
+        <v1:CropCode>$Model.CropCode$</v1:CropCode>
+        <v1:ExpectedWeek>$Model.ExpectedWeek$</v1:ExpectedWeek>
+        <v1:ExpectedYear>$Model.ExpectedYear$</v1:ExpectedYear>
+        <v1:MaterialState>$Model.MaterialState$</v1:MaterialState>
+        <v1:MaterialType>$Model.MaterialType$</v1:MaterialType>
+        <v1:PlannedWeek>$Model.PlannedWeek$</v1:PlannedWeek>
+        <v1:PlannedYear>$Model.PlannedYear$</v1:PlannedYear>
+        <v1:RequestID>$Model.TestID$</v1:RequestID>
+        <v1:RequestingSystem>UTM</v1:RequestingSystem>
+        <v1:RequestingUserID>$Model.RequestingUserID$</v1:RequestingUserID>
+        <v1:RequestingUserName>$Model.RequestingUserName$</v1:RequestingUserName>
+        <v1:TotalNrOfPlates>$Model.TotalPlates$</v1:TotalNrOfPlates>
+        <v1:TotalNrOfTests>$Model.TotalTests$</v1:TotalNrOfTests>
+        <v1:SynchronisationCode>$Model.SynCode$</v1:SynchronisationCode>
+        <v1:Remark>$Model.Remark$</v1:Remark>
+        <v1:Isolated>$Model.Isolated$</v1:Isolated>
+        <v1:PlannedDate>$Model.PlannedDate$</v1:PlannedDate>
+        <v1:ExpectedDate>$Model.ExpectedDate$</v1:ExpectedDate>
+      </v1:ReservePlatesInLIMS>
+    </v1:ReservePlatesWrapper>
+  </soapenv:Body>
+</soapenv:Envelope>

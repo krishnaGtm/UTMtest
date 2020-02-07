@@ -1,0 +1,9 @@
+
+DROP INDEX IF EXISTS [IX_FileID] ON [dbo].[Column]
+GO
+
+ALTER TABLE [dbo].[Cell] DROP CONSTRAINT IF EXISTS [FK_Cell_Column]
+GO
+
+ALTER TABLE [dbo].[Cell] DROP CONSTRAINT IF EXISTS [FK_Cell_Row]
+GO
