@@ -34,7 +34,7 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      Contents: 'Enza.UTM.CreateDH0\bin\$(Buildconfiguration)\*'
+      Contents: 'src\Enza.UTM.CreateDH0\bin\$(Buildconfiguration)\*'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Copy bin content'
     

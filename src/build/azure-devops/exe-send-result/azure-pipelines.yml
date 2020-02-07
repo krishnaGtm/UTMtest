@@ -34,7 +34,7 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      Contents: 'Enza.UTM.SendResult\bin\$(Buildconfiguration)\*'
+      Contents: 'src\Enza.UTM.SendResult\bin\$(Buildconfiguration)\*'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Copy bin content'
     
