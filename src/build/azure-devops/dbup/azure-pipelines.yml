@@ -1,0 +1,52 @@
+name: 1.0.$(Rev:r)
+
+pr: 
+  branches:
+    include:
+      - master
+      - release
+
+trigger: 
+  branches:
+    include:
+      - '*'
+  paths:
+    include:
+      - src/Enza.UTM.DbUp/*
+
+pool: 
+  vmImage: 'windows-2019'
+
+variables: 
+  Buildconfiguration: Release 
+  platform: "AnyCPU"
+
+steps:
+  - task: NuGetCommand@2
+    inputs:
+      command: restore
+      restoreSolution: '**/*.sln'
+    displayName: 'Restore NuGet packages'
+
+  - task: MSBuild@1
+    inputs: 
+      solution: '**\Enza.UTM.DbUp.csproj'
+      configuration: $(BuildConfiguration)
+      platform: $(Platform)
+      displayName: 'Build DbUp project'
+
+  - task: CopyFiles@2
+    inputs:
+      Contents: |
+        src\Enza.UTM.DbUp\bin\$(Buildconfiguration)\*
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy bin content'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'utm-dbup'
+      publishLocation: 'Container'
+    displayName: 'Publish artifacts'
+  
+    

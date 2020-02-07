@@ -1,0 +1,48 @@
+name: 1.0.$(Rev:r)
+pr: 
+  branches:
+    include:
+      - master
+      - release
+trigger: 
+  branches:
+    include:
+      - '*' 
+  paths:
+    include:
+      - Enza.UTM.CreateDH0/*
+
+pool: 
+  vmImage: 'vs2017-win2016'
+
+variables: 
+  Buildconfiguration: Release 
+  platform: "AnyCPU"
+
+steps:
+  - task: NuGetCommand@2
+    inputs:
+      command: restore
+      restoreSolution: '**/*.sln'
+    displayName: 'Restore NuGet packages'
+
+  - task: MSBuild@1
+    inputs: 
+      solution: '**\Enza.UTM.CreateDH0.csproj'
+      configuration: $(BuildConfiguration)
+      platform: $(Platform)
+
+  - task: CopyFiles@2
+    inputs:
+      Contents: 'Enza.UTM.CreateDH0\bin\$(Buildconfiguration)\*'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy bin content'
+    
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'utm-create-dh'
+      publishLocation: 'Container'
+    displayName: 'Publish artifacts'
+  
+    

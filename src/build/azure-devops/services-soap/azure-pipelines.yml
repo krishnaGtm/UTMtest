@@ -1,0 +1,73 @@
+name: 1.0.$(Rev:r)
+
+pr: 
+  branches:
+    include:
+      - master
+      - release
+
+trigger: 
+  branches:
+    include:
+      - '*'
+  paths:
+    include: 
+      - src/Enza.UTM.Web.Services.Soap/*
+      - src/Enza.UTM.BusinessAccess/*  
+      - src/Enza.UTM.Common/*
+      - src/Enza.UTM.Entities/*
+      - src/Enza.UTM.DataAccess/*
+      - src/Enza.UTM.DataAccess.Data/*
+
+variables: 
+  Buildconfiguration: Release 
+  platform: "AnyCPU"
+
+
+stages:
+  - stage: Build 
+    displayName: Build stage
+    jobs:
+    - job: Build
+      displayName: Build
+      pool:
+        vmImage: 'windows-2019'
+      steps:
+      - task: NuGetCommand@2
+        inputs:
+          command: restore
+          restoreSolution: '**/*.sln' 
+        displayName: 'Restore NuGet packages'
+
+      - task: MSBuild@1
+        inputs: 
+          solution: '**\Enza.UTM.Web.Services.Soap.csproj'
+          msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\\"'
+          configuration: $(BuildConfiguration)
+          platform: $(Platform)
+          msbuildArchitecture: x64
+          logFileVerbosity: diagnostic
+        displayName: 'Build webservice project'
+
+      - task: WhiteSource Bolt@19
+        inputs:
+          advance: true
+        displayName: 'WhiteSource Bolt'
+    
+      - task: CopyFiles@2
+        inputs:
+          Contents: |
+            src\Enza.UTM.Web.Services.Soap\bin\*
+            src\Enza.UTM.Web.Services.Soap\*.config
+            src\Enza.UTM.Web.Services.Soap\Global.asax
+            src\Enza.UTM.Web.Services.Soap\bin\roslyn\*
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        displayName: 'Copy bin content and web.config'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'utm-service-soap'
+          publishLocation: 'Container'
+        displayName: 'Publish artifacts'    
+    
