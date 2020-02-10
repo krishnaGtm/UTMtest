@@ -1,21 +1,19 @@
 name: 1.0.$(Rev:r)
-
 pr: 
   branches:
     include:
       - master
       - release
-
 trigger: 
   branches:
     include:
-      - '*'
+      - '*' 
   paths:
     include:
-      - src/Enza.UTM.DbUp/*
+      - Enza.UTM.SendResult/*
 
 pool: 
-  vmImage: 'windows-2019'
+  vmImage: 'vs2017-win2016'
 
 variables: 
   Buildconfiguration: Release 
@@ -30,22 +28,20 @@ steps:
 
   - task: MSBuild@1
     inputs: 
-      solution: '**\Enza.UTM.DbUp.csproj'
+      solution: '**\Enza.UTM.SendResult.csproj'
       configuration: $(BuildConfiguration)
       platform: $(Platform)
-      displayName: 'Build DbUp project'
 
   - task: CopyFiles@2
     inputs:
-      Contents: |
-        src\Enza.UTM.DbUp\bin\$(Buildconfiguration)\*
+      Contents: 'Enza.UTM.SendResult\bin\$(Buildconfiguration)\*'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Copy bin content'
-
+    
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'utm-dbup'
+      ArtifactName: 'utm-send-result'
       publishLocation: 'Container'
     displayName: 'Publish artifacts'
   

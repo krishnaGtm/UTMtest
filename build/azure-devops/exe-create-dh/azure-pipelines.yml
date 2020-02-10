@@ -10,7 +10,7 @@ trigger:
       - '*' 
   paths:
     include:
-      - Enza.UTM.SendResult/*
+      - Enza.UTM.CreateDH0/*
 
 pool: 
   vmImage: 'vs2017-win2016'
@@ -28,20 +28,20 @@ steps:
 
   - task: MSBuild@1
     inputs: 
-      solution: '**\Enza.UTM.SendResult.csproj'
+      solution: '**\Enza.UTM.CreateDH0.csproj'
       configuration: $(BuildConfiguration)
       platform: $(Platform)
 
   - task: CopyFiles@2
     inputs:
-      Contents: 'src\Enza.UTM.SendResult\bin\$(Buildconfiguration)\*'
+      Contents: 'Enza.UTM.CreateDH0\bin\$(Buildconfiguration)\*'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Copy bin content'
     
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'utm-send-result'
+      ArtifactName: 'utm-create-dh'
       publishLocation: 'Container'
     displayName: 'Publish artifacts'
   

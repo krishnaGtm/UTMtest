@@ -12,17 +12,17 @@ trigger:
       - '*'
   paths:
     include: 
-      - src/Enza.UTM.Web.Services.Planning/*
-      - src/Enza.UTM.BusinessAccess/*
-      - src/Enza.UTM.BusinessAccess.Planning/*      
-      - src/Enza.UTM.Common/*
-      - src/Enza.UTM.Entities/*      
-      - src/Enza.UTM.Entities.Externals/*
-      - src/Enza.UTM.Web.Services.Core/*
-      - src/Enza.UTM.DataAccess/*
-      - src/Enza.UTM.DataAccess.Data/*
-      - src/Enza.UTM.DataAccess.Data.Planning/*
-      - src/Enza.UTM.Services/*
+      - Enza.UTM.Web.Services.Planning/*
+      - Enza.UTM.BusinessAccess/*
+      - Enza.UTM.BusinessAccess.Planning/*      
+      - Enza.UTM.Common/*
+      - Enza.UTM.Entities/*      
+      - Enza.UTM.Entities.Externals/*
+      - Enza.UTM.Web.Services.Core/*
+      - Enza.UTM.DataAccess/*
+      - Enza.UTM.DataAccess.Data/*
+      - Enza.UTM.DataAccess.Data.Planning/*
+      - Enza.UTM.Services/*
 
 variables: 
   Buildconfiguration: Release 
@@ -62,10 +62,10 @@ stages:
       - task: CopyFiles@2
         inputs:
           Contents: |
-            src\Enza.UTM.Web.Services.Planning\bin\*
-            src\Enza.UTM.Web.Services.Planning\*.config
-            src\Enza.UTM.Web.Services.Planning\Global.asax
-            src\Enza.UTM.Web.Services.Planning\bin\roslyn\*
+            Enza.UTM.Web.Services.Planning\bin\*
+            Enza.UTM.Web.Services.Planning\*.config
+            Enza.UTM.Web.Services.Planning\Global.asax
+            Enza.UTM.Web.Services.Planning\bin\roslyn\*
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy bin content and web.config'
 

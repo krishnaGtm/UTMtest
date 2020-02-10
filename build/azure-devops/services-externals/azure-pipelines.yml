@@ -12,14 +12,15 @@ trigger:
       - '*'
   paths:
     include: 
-      - src/Enza.UTM.Web.Services/*
-      - src/Enza.UTM.BusinessAccess/*
-      - src/Enza.UTM.Common/*
-      - src/Enza.UTM.Entities/*      
-      - src/Enza.UTM.Services/*
-      - src/Enza.UTM.Web.Services.Core/*
-      - src/Enza.UTM.DataAccess/*
-      - src/Enza.UTM.DataAccess.Data/*
+      - Enza.UTM.Web.Services.Externals/*
+      - Enza.UTM.BusinessAccess/*
+      - Enza.UTM.BusinessAccess.Externals/*      
+      - Enza.UTM.Common/*
+      - Enza.UTM.Entities.Externals/*
+      - Enza.UTM.Web.Services.Core/*
+      - Enza.UTM.DataAccess/*
+      - Enza.UTM.DataAccess.Data/*
+      - Enza.UTM.DataAccess.Data.Externals/*
 
 variables: 
   Buildconfiguration: Release 
@@ -43,7 +44,7 @@ stages:
 
       - task: MSBuild@1
         inputs: 
-          solution: '**\Enza.UTM.Web.Services.csproj'
+          solution: '**\Enza.UTM.Web.Services.Externals.csproj'
           msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\\"'
           configuration: $(BuildConfiguration)
           platform: $(Platform)
@@ -59,17 +60,17 @@ stages:
       - task: CopyFiles@2
         inputs:
           Contents: |
-            src\Enza.UTM.Web.Services\bin\*
-            src\Enza.UTM.Web.Services\*.config
-            src\Enza.UTM.Web.Services\Global.asax
-            src\Enza.UTM.Web.Services\bin\roslyn\*
+            Enza.UTM.Web.Services.Externals\bin\*
+            Enza.UTM.Web.Services.Externals\*.config
+            Enza.UTM.Web.Services.Externals\Global.asax
+            Enza.UTM.Web.Services.Externals\bin\roslyn\*
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy bin content and web.config'
 
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'utm-service'
+          ArtifactName: 'utm-service-externals'
           publishLocation: 'Container'
         displayName: 'Publish artifacts'    
     

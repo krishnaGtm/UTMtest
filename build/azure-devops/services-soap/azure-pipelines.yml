@@ -12,15 +12,12 @@ trigger:
       - '*'
   paths:
     include: 
-      - src/Enza.UTM.Web.Services.Externals/*
-      - src/Enza.UTM.BusinessAccess/*
-      - src/Enza.UTM.BusinessAccess.Externals/*      
-      - src/Enza.UTM.Common/*
-      - src/Enza.UTM.Entities.Externals/*
-      - src/Enza.UTM.Web.Services.Core/*
-      - src/Enza.UTM.DataAccess/*
-      - src/Enza.UTM.DataAccess.Data/*
-      - src/Enza.UTM.DataAccess.Data.Externals/*
+      - Enza.UTM.Web.Services.Soap/*
+      - Enza.UTM.BusinessAccess/*  
+      - Enza.UTM.Common/*
+      - Enza.UTM.Entities/*
+      - Enza.UTM.DataAccess/*
+      - Enza.UTM.DataAccess.Data/*
 
 variables: 
   Buildconfiguration: Release 
@@ -44,7 +41,7 @@ stages:
 
       - task: MSBuild@1
         inputs: 
-          solution: '**\Enza.UTM.Web.Services.Externals.csproj'
+          solution: '**\Enza.UTM.Web.Services.Soap.csproj'
           msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\\"'
           configuration: $(BuildConfiguration)
           platform: $(Platform)
@@ -60,17 +57,17 @@ stages:
       - task: CopyFiles@2
         inputs:
           Contents: |
-            src\Enza.UTM.Web.Services.Externals\bin\*
-            src\Enza.UTM.Web.Services.Externals\*.config
-            src\Enza.UTM.Web.Services.Externals\Global.asax
-            src\Enza.UTM.Web.Services.Externals\bin\roslyn\*
+            Enza.UTM.Web.Services.Soap\bin\*
+            Enza.UTM.Web.Services.Soap\*.config
+            Enza.UTM.Web.Services.Soap\Global.asax
+            Enza.UTM.Web.Services.Soap\bin\roslyn\*
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy bin content and web.config'
 
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'utm-service-externals'
+          ArtifactName: 'utm-service-soap'
           publishLocation: 'Container'
         displayName: 'Publish artifacts'    
     
