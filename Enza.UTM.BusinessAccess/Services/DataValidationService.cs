@@ -74,7 +74,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 };
                 var body = Template.Render(tpl, model);
                 //send email to mapped recipients fo this crop
-                await SendEmailAsync(test, body);
+                await SendEmailAsync(test.CropCode, body);
             }
             //only update test whose status is 600 only
             foreach(var _test in tests)
@@ -88,9 +88,9 @@ namespace Enza.UTM.BusinessAccess.Services
             return data;
         }
 
-        private async Task SendEmailAsync(MigrationDataResult result, string body)
+        public async Task SendEmailAsync(string cropCode, string body)
         {
-            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.SEND_RESULT_MAPPING_MISSING, result.CropCode);
+            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.SEND_RESULT_MAPPING_MISSING, cropCode);
             var recipients = config?.Recipients;
             if (string.IsNullOrWhiteSpace(recipients))
             {

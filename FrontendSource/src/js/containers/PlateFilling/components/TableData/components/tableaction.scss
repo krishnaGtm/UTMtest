@@ -1,0 +1,32 @@
+$width: 32px;
+$height: $width;
+$wrapper: $width + $width + 1;
+
+.directionBox {
+  // height: $wrapper;
+  position: absolute;
+  right: 20px;
+  // width: $width;
+  z-index: 2;
+  // outline: 1px red solid;
+  margin: 0;
+  top: 26%;
+
+  button {
+    clear: both;
+    float: left;
+    height: $height;
+    padding: 0;
+    width: $width;
+    // opacity: .8;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  // button.del {
+  //   background: #f00; //#ff5959;
+  // }
+  button + button {
+    margin: 1px 0 0;
+  }
+}

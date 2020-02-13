@@ -1,0 +1,266 @@
+@import '../../../styles/_var.scss';
+
+// slotBreeder
+.slotBreeder, .labCapacity {
+  .fileSource {
+    min-width: 200px;
+    max-width: 200px;
+    // background: red;
+  }
+}
+.labApproval {
+  .fileSource {
+    max-width: 400px;
+  }
+}
+.fileSection,
+.fileSection2 {
+  /*background: red;*/
+  display: flex;
+  // display: grid;
+  // grid-template-columns: 180px 200px 350px 250px 80px;
+  background: #efefef;
+  //justify-content: space-between;
+  //display: grid;
+  //grid-template-columns: auto auto auto auto;
+  padding: 5px 0;
+  height: 40px;
+
+  /*select, input {
+    height: 30px;
+    padding: 0 10px;
+  }*/
+
+  & > div {
+    flex: 1;
+    padding: 5px 15px;
+    padding: 0px 15px;
+
+    label {
+      display: flex;
+      margin: 0;
+      span {
+        //flex: 1 1 150px;
+        margin: 0 10px 0 0;
+        //padding-top: 3px;
+        // outline: 1px solid red;
+      }
+    }
+
+    button {
+      padding: 0 10px;
+      min-height: 30px;
+      height: 30px;
+    }
+  }
+  .fileSource {
+    min-width: 200px;
+    // label {
+    // }
+    /*background: blue;*/
+    //max-width: 30%;
+    // min-width: 250px;
+  }
+  .importFile {
+    flex: 1;
+    display: flex;
+    min-width: 300px;
+    select + span {
+      margin-left: 15px;
+    }
+    & > div {
+      text-align: right;
+      //flex: 1 1 150px;
+      font-size: 14px;
+      padding-top: 3px;
+      margin: 5px 0 5px 10px;
+      //line-height: 32px;
+      font-family: 'robotomedium', sans-serif;
+      cursor: pointer;
+    }
+  }
+  .fileUpload {
+    text-align: right;
+    flex: 1 1 110px;
+    // outline: 1px solid blue;
+    padding: 0 15px 0 0;
+    span {
+      &:focus {
+        outline: none;
+      }
+      // width: 35px;
+      cursor: pointer;
+      margin: 0 15px 0 0;
+      display: inline-block;
+      position: relative;
+      right: 0;
+      top: 0px;
+      font-size: 30px;
+      color: #8bc34a;
+      // outline: 1px solid green;
+      img {
+        // outline: 1px solid red;
+        position: relative;
+        top: 0;
+      }
+    }
+  }
+}
+.fileSection2 {
+  padding-top: 4px;
+}
+.imported-files-row {
+  display: flex;
+  margin: 10px 0 10px 0;
+  border: 1px solid #ddd;
+  padding: 5px 10px 5px 15px;
+  border-radius: 5px;
+  width: calc(100% - 60px);
+}
+
+.imported-files-block {
+  flex: 1;
+  display: flex;
+  margin-right: 10px;
+}
+
+.imported-files-select {
+  margin-right: auto;
+  max-width: 400px;
+  margin-top: 2px;
+  box-shadow: none;
+}
+
+.imported-files-text {
+  margin: auto 10px auto 0;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #666;
+}
+
+.markContainer .marker {
+  box-shadow: none;
+  padding: 2px;
+  border: none;
+  background: #fff;
+  border-radius: 3px;
+}
+
+.markContainer .marker.disabled {
+  background-color: #ccd2de;
+  border-color: #bec7dc;
+}
+
+.imported-files-toggle {
+  background: #fff;
+  color: #848484;
+  /* box-shadow: 0 0 3px #ababab; */
+  min-height: 30px;
+  height: 30px;
+  /* line-height: 30px; */
+  padding: 0 5px;
+  /* border-radius: 5px; */
+  /* margin: auto 0 auto 5px; */
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.imported-files-toggle-status {
+  font-size: 0.9em;
+  margin-right: 10px;
+}
+
+.imported-files-toggle-container {
+  margin: auto 5px auto 0;
+}
+
+.imported-files-toggle:hover {
+  background: white;
+}
+
+.import-file-icon {
+  width: 35px;
+  cursor: pointer;
+  margin-left: 0;
+  position: absolute;
+  right: 30px;
+  top: 6px;
+  font-size: 38px;
+  color: #8bc34a;
+}
+
+#tableWrap.tcell.tabbedData > div {
+  padding: 0;
+}
+
+.action-buttons {
+  text-align: left;
+  .save-material-marker {
+    min-height: 30px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 15px;
+    background: $lightgreen;
+    border-radius: 5px;
+    margin: 5px 0 5px 5px;
+    i {
+      margin-right: 5px;
+    }
+    &:disabled {
+      background: #dddddd;
+      cursor: no-drop;
+      color: #a0a0a0;
+    }
+  }
+}
+
+.tableCheck {
+  text-align: center;
+  label {
+    font-size: 16px;
+    margin: 0 0 5px 5px;
+    line-height: 26px;
+    color: #7db83d;
+  }
+  input[type=checkbox] {
+    //display: none;
+  }
+  /* to hide the checkbox itself */
+  //input[type=checkbox]+
+  label:before {
+    font-family: fontello;
+    display: inline-block;
+    width: 20px;
+  }
+  input[type=checkbox] + label:before {
+    content: "\f096";
+  }
+  /* unchecked icon */
+  input[type=checkbox] + label:before {
+    letter-spacing: 10px;
+  }
+  /* space between checkbox and label */
+  input[type=checkbox]:checked + label:before {
+    content: "\f14a";
+  }
+  /* checked icon */
+  input[type=checkbox]:checked + label:before {
+    letter-spacing: 10px;
+  }
+
+  // disabled field style
+  input[type=checkbox]:disabled + label:before {
+    opacity: 0.5;
+    color: #666;
+    cursor: not-allowed;
+  }
+}
+
+.tableInputSampleNr input[type='number'],
+.tableInputSampleNr input[type='text']
+{
+  height: 22px;
+  padding-left: 5px;
+  padding-right: 5px;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>.:: UTM ::.</title>
+  <script>
+    // "API_BASE_URL":"http://10.0.1.184:8888/services",
+    var userContext = {
+      "name": "KAT\\Name",
+      "dateFormat": "DD/MM/YYYY"
+    };
+
+    var services = {
+      "API_BASE_URL": "https://10.0.1.207:7777/services",
+      "API_BASE_PLANNING_URL":"https://10.0.1.207:7777/PlanningServices",
+      "API_TOKEN_URL": "https://10.0.1.207/UserService"
+    };
+
+    var sso = {
+      "enabled": !false,
+      "instance": "https://login.microsoftonline.com/", 
+      "tenant": "eznlb.onmicrosoft.com", 
+      "clientId": "651630b0-aeea-44d3-b73d-2d4735c2e3f0", 
+      "redirectUri": "https://localhost:44350/" 
+    };
+
+  </script>
+  <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.12/js/adal.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script src="/bundle.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+$width: 450px;
+$titleHeight: 46px;
+$titleWidth: $titleHeight;
+
+$error: #e48383;
+$info: #24cbe0;
+$ok: #79d279;
+$close: #ababab;
+
+.modalContent {
+  width: $width;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  // min-height: 200px;
+  background: #fff;
+  border-radius: 4px;
+
+  .modalTitle {
+    border-bottom: 1px solid #dfdfdf;
+    font-size: 22px;
+    height: $titleHeight;
+    line-height: $titleHeight;
+
+    i {
+      height: $titleHeight;
+      width: $titleWidth;
+      display: inline-block;
+      text-align: center;
+
+    }
+
+    .info {
+      color: #91d641;
+    }
+    .close {
+      float: right;
+      color: $close;
+      cursor: pointer;
+      &:hover {
+        color: #ff5959;
+      }
+    }
+  }
+
+  .modelsubtitle {
+    padding: 5px 20px 0;
+  }
+  .modalBody {
+    display: grid;
+    grid-row-gap: 10px;
+    grid-column-gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    padding: 5px 20px 0;
+    line-height: 22px;
+    font-size: 14px;
+  }
+
+  button {
+    height: 30px;
+    min-height: 30px;
+    padding: 0 10px;
+  }
+
+  .modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px 15px;
+  }
+}

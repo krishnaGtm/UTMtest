@@ -1,0 +1,48 @@
+@media print {
+
+    html, body, #root, .base, .bodyWrap {
+        height: auto !important;
+    }
+    body {
+        background: transparent !important;
+        // background: #ff0 !important;
+    }
+
+    .base[data-aside=false] aside,
+    .base[data-aside=true] aside,
+    .base[data-aside=false] header,
+    .base[data-aside=true] header{
+        display: none;
+    }
+
+    .base[data-aside=false] .bodyWrap,
+    .base[data-aside=true] .bodyWrap {
+        margin: 0;
+        width: 100%;
+    }
+
+    body {
+        .plateWrap {
+            // border: 5px solid #fff;
+            max-width: 1000px; //842px;
+            // height: 595px;
+            page-break-before: always;
+            border-bottom: 1px solid #b7b7b7;
+
+            .plateRow {
+                border-left: 1px solid #b7b7b7;
+                & > div {
+                    border: 1px solid #b7b7b7;
+                    border-bottom: 0;
+                    border-left: 0;
+                    & > div {
+                        padding: 7px 4px;
+                        font-size: 12px;
+                        // letter-spacing: 0px;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}

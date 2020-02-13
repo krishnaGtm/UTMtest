@@ -1,0 +1,101 @@
+$width: 210px;
+$height: 36px;
+$fontSize: 14px;
+$bgColor: #f3f3f3;
+$fontColor: #78849a;
+$iconMarginRight: 5px;
+
+aside {
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  background: $bgColor;
+  width: $width;
+  height: 100%; //padding: 25px 15px;
+  //left: -$width;
+  transform: translateX(-$width);
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: -5px 0px 10px inset #dedede;
+  h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    color: $fontColor;
+    color: #434954;
+    font-size: 16px;
+    font-weight: 500;
+    height: 76px;
+    line-height: 40px;
+    padding: 0 15px;
+    // border-bottom: 1px solid #dfdfdf;
+  }
+  ul {
+    list-style: none;
+    // padding-top: 5px;
+    li {
+      line-height: $height;
+      a {
+        display: block; //text-align: center;
+        padding: 0 15px;
+        font-size: $fontSize;
+        color: $fontColor;
+        // color: darken($fontColor, 15%);
+        &:hover {
+          color: darken($fontColor, 15%);
+          // background-color: #eaeaea;
+          background-color: rgba(234, 234, 234, .5);
+        }
+        i {
+          margin-right: $iconMarginRight;
+          font-size: 10px;
+        }
+        &.active {
+          // color: darken($fontColor, 0%);
+          /*color: #3d4b60;*/
+          background-color: #e0e0e0;
+          background-color: #fff;
+          display: flex;
+          flex-direction: row-reverse;
+          // justify-content: space-evenly;
+          justify-content: space-between;
+          box-shadow: -5px 3px 5px #dedede;
+          border-radius: 4px;
+          margin: 0 10px;
+          padding-right: 10px;
+          i {
+            margin-left: 10px;
+            font-size: 14px;
+            color: #7eb63d;
+          }
+        }
+      }
+    }
+  }
+}
+
+.base[data-aside=false] {
+  aside {
+    transform: translateX(-$width)
+  }
+  .bodyWrap {
+    //transition: .25s linear;
+    transform: translateX(0px);
+  }
+}
+
+.base {
+  &[data-aside=true] {
+    aside {
+      opacity: 1;
+      visibility: visible; //left:0;
+      transform: translateX(0)
+    }
+    .bodyWrap {
+      //transform: translateX($width);
+      margin-left: $width;
+      width: calc(100% - #{$width}); //transition: .5s linear;
+    }
+  }
+}

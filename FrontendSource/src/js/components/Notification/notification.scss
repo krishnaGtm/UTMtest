@@ -1,0 +1,68 @@
+$width: 400px;
+$titleHeight: 46px;
+$titleWidth: $titleHeight;
+
+$error: #e48383;
+$info: #24cbe0;
+$ok: #79d279;
+$close: #ababab;
+
+.notificationWrap {
+    position: fixed;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.34);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .notificationContent {
+        width: $width;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        // min-height: 200px;
+        background: #fff;
+        border-radius: 4px;
+
+        .notificationTitle {
+            border-bottom: 1px solid #dfdfdf;
+            font-size: 22px;
+            height: $titleHeight;
+            line-height: $titleHeight;
+
+            i {
+                height: $titleHeight;
+                width: $titleWidth;
+                display: inline-block;
+                text-align: center;
+            }
+
+            .error {color: $error; }
+            .info {color: $info; }
+            .ok {color: $ok; }
+            .close {
+                float: right;
+                color: $close;
+                cursor: pointer;
+            }
+        }
+
+
+        .notificationBody {
+            padding: 15px 20px;
+            line-height: 22px;
+            font-size: 14px;
+            ul {
+                list-style: disc;
+            }
+        }
+        .errorAction {
+            display: flex;
+            padding: 0 15px;
+            flex-flow: row-reverse;
+            margin-bottom: 10px;
+        }
+    }
+}

@@ -9,15 +9,7 @@ namespace Enza.UTM.DbUp
     {
         static int Main(string[] args)
         {
-            //var environment = ConfigurationManager.AppSettings["App:Environment"];
-            //if (string.IsNullOrWhiteSpace(environment))
-            //{
-            //    Console.WriteLine("App:Environment is not specified in app.config file.");
-            //    return -1;
-            //}
-            //environment = string.Concat(environment, @"\");
             var root = GetExeDirectory();
-            //var scriptDirectory = Path.Combine(root, @"Scripts\", environment);
             var scriptDirectory = Path.Combine(root, "Scripts");
             Console.WriteLine(scriptDirectory);
             var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;

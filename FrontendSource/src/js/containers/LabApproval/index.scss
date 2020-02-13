@@ -1,0 +1,251 @@
+$lab-approval-table-width: 125px;
+@function getWidth($a) {
+  @return $a * $lab-approval-table-width
+}
+
+.labApproval {
+  .fileSection {
+    grid-template-columns: 400px 200px;
+
+    .fileSource {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+    }
+  }
+}
+
+.lab-approval-main-wrapper{
+  .lab-approval-table-container:nth-child(1) {
+    border: 0;
+    // border-bottom: 1px solid #d3d3d3;
+  }
+}
+.lab-approval-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0 0 10px;
+  padding-top: 15px;
+  border-top: 1px solid #d3d3d3;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    //background: #67ab1a;
+    background: #d0d9e8;
+    border-radius: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f3f3f3;
+    border-radius: 20px;
+  }
+}
+.lab-approval-table {
+  width: max-content;
+  table, th, td {
+    border-collapse: collapse;
+  }
+  table {
+    border: 1px solid #d3d3d3;
+    border-right: 0;
+  }
+  th, td {
+    padding: 5px;
+    min-width: $lab-approval-table-width;
+    word-wrap: break-word;
+    height: 35px;
+    border-right: 1px solid #d3d3d3;
+  }
+  td.fixed-one {
+    max-width: $lab-approval-table-width;
+  }
+  table {
+    border-spacing: 5px;
+  }
+  th {
+    text-align: left;
+    color: #565656;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #d3d3d3;
+  }
+  thead {
+    background-color: #f6f7f8;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
+    background-image: linear-gradient(#fff, #efefef);
+  }
+  tbody {
+    tr:nth-child(even) {
+      background: #f6f7f8;
+    }
+  }
+}
+.lab-approval-period-name-container {
+  width: getWidth(2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 10px;
+  //border: 1px solid #ddd;
+  border-right-style: none;
+}
+.lab-approval-comment-container {
+  width: getWidth(4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 10px;
+  //border: 1px solid #ddd;
+  border-left-style: none;
+}
+.lab-approval-summary-table {
+  display: inline-flex;
+  .lab-approval-table {
+    padding-bottom: 0;
+    padding-top: 10px;
+  }
+}
+.lap-approval-tables-wrapper {
+  padding: 0 10px 18px;
+  //border-top: 1px solid #d3d3d3;
+}
+.lab-approval-current-row {
+  background-color: yellow !important;
+}
+.lab-approval-main-wrapper {
+  padding: 10px;
+  font-size: 14px;
+  height: calc(100% - 40px);
+  overflow: auto;
+}
+.lab-approval-approve-slot,
+.lab-approval-deny-slot,
+.lab-approval-update-slot{
+  color: #ababab;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    color: #000000;
+  }
+}
+.lab-approval-approve-slot:hover {
+  color: #91d641;
+}
+.lab-approval-deny-slot:hover {
+  color: #ff5959;
+}
+.update-slot-period-modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.4);
+  overflow: auto;
+}
+
+.update-slot-period-modal-content {
+  background-color: #fefefe;
+  //padding: 20px;
+  border: 1px solid #888;
+  width: 720px;
+  margin: 10% auto;
+  border-radius:4px;
+}
+
+.update-slot-period-modal-title {
+  padding: 0px 15px;
+  border-bottom: 1px solid #dfdfdf;
+  font-size: 22px;
+  height: 46px;
+  line-height: 46px;
+}
+
+
+.update-slot-period-modal-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  //margin-top: -10px;
+}
+
+.update-slot-period-modal-close:hover,
+.update-slot-period-modal-close:focus {
+  color: #ff5959;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+}
+.update-slot-period-modal-body,
+.update-slot-period-modal-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-gap: 10px 15px;
+  padding: 10px 20px 20px 15px;
+  input {
+    margin: 5px 0;
+  }
+  span {
+    color: #565656;
+    //font-weight: bold;
+    box-shadow: none;
+    font-size: 14px;
+    margin: 5px 0 5px 5px;
+    font-weight: 500;
+    line-height: 20px;
+    font-family: 'robotomedium', sans-serif;
+  }
+  button {
+    height: 30px;
+    min-height: 30px;
+    padding: 0 10px;
+  }
+}
+.update-slot-period-modal-footer {
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid #dfdfdf;
+  padding: 10px 20px 0 15px;
+  .span-with-update-btn {
+    button {
+      width: 100%;
+      margin: 8px 0;
+    }
+  }
+}
+.lab-approval-choose-period {
+  //background: #dfdfdf;
+  width: 350px;
+  display: flex;
+  span, label {
+    margin-bottom: 0;
+    color: #565656;
+    font-size: 14px;
+    //font-weight: bold;
+    padding: 0 0 0 10px;
+    flex: 0 0 100px;
+  }
+  select {
+    flex: 0 0 250px;
+  }
+}
+.lab-approval-details-table {
+  margin-top: 15px;
+  thead {
+    display: flex;
+  }
+  tbody {
+    display: block;
+    max-height: 206px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}

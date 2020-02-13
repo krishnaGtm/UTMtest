@@ -1,0 +1,60 @@
+.imported-files-attributes {
+  display: block;
+  border: 1px solid #ddd;
+  background: #fff;
+  margin: 10px 0 0 0;
+  border-radius: 5px;
+  padding: 10px 0;
+
+.imported-files-actions {
+    display: flex;
+    padding-right:25px;
+    justify-content: flex-end;
+}
+
+.imported-files-actions-button{
+    margin: 20px 5px 0 5px;
+    padding: 0 20px 0 15px;
+    min-height: 27px;
+    height: 27px;
+    font-size: 14px;
+    border-radius: 20px;
+
+    i {
+        margin-right: 5px;
+    }
+    &:disabled{
+        color:#999;
+        cursor:not-allowed;
+    }
+}
+select:disabled,
+input:disabled {
+  background-color: #e6e6e6;
+  border-color: #ddd;
+  color: #999;
+  cursor:not-allowed;
+}
+.markContainer .marker{
+    box-shadow:none;
+    border:none;
+    background:none;
+    color:#600;
+
+    label{
+        color:#666;
+    }
+
+    &.disabled{
+        
+        background:none;
+        color:#999;
+        label{
+            color:#999;
+        }
+        label,input{
+            cursor:not-allowed;
+        }
+    }
+}
+}

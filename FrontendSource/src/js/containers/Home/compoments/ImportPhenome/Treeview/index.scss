@@ -1,0 +1,38 @@
+.phenome-treeview {
+  /*height: 100%;*/
+  height: calc(100% - 15px);
+  /*width: 400px;*/
+  /*width: 100%;*/
+  width: auto;
+  overflow: auto;
+  position: relative;
+  & > ul {
+    position: absolute;
+  }
+  ul {
+    position: relative;
+  }
+  ul li {
+    display: table;
+    width: 200px;
+    /*display: contents;*/
+    /*outline: 1px blue solid !important;*/
+    /*background: red;*/
+    /*font-size: 12px;*/
+  }
+}
+
+  .phenome-treeview::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .phenome-treeview::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 20px;
+  }
+
+  .phenome-treeview::-webkit-scrollbar-track {
+    background: #ddd;
+    border-radius: 20px;
+  }

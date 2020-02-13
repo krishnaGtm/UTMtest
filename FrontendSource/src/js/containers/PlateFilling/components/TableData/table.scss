@@ -1,0 +1,70 @@
+
+
+$linkColor: #f00;
+
+/*.directionBox {
+    height: $wrapper;
+    margin-top: -$width;
+    position: fixed;
+    right: 60px;
+    top: 50%;
+    width: $width;
+    z-index: 100;
+
+    button {
+        clear: both;
+        float: left;
+        height: $height;
+        padding: 0;
+        width: $width;
+        opacity: .8;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    button + button {
+        margin: 1px 0 0;
+    }
+}*/
+
+.table2 {
+    a {
+        color: $linkColor;
+    }
+}
+
+.rowSelected {
+    background: #a2e456;
+
+    /*& < div {
+        background: red;
+    }*/
+
+    .tableCheck label {
+        color: #537b25;
+    }
+}
+
+.rowFixed {
+    background: rgba(3, 169, 244, .7);
+    color: #fff;
+
+    .tableCheck label {
+        color: #fff;
+    }
+}
+
+.tableCheck {
+    height: 22px;
+    position: relative;
+    top: -1px;
+}
+
+.plateFilling {
+    .fixedDataTableLayout_main > * {
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;
+    }
+}

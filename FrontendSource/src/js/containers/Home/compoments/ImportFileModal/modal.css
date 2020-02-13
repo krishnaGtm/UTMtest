@@ -1,0 +1,69 @@
+.import-file-modal {
+    /*position: fixed;*/
+    /*z-index: 1000;*/
+    /*left: 0;*/
+    /*top: 0;*/
+    /*width: 100%;*/
+    /*height: 120%;*/
+    /*overflow: auto;*/
+    /*background-color: rgba(0,0,0,0.4);*/
+  position: fixed;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.34);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.import-file-modal-title {
+  padding: 0px 15px;
+  border-bottom: 1px solid #dfdfdf;
+  font-size: 22px;
+  height: 46px;
+  line-height: 46px;
+}
+
+.import-file-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /*padding: 20px;*/
+    border: 1px solid #888;
+    width: 70%;
+    border-radius:4px;
+}
+
+.import-file-modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    /*margin-top: -10px;*/
+}
+.import-file-modal-close:hover,
+.import-file-modal-close:focus {
+  color: #ff5959;
+    text-decoration: none;
+    cursor: pointer;
+  outline: none;
+}
+.import-file-modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 16px;
+    grid-row-gap: 12px;
+    /*margin-top: 15px;*/
+    padding: 10px 20px 5px;
+}
+.import-file-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px 20px 15px;
+  flex-direction: column;
+}
+.btnImportFile {
+    margin-top: 20px;
+    width: 100%;
+}

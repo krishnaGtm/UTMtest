@@ -19,6 +19,7 @@ using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
 using Enza.UTM.Services;
 using Enza.UTM.Services.Abstract;
+using Enza.UTM.Services.EmailTemplates;
 using Enza.UTM.Services.Proxies;
 using log4net;
 using Newtonsoft.Json;
@@ -190,6 +191,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
                         foreach (var dataPerTest in dataPerTests)
                         {
+                            
                             try
                             {
                                 var result = dataPerTest.ToList();
@@ -209,9 +211,15 @@ namespace Enza.UTM.BusinessAccess.Services
                                 }).ToList();
                                 if (data.Any())
                                 {
+                                    var testId = dataPerTest.FirstOrDefault().TestID;
+                                    var testName = dataPerTest.FirstOrDefault().TestName;
                                     //cummulate and send cummulate result on response
                                     LogInfo("Cummulation process started for test " + test.TestID);
-                                    var cummulatedData = await CumulateAsync(data, traitValue, traitDeterminationValues.FirstOrDefault()?.CropCode);
+                                    var cummulatedData = await CumulateAsync(data, traitValue, traitDeterminationValues.FirstOrDefault()?.CropCode, testId, testName, result);
+                                    if(result.Where(x=>!x.IsValid).Any())
+                                    {
+                                        continue;
+                                    }
                                     if (data.FirstOrDefault().ListID == data.FirstOrDefault().MaterialKey)//this means material is list not plant
                                     {
                                         //remove all material which are list material and then after add cummulated result.
@@ -598,7 +606,7 @@ namespace Enza.UTM.BusinessAccess.Services
             }
             return dt;
         }
-        private async Task<List<MigrationDataResult>> CumulateAsync(List<TestResultCumulate> result, List<TraitDeterminationValue> traitValue, string cropCode)
+        private async Task<List<MigrationDataResult>> CumulateAsync(List<TestResultCumulate> result, List<TraitDeterminationValue> traitValue, string cropCode, int testId, string testName, List<MigrationDataResult> migrationData)
         {
             //var test = await repository.CumulateAsync();
             //var result = data;
@@ -607,9 +615,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 {
                     ListID = y.Key.ListID,
                     ColumnLabel = y.FirstOrDefault().ColumnLabel,
-                    Materialkey = y.FirstOrDefault().MaterialKey,
-                    //DeterminationID = y.Key.DeterminationID,
-                    //TestID = 0,
+                    Materialkey = y.FirstOrDefault().MaterialKey,                    
                     Count = y.Count(),
                     Same = true,
                     UndefinedCount = 0,
@@ -652,18 +658,64 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 if(_result.FinalScore == "5555")
                 {
-                    var convertedValue = traitValue.FirstOrDefault(x => x.CropCode == cropCode && x.ColumnLabel == _result.ColumnLabel);
+                    var convertedValue = traitValue.FirstOrDefault(x => x.CropCode == cropCode && x.ColumnLabel == _result.ColumnLabel && x.DeterminationValue == "5555");
                     if(convertedValue == null)
                     {
                         var fetchFromDatabase = await repository.GetTraitValue(cropCode, _result.ColumnLabel);
                         if(fetchFromDatabase == null)
                         {
-                            throw new BusinessException($"Conversion not found for Value 5555 for crop {cropCode} and trait {_result.ColumnLabel}");
+                            LogInfo($"Conversion not found for Cumulation result of 5555 for Determination {_result.ColumnLabel}");
+                            //send email based on templete for missing conversion
+                            var determinationName = "";
+                            var migrationResult = migrationData.Where(x => x.ColumnLabel == _result.ColumnLabel).FirstOrDefault();
+                            if (migrationResult != null)
+                            {
+                                migrationResult.IsValid = false;
+                                determinationName = migrationResult.DeterminationName;
+                            }
+                            var missingConversion = new[]
+                            {
+                                new {
+                                        DeterminationName = determinationName,
+                                        ColumnLabel = _result.ColumnLabel,
+                                        DeterminationValue = "5555"
+                                    }
+                            }.ToList();
+                            
+
+                            var tpl = EmailTemplate.GetMissingConversionMail();
+
+                            var model = new
+                            {
+                                cropCode,
+                                TestName = testName,
+                                Determinations = missingConversion,
+                            };
+                            var body = Template.Render(tpl, model);
+                            //send email to mapped recipients fo this crop
+                            await validationService.SendEmailAsync(cropCode, body);
+
+                            //update test status to 625
+                            await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+                            {
+                                TestId = testId,
+                                StatusCode = 625
+                            });
+                            //throw new BusinessException($"Conversion not found for Value 5555 for crop {cropCode} and trait {_result.ColumnLabel}");
+
                         }
                         else
+                        {
                             traitValue.Add(fetchFromDatabase);
-
-                        _result.FinalScore = fetchFromDatabase.TraitValue;
+                            _result.FinalScore = fetchFromDatabase.TraitValue;
+                            traitValue.Add(new TraitDeterminationValue
+                            {
+                                ColumnLabel = _result.ColumnLabel,
+                                CropCode = cropCode,
+                                DeterminationValue = "5555",
+                                TraitValue = fetchFromDatabase.TraitValue
+                            });
+                        }
                     }
                     else
                     {

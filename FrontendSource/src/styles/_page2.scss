@@ -1,0 +1,35 @@
+.customCombo {
+  position: relative;
+  z-index: 100;
+}
+
+.plateFilling {
+  button + button {
+    margin-left: 5px;
+  }
+  .fileSection {
+    //grid-template-columns: auto auto 400px auto;
+    grid-template-columns: 180px 200px 350px 250px;
+      //.fileSource {
+      //  display: grid;
+      //  grid-template-columns: 60px 1fr;
+      //}
+  }
+  .fileSection2 {
+    grid-template-columns: 305px 275px 200px auto;
+    border-top: 1px solid #d8d8d8;
+    .fileSource {
+      // display: grid;
+      max-width: 350px;
+      &:first-child {
+        // width: 350px;
+        flex: 1 0 350px;
+        // grid-template-columns: 160px 1fr;
+      }
+      // grid-template-columns: 60px 1fr;
+    }
+  }
+}
+//body {
+//  font-family: Helvetica, sans-serif;
+//}

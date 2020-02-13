@@ -1,0 +1,25 @@
+.loaderWrapper {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.34);
+  width: 100%;
+  height: 100%;
+  z-index: 200;
+  top: 0;
+  left: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  &.active {
+    display: flex;
+  }
+  .loader {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border-radius: 100%;
+    // color: #fff;
+  }
+}
