@@ -18,9 +18,9 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<Test> AssignDeterminationsAsync(AssignDeterminationForS2SRequestArgs args);
         Task<S2SFillRateDetail> GetFillRateDetailsAsync(int testID);
         Task UploadS2SDonorAsync(int testID);
-        Task<bool> CreateDHAsync();
+        Task<List<ExecutableError>> CreateDHAsync();
         Task<IEnumerable<S2SGetProgramCodesByCropResult>> GetProjectsAsync(string crop);
         Task ManageMarkersAsync(S2SManageMarkersRequestArgs requestArgs);
-        Task<bool> StoreGIDinCordysAsync();
+        Task<List<ExecutableError>> StoreGIDinCordysAsync();
     }
 }

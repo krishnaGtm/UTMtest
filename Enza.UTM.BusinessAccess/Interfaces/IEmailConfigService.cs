@@ -18,6 +18,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
     public class EmailConfigGroups
     {
         public const string SEND_RESULT_MAPPING_MISSING = "SEND_RESULT_MAPPING_MISSING";
+        public const string CREATE_DH0_DH1_DATA_ERROR = "Create_Dh0_Dh1_Data_Error";
         public const string EXE_ERROR = "EXE_ERROR";
         public const string DEFAULT_EMAIL_GROUP = "DEFAULT_EMAIL_GROUP";
         public const string MOLECULAR_LAB_GROUP = "MOLECULAR_LAB_GROUP";

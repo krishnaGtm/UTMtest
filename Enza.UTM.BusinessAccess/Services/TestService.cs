@@ -213,9 +213,10 @@ namespace Enza.UTM.BusinessAccess.Services
                                 {
                                     var testId = dataPerTest.FirstOrDefault().TestID;
                                     var testName = dataPerTest.FirstOrDefault().TestName;
+                                    var cropCode = dataPerTest.FirstOrDefault().CropCode;
                                     //cummulate and send cummulate result on response
                                     LogInfo("Cummulation process started for test " + test.TestID);
-                                    var cummulatedData = await CumulateAsync(data, traitValue, traitDeterminationValues.FirstOrDefault()?.CropCode, testId, testName, result);
+                                    var cummulatedData = await CumulateAsync(data, traitValue, cropCode, testId, testName, result);
                                     if(result.Where(x=>!x.IsValid).Any())
                                     {
                                         continue;
@@ -667,40 +668,46 @@ namespace Enza.UTM.BusinessAccess.Services
                             LogInfo($"Conversion not found for Cumulation result of 5555 for Determination {_result.ColumnLabel}");
                             //send email based on templete for missing conversion
                             var determinationName = "";
+                            var statusCode = 0;
                             var migrationResult = migrationData.Where(x => x.ColumnLabel == _result.ColumnLabel).FirstOrDefault();
                             if (migrationResult != null)
                             {
                                 migrationResult.IsValid = false;
+                                statusCode = migrationResult.StatusCode;
                                 determinationName = migrationResult.DeterminationName;
                             }
-                            var missingConversion = new[]
+                            if(statusCode !=625)
                             {
-                                new {
-                                        DeterminationName = determinationName,
-                                        ColumnLabel = _result.ColumnLabel,
-                                        DeterminationValue = "5555"
-                                    }
-                            }.ToList();
+                                var missingConversion = new[]
+                                {
+                                    new {
+                                            DeterminationName = determinationName,
+                                            ColumnLabel = _result.ColumnLabel,
+                                            DeterminationValue = "5555"
+                                        }
+                                }.ToList();
+
+
+                                var tpl = EmailTemplate.GetMissingConversionMail();
+
+                                var model = new
+                                {
+                                    CropCode = cropCode,
+                                    TestName = testName,
+                                    Determinations = missingConversion,
+                                };
+                                var body = Template.Render(tpl, model);
+                                //send email to mapped recipients fo this crop
+                                await validationService.SendEmailAsync(cropCode, body);
+
+                                //update test status to 625
+                                await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+                                {
+                                    TestId = testId,
+                                    StatusCode = 625
+                                });
+                            }
                             
-
-                            var tpl = EmailTemplate.GetMissingConversionMail();
-
-                            var model = new
-                            {
-                                cropCode,
-                                TestName = testName,
-                                Determinations = missingConversion,
-                            };
-                            var body = Template.Render(tpl, model);
-                            //send email to mapped recipients fo this crop
-                            await validationService.SendEmailAsync(cropCode, body);
-
-                            //update test status to 625
-                            await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
-                            {
-                                TestId = testId,
-                                StatusCode = 625
-                            });
                             //throw new BusinessException($"Conversion not found for Value 5555 for crop {cropCode} and trait {_result.ColumnLabel}");
 
                         }
