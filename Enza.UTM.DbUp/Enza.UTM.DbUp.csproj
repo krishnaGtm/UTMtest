@@ -325,7 +325,6 @@
     <EmbeddedResource Include="Scripts\000226.34152.SP_Chagnes_PR_PlateFillingForGroupTesting.sql" />
     <EmbeddedResource Include="Scripts\000222.ALTER_PR_UpdateDonorNumber.sql" />
     <EmbeddedResource Include="Scripts\000221.Add_PR_S2S_GetDonorInfoForUpload.sql" />
-    <EmbeddedResource Include="Scripts\000225.SchemaChange_Test_RearrangePlateFilling_SP_Adjusted.sql" />
     <EmbeddedResource Include="Scripts\000224.PR_S2S_GetDonorInfoForUpload.sql" />
     <EmbeddedResource Include="Scripts\000223.PR_GetMaterialWithMarker_ForS2S.sql" />
     <EmbeddedResource Include="Scripts\000220.33360_COUNTRY_CODE_ADJUSTMENTS.sql" />
