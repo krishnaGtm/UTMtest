@@ -39,6 +39,7 @@ steps:
     inputs:
       Contents: |
         Enza.UTM.DbUp\bin\$(Buildconfiguration)\*
+        Enza.UTM.DbUp\Scripts\*
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Copy bin content'
 
