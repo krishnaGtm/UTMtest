@@ -6,5 +6,6 @@ namespace Enza.UTM.Entities.Args
     {
         public string ConfigGroup { get; set; }
         public string CropCode { get; set; }
+        public string BrStationCode { get; set; }
     }
 }

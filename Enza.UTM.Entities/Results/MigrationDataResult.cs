@@ -49,6 +49,8 @@ namespace Enza.UTM.Entities.Results
         public int TestID { get; set; }
         public string TestName { get; set; }
         public int StatusCode { get; set; }
+        public string PlatePlanName { get; set; }
+        public string BrStationCode { get; set; }
 
     }
 

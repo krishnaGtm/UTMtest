@@ -244,7 +244,8 @@ namespace Enza.UTM.BusinessAccess.Services
                             {
                                 var keyvalues = new List<Tuple<string, string>>();
 
-                                var jobWithStatus = new List<CreateSelectionJobResp>();
+                                //var jobWithStatus = new List<CreateSelectionJobResp>();
+
                                 //apply filter on FieldSet => Selection name column to check if data is created or not
                                 //1. Get columns 
                                 //1. Set required columns if not available on grid Fieldset=> selection
@@ -272,7 +273,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                         ErrorMessage = $"Unable to set column in selection grid on fieldID: {_config.DHFieldSetSetID.ToText()}"
 
                                     });
-                                    //success = false;
                                     continue;
                                 }
 
@@ -296,7 +296,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                             ErrorMessage = $"Selection name column not found on field { _groupdeData.Key.ToText()}"
 
                                         });
-                                        //success = false;
                                         continue;
                                     }
                                     //4. fetch data
@@ -310,41 +309,23 @@ namespace Enza.UTM.BusinessAccess.Services
                                     var tobeCreated = _groupdeData.Select(x => x).Where(x => !createdDH0Data.Any(y => y.ProposedName == x.DHProposedName)).ToList();
                                     if (tobeCreated.Any())
                                     {
-                                        LogInfo($"Register job to create DHO on field {_groupdeData.Key.ToText()}");
+                                        LogInfo($"Create Selection for DHO on field {_groupdeData.Key.ToText()}");
                                         foreach (var _toBeCreated in tobeCreated)
                                         {
                                             //create DH0 record
                                             var createSelectionResp = await CreateDH(client, createSelectionURL, _toBeCreated.Materialkey, _groupdeData.Key, _toBeCreated.DHProposedName, _toBeCreated.FieldEntityType, dH0MethodID);
-                                            if(createSelectionResp.Status.EqualsIgnoreCase("1"))
+                                            if(!createSelectionResp.Status.EqualsIgnoreCase("1"))
                                             {
-                                                jobWithStatus.Add(createSelectionResp);
-                                            }
-                                        }
-                                        //now fetch job status to know whether creating of data is successful or not
-                                        int numberOfretry = 0;
-                                        LogInfo($"Get job status.");
-                                        while (jobWithStatus.Any(x=>x.Status.ToInt32() <3) && numberOfretry <100)
-                                        {
-                                            var multiPartContent = new MultipartFormDataContent();
-                                            var JobStatusURL = "/api/v2/jobs/get_results_status_by_list";
-                                            var formValue = new FormValues();
-                                            if (jobWithStatus.Any(x => x.Status.ToInt32() < 3))
-                                            {
-                                                foreach (var _job in jobWithStatus.Where(x => x.Status.ToInt32() < 3))
+                                                errorMessage.Add(new ExecutableError
                                                 {
-                                                    multiPartContent.Add(new StringContent(_job.Job_id), "list");
-                                                }
-                                                var jobResp = await client.PostAsync(JobStatusURL, multiPartContent);
-                                                await jobResp.EnsureSuccessStatusCodeAsync();
-                                                var content = await jobResp.Content.ReadAsStringAsync();
-                                                jobWithStatus = JsonConvert.DeserializeObject<List<CreateSelectionJobResp>>(content);
+                                                    Success = false,
+                                                    CropCode = _config.CropCode,
+                                                    ErrorType = "data",
+                                                    ErrorMessage = $"Unable to create selection (Double Haploid) with methodID: {dH0MethodID} () on fieldID: {_groupdeData.Key} with name: {_toBeCreated.DHProposedName}"
+
+                                                });
                                             }
-                                            else
-                                                jobWithStatus.Clear();
-                                            numberOfretry++;
-                                            await Task.Delay(100);
                                         }
-                                        jobWithStatus.Clear();
                                         //again fetch created Data by applying filter and set grid with value.
                                         gridID = new Random().Next(10000000, 99999999).ToText();
 
@@ -352,7 +333,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                         jsonresp = await PrepareFilterGrid(client, setGridURL, _groupdeData.Key, gridID, filterString, "28");
                                         if (jsonresp.Status.ToText().EqualsIgnoreCase("1"))
                                         {
-                                            LogInfo($"Get Created Selection data on field {_groupdeData.Key}.");
+                                            LogInfo($"Get Created Selection (Double Haploid) data on field {_groupdeData.Key}.");
                                             //get created DH0 data from Fieldset => selection
                                             createdDH0Data = await FetchCreatedSelectionData(client, fetchDataURL, gridID, _groupdeData.Key.ToText(),"28", requiredColumns);
                                         }
@@ -392,7 +373,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                             ErrorMessage = $"Unable to set column in List grid on fieldID: {_config.DHFieldSetSetID.ToText()}"
 
                                         });
-                                        //success = false;
                                         continue;
                                     }
 
@@ -482,7 +462,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                                     ErrorMessage = $"Unable to set column in selection grid on fieldID: { _config.DHFieldSetSetID.ToText()}"
 
                                                 });
-                                                //success = false;
                                                 continue;
                                             }
                                             var createdDH1 = await PrepareFilterGrid(client, setGridURL, _config.DHFieldSetSetID.ToText(), gridID, filterString, "28");
@@ -492,50 +471,31 @@ namespace Enza.UTM.BusinessAccess.Services
                                                 var tobeCreatedDH1 = _groupdeData.Select(x => x).Where(x => !createdDH1Data.Any(y => y.ProposedName == x.DHProposedName)).ToList();
                                                 if (tobeCreatedDH1.Any())
                                                 {
-                                                    LogInfo($"Register job to create DH1 on field {_config.DHFieldSetSetID}");
+                                                    LogInfo($"Create Selection for DH1 on field {_config.DHFieldSetSetID}");
                                                     foreach (var _tobeCreatedDH1 in tobeCreatedDH1)
                                                     {
-                                                        //get rowID
-                                                        //var data = from t1 in createdDH0Data
-                                                        //           join t2 in created
+                                                        
                                                         var rowID = listWithNewRowID.FirstOrDefault(x => x.ProposedName == _tobeCreatedDH1.DHProposedName)?.DH0RowID;
                                                         if (!string.IsNullOrWhiteSpace(rowID))
                                                         {
                                                             var createDH1Resp = await CreateDH(client, createSelectionURL, rowID, _config.DHFieldSetSetID.ToText(), _tobeCreatedDH1.DHProposedName, "1", dH1MethodID);
-                                                            if (createDH1Resp.Status.EqualsIgnoreCase("1"))
+                                                            if (!createDH1Resp.Status.EqualsIgnoreCase("1"))
                                                             {
-                                                                jobWithStatus.Add(createDH1Resp);
+                                                                errorMessage.Add(new ExecutableError
+                                                                {
+                                                                    Success = false,
+                                                                    CropCode = _config.CropCode,
+                                                                    ErrorType = "data",
+                                                                    ErrorMessage = $"Unable to create selection (Selfing) with methodID: {dH1MethodID} () on fieldID: {_config.DHFieldSetSetID} with name: { _tobeCreatedDH1.DHProposedName}"
+                                                                });
                                                             }
 
                                                         }
                                                     }
                                                 }
-                                                int nrOfRetry = 0;
-                                                LogInfo($"Get Job status.");
-                                                while (jobWithStatus.Any(x => x.Status.ToInt32() < 3) && nrOfRetry <100)
-                                                {
-                                                    var multiPartContent = new MultipartFormDataContent();
-                                                    var JobStatusURL = "/api/v2/jobs/get_results_status_by_list";
-                                                    var formValue = new FormValues();
-                                                    if (jobWithStatus.Any(x => x.Status.ToInt32() < 3))
-                                                    {
-                                                        foreach (var _job in jobWithStatus.Where(x => x.Status.ToInt32() < 3))
-                                                        {
-                                                            multiPartContent.Add(new StringContent(_job.Job_id), "list");
-                                                        }
-                                                        var jobResp = await client.PostAsync(JobStatusURL, multiPartContent);
-                                                        await jobResp.EnsureSuccessStatusCodeAsync();
-                                                        var content = await jobResp.Content.ReadAsStringAsync();
-                                                        jobWithStatus = JsonConvert.DeserializeObject<List<CreateSelectionJobResp>>(content);
-                                                    }
-                                                    else
-                                                        jobWithStatus.Clear();
-                                                    nrOfRetry++;
-                                                    await Task.Delay(100);
-                                                }
 
                                                 //again fetch created Data by applying filter and set grid with value.
-                                                //gridID = new Random().Next(10000000, 99999999).ToText();
+                                                
                                                 jsonresp = await PrepareFilterGrid(client, setGridURL, _config.DHFieldSetSetID.ToText(), gridID, filterString, "28");
 
                                                 if (jsonresp.Status.ToText().EqualsIgnoreCase("1"))

@@ -85,6 +85,7 @@
     <Compile Include="Args\CNTProcessRequestArgs.cs" />
     <Compile Include="Args\AssignDeterminationForS2SRequestArgs.cs" />
     <Compile Include="Args\CNTRequestArgs.cs" />
+    <Compile Include="Args\DeleteSlotRequestArgs.cs" />
     <Compile Include="Args\S2SManageMarkersRequestArgs.cs" />
     <Compile Include="Args\SaveMaterialTypeTestProtocolsRequestArgs.cs" />
     <Compile Include="Args\GetMaterialTypeTestProtocolsRequestArgs.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="TraitValue.cs" />
     <Compile Include="S2SDonorMaterial.cs" />
     <Compile Include="TraitDeterminationValue.cs" />
+    <Compile Include="MissingConversion.cs" />
     <Compile Include="Well.cs" />
   </ItemGroup>
   <ItemGroup>

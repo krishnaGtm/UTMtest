@@ -54,9 +54,9 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             return true;
         }
 
-        public async Task<bool> DeleteSlotAsync(int slotID)
+        public async Task<bool> DeleteSlotAsync(DeleteSlotRequestArgs args)
         {
-            return await repository.DeleteSlotAsync(slotID);
+            return await repository.DeleteSlotAsync(args);
         }
 
     }

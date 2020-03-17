@@ -23,6 +23,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 args.Add("@ConfigID", entity.ConfigID);
                 args.Add("@ConfigGroup", entity.ConfigGroup);
                 args.Add("@CropCode", entity.CropCode);
+                args.Add("@BrStationCode", entity.BrStationCode);
                 args.Add("@Recipients", entity.Recipients);
             });
         }
@@ -34,6 +35,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             {
                 p.Add("@ConfigGroup", entity.ConfigGroup);
                 p.Add("@CropCode", entity.CropCode);
+                p.Add("@BrStationCode", entity.BrStationCode);
                 p.Add("@Page", entity.PageNumber);
                 p.Add("@PageSize", entity.PageSize);
             }, reader =>
@@ -42,13 +44,14 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 {
                     ConfigID = reader.Get<int>(0),
                     ConfigGroup = reader.Get<string>(1),
-                    CropCode = reader.Get<string>(2),
-                    Recipients = reader.Get<string>(3)
+                    CropCode = reader.Get<string>(2),                    
+                    Recipients = reader.Get<string>(3),
+                    BrStationCode = reader.Get<string>(4)
                 };
                 return new
                 {
                     Item = item,
-                    TotalRows = reader.Get<int>(4)
+                    TotalRows = reader.Get<int>(5)
                 };
             });
             if (items.Any())
@@ -71,12 +74,13 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return GetEmailConfigAsync(groupName, null);
         }
 
-        public async Task<EmailConfig> GetEmailConfigAsync(string groupName, string cropCode)
+        public async Task<EmailConfig> GetEmailConfigAsync(string groupName, string cropCode, string brStationCode = null)
         {
             var configs = await GetAllAsync(new EmailConfigRequestArgs
             {
                 ConfigGroup = groupName,
                 CropCode = cropCode,
+                BrStationCode = brStationCode,
                 PageNumber = 1,
                 PageSize = int.MaxValue
             });

@@ -8,7 +8,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
     public interface IDataValidationService
     {
         Task<IEnumerable<MigrationDataResult>> ValidateTraitDeterminationResultAsync(int? testID, bool sendResult,string source);
-        Task<IEnumerable<MigrationDataResult>> ValidateTraitDeterminationResultAndSendEmailAsync(int? testID, bool sendResult, string source);
+        //Task<IEnumerable<MigrationDataResult>> ValidateTraitDeterminationResultAndSendEmailAsync(int? testID, bool sendResult, string source);
         Task SendEmailAsync(string cropCode, string body);
 
     }

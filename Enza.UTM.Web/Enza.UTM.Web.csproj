@@ -200,6 +200,7 @@
     <Content Include="fonts\roboto-regular-webfont.woff" />
     <Content Include="fonts\roboto-regular-webfont.woff2" />
     <None Include="packages.config" />
+    <Content Include="Scripts\bundle.js.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Enza.UTM.BusinessAccess\Enza.UTM.BusinessAccess.csproj">

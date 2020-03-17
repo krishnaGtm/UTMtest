@@ -133,6 +133,32 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     result.Errors.Add("No columns found.");
                     return result;
                 }
+
+                //get field name from settings
+                var donorColumnName = ConfigurationManager.AppSettings["CNT:DonorNrColumnName"];
+                //required columns validations
+                //validate if column Entry Code or another column defined in pipeline variables exists which is stored on Donor Number field
+                var requiredFields = new List<string>
+                {
+                    "GID",
+                    "name"
+                };
+                if (args.ImportLevel.EqualsIgnoreCase("list"))
+                {
+                    requiredFields.Add("Entry Code");
+                }
+                else
+                {
+                    requiredFields.Add(donorColumnName);
+                }
+
+                var notFoundColumns = requiredFields.Where(x => !json1.Columns.Any(y => y.desc.EqualsIgnoreCase(x)));
+                if (notFoundColumns.Any())
+                {
+                    result.Errors.Add($"Following fields are required but not available in the Phenome grid: ({string.Join(",", notFoundColumns)}).");
+                    return result;
+                }
+
                 if (!args.ForcedImport && json1.Columns.Count > 50)
                 {
                     result.Warnings.Add("You are importing more than 50 columns.This can lead to problem. We recommend to reduce the amount of columns in Phenome. Continue?");
@@ -228,21 +254,21 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     result.Errors.Add("Duplicate column found on " + args.Source);
                     return result;
                 }
-
-                var foundGIDColumn = false;
-                var foundNameColumn = false;
+                
+                //var foundGIDColumn = false;
+                //var foundNameColumn = false;
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var col = columns[i];
                     var dr = dtColumnsTVP.NewRow();
-                    if (col.ColLabel.EqualsIgnoreCase("GID"))
-                    {
-                        foundGIDColumn = true;
-                    }
-                    else if (col.ColLabel.EqualsIgnoreCase("name"))
-                    {
-                        foundNameColumn = true;
-                    }
+                    //if (col.ColLabel.EqualsIgnoreCase("GID"))
+                    //{
+                    //    foundGIDColumn = true;
+                    //}
+                    //else if (col.ColLabel.EqualsIgnoreCase("name"))
+                    //{
+                    //    foundNameColumn = true;
+                    //}
                     dr["ColumnNr"] = i;
                     dr["TraitID"] = col.TraitID;
                     dr["ColumnLabel"] = col.ColLabel;
@@ -250,16 +276,16 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     dtColumnsTVP.Rows.Add(dr);
                 }
 
-                if (!foundGIDColumn)
-                {
-                    result.Errors.Add("GID column not found. Please add GID column on data grid.");
-                    return result;
-                }
-                if (!foundNameColumn)
-                {
-                    result.Errors.Add("Name column not found. Please add Name column on data grid.");
-                    return result;
-                }
+                //if (!foundGIDColumn)
+                //{
+                //    result.Errors.Add("GID column not found. Please add GID column on data grid.");
+                //    return result;
+                //}
+                //if (!foundNameColumn)
+                //{
+                //    result.Errors.Add("Name column not found. Please add Name column on data grid.");
+                //    return result;
+                //}
                 var getColIndex = new Func<string, int>(name =>
                 {
                     var fldName = columns.FirstOrDefault(o => o.ColLabel.EqualsIgnoreCase(name));
@@ -352,7 +378,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 args.FilePath = args.TestName;
                 //import data into database
                 await ImportDataAsync(result.CropCode, result.BrStationCode, result.SyncCode, result.CountryCode,
-                    args, result.TVPColumns, result.TVPRows, result.TVPCells, result.TVPList);
+                    args, result.TVPColumns, result.TVPRows, result.TVPCells, result.TVPList, donorColumnName);
 
                 //get imported data
                 var ds = await GetDataAsync(new ExcelDataRequestArgs
@@ -549,7 +575,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         private async Task ImportDataAsync(string cropCode, string brStationCode, string syncCode, string countryCode, 
             CNTRequestArgs requestArgs, DataTable tVPColumns, DataTable tVPRows, 
-            DataTable tVPCells, DataTable tVPList)
+            DataTable tVPCells, DataTable tVPList, string donorNrColumnName)
         {
             var p1 = DbContext.CreateInOutParameter("@TestID", requestArgs.TestID, DbType.Int32, int.MaxValue);
             DbContext.CommandTimeout = 5 * 60; //5 minutes
@@ -571,6 +597,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args.Add("@TVPRow", tVPRows);
                     args.Add("@TVPCell", tVPCells);
                     args.Add("@TVPList", tVPList);
+                    args.Add("@DonorNrColumnName", donorNrColumnName);
                 });
             requestArgs.TestID = p1.Value.ToInt32();
         }

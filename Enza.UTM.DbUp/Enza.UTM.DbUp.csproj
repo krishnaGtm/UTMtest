@@ -392,6 +392,14 @@
     <Content Include="Scripts\000264.PR_PLAN_RejectSlot.sql" />
     <Content Include="Scripts\000263.Calculation on reserve slot adjusted.sql" />
     <Content Include="Scripts\000286.9997_PR_CNT_GetDataWithMarker.sql" />
+    <Content Include="Scripts\000300.11251_PR_Get_PlatePlanOverview.sql" />
+    <Content Include="Scripts\000302.11253.PR_PLAN_Remove_Slot.sql" />
+    <Content Include="Scripts\000301.11254.SP_CHANGES.sql" />
+    <Content Include="Scripts\000299.11254.SP_CHANGES.sql" />
+    <Content Include="Scripts\000298.11580_PR_CNT_ImportMaterials.sql" />
+    <Content Include="Scripts\000297.10396_SP_Changes.sql" />
+    <Content Include="Scripts\000296.11373_PR_Import_ExternalData.sql" />
+    <Content Include="Scripts\000295.11373_PR_Import_ExternalData.sql" />
     <Content Include="Scripts\000294.MailConfig_Data.sql" />
     <Content Include="Scripts\000293.10339_Adjusted_ColumnNames_for_external_tests.sql" />
     <Content Include="Scripts\000292.9998_PR_CNT_GetDataWithMarkerForExcel.sql" />

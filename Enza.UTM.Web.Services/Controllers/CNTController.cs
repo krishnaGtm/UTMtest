@@ -24,19 +24,6 @@ namespace Enza.UTM.Web.Services.Controllers
             _fileService = fileService;
         }
 
-        //[Route("getData")]
-        //[HttpPost]
-        //public async Task<IHttpActionResult> GetData([FromBody]ExcelDataRequestArgs args)
-        //{
-        //    var ds = await _cNTService.GetDataAsync(args);
-        //    var rs = new
-        //    {
-        //        Data = ds,
-        //        args.TotalRows
-        //    };
-        //    return Ok(rs);
-        //}
-
         [HttpPost]
         [Route("import")]
         public async Task<IHttpActionResult> Import([FromBody]CNTRequestArgs args)

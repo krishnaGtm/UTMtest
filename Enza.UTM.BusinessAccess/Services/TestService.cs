@@ -142,6 +142,8 @@ namespace Enza.UTM.BusinessAccess.Services
             //change status if not validated or validated. send mail if mapping relation is missing
 
             var success = true;
+            var missingConversionList = new List<MissingConversion>();
+            var invalidTests = new List<int>();
             LogInfo("Validate test for mapping relation.");
             //get list of valid tests which contains results.
             var tests = await repository.GetTestsForTraitDeterminationResultsAsync(source);
@@ -156,7 +158,6 @@ namespace Enza.UTM.BusinessAccess.Services
             //sign in to phenome before processing data
             using (var client = new RestClient(BASE_SVC_URL))
             {
-                var traitValue = new List<TraitDeterminationValue>();
                 var resp = await SignInAsync(client);
 
                 await resp.EnsureSuccessStatusCodeAsync();
@@ -167,6 +168,9 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 LogInfo("logged in to Phenome successful.");
 
+                //get test complete email body template
+                var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+
                 foreach (var test in tests)
                 {
                     try
@@ -174,30 +178,34 @@ namespace Enza.UTM.BusinessAccess.Services
                         LogInfo($"Validating data for the TestID: {test.TestID}");
 
                         //validate and get results based on a test at a time.
-                        var traitDeterminationValues = await validationService.ValidateTraitDeterminationResultAndSendEmailAsync(test.TestID, true, source);
+                        //var traitDeterminationValues = await validationService.ValidateTraitDeterminationResultAndSendEmailAsync(test.TestID, true, source);
+                        var traitDeterminationValues = (await validationService.ValidateTraitDeterminationResultAsync(test.TestID, true, source)).ToList();
                         if (!traitDeterminationValues.Any())
                         {
                             LogInfo($"There is no any result data to process for TestID: {test.TestID}.");
                             continue;
                         }
 
-                        var invalidTests = traitDeterminationValues.Where(x => !x.IsValid).GroupBy(x=>x.TestID).Select(x => x.Key).ToList();
-                        var finalDetTraitVal = traitDeterminationValues.Where(x => !invalidTests.Contains(x.TestID));
+                        //var invalidTests = traitDeterminationValues.Where(x => !x.IsValid).GroupBy(x=>x.TestID).Select(x => x.Key).ToList();
+                        //var finalDetTraitVal = traitDeterminationValues.Where(x => !invalidTests.Contains(x.TestID));
 
-                        var dataPerTests = finalDetTraitVal
-                            .Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
-                            .GroupBy(x => new { x.InvalidPer, x.FieldID })
+                        var dataPerTests = traitDeterminationValues
+                            //.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
+                            .GroupBy(x => new { x.InvalidPer, x.FieldID, x.TestID })
                             .ToList();
 
                         foreach (var dataPerTest in dataPerTests)
                         {
-                            
                             try
                             {
-                                var result = dataPerTest.ToList();
+                                missingConversionList.Clear();
+                                var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                var statusCode = result.FirstOrDefault().StatusCode;
+                                var testId = dataPerTest.FirstOrDefault().TestID;
+                                var testName = dataPerTest.FirstOrDefault().TestName;
+                                var cropCode = dataPerTest.FirstOrDefault().CropCode;
 
                                 #region Cummulate result
-
                                 var data = result.Where(x => x.Cummulate || x.ListID.ToText() == x.Materialkey).Select(x => new TestResultCumulate
                                 {
                                     DeterminationID = x.DeterminationID,
@@ -211,16 +219,11 @@ namespace Enza.UTM.BusinessAccess.Services
                                 }).ToList();
                                 if (data.Any())
                                 {
-                                    var testId = dataPerTest.FirstOrDefault().TestID;
-                                    var testName = dataPerTest.FirstOrDefault().TestName;
-                                    var cropCode = dataPerTest.FirstOrDefault().CropCode;
+                                    
                                     //cummulate and send cummulate result on response
                                     LogInfo("Cummulation process started for test " + test.TestID);
-                                    var cummulatedData = await CumulateAsync(data, traitValue, cropCode, testId, testName, result);
-                                    if(result.Where(x=>!x.IsValid).Any())
-                                    {
-                                        continue;
-                                    }
+                                    var cummulatedData = await CumulateAsync(data, cropCode, testId, testName, missingConversionList, result);
+                                    
                                     if (data.FirstOrDefault().ListID == data.FirstOrDefault().MaterialKey)//this means material is list not plant
                                     {
                                         //remove all material which are list material and then after add cummulated result.
@@ -228,8 +231,64 @@ namespace Enza.UTM.BusinessAccess.Services
                                     }
                                     result.AddRange(cummulatedData);
                                 }
-
                                 #endregion
+
+                                //send email for missing conversion and break current loop
+                                var data1 = dataPerTest.Where(x => !x.IsValid).Select(x=>new MissingConversion
+                                {
+                                    ColumnLabel = x.ColumnLabel,
+                                    CropCode = x.CropCode,
+                                    DeterminationName = x.DeterminationName,
+                                    DeterminationValue = x.DeterminationValue,
+                                    TestID = testId,
+                                    TestName = testName
+                                });
+                                
+                                missingConversionList.AddRange(data1);
+                                if(missingConversionList.Any())
+                                {
+                                    invalidTests.Add(missingConversionList.FirstOrDefault().TestID);
+                                    //if statusCode is 625 then do not send email and break loop
+                                    if (statusCode != 625)
+                                    {
+                                        //send email and update test status to 625
+                                        var distinctDeterminations1 = missingConversionList.GroupBy(g => new
+                                        {
+                                            g.DeterminationName,
+                                            g.ColumnLabel,
+                                            g.DeterminationValue
+                                        }).Select(x => new
+                                        {
+                                            x.Key.DeterminationName,
+                                            x.Key.ColumnLabel,
+                                            x.Key.DeterminationValue,
+                                        }).ToList();
+
+                                        var tpl = EmailTemplate.GetMissingConversionMail();
+                                        var model = new
+                                        {
+                                            CropCode = cropCode,
+                                            TestName = testName,
+                                            Determinations = distinctDeterminations1,
+                                        };
+                                        var body = Template.Render(tpl, model);
+                                        //send email to mapped recipients fo this crop
+                                        await validationService.SendEmailAsync(cropCode, body);
+
+                                        //update test status
+                                        await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+                                        {
+                                            TestId = testId,
+                                            StatusCode = 625
+                                        });
+                                    }
+                                    continue;
+                                }
+
+                                //if test is in invalid list break loop for current test.
+                                //send mail if conversion is missing for different field then break loop.
+                                if (invalidTests.Contains(dataPerTest.Key.TestID))
+                                    continue;
 
                                 var distinctTraits = result.OrderBy(x => x.ColumnLabel).GroupBy(x => x.ColumnLabel).Select(x => x.Key).ToList();
                                 var distinctMaterialWithCount = result.OrderBy(x => x.Materialkey).GroupBy(x => new
@@ -418,6 +477,13 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //var wells = string.Join(",", dataPerTest.Select(x => x.WellID)):
                                             await MarkSentResult(wells, test.TestID);
                                             LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
+
+                                            //send test completion email to respective groups
+                                            var body = Template.Render(testCompleteBoy, new
+                                            {
+                                                test.PlatePlanName
+                                            });
+                                            await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, body);
                                         }
                                     }
 
@@ -496,6 +562,37 @@ namespace Enza.UTM.BusinessAccess.Services
             if (tos.Any())
             {
                 await emailService.SendEmailAsync(tos, "Plate Plan deleted".AddEnv(), body);
+            }
+        }
+
+        private async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName, string body)
+        {
+            var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
+            var recipients = config?.Recipients;
+            if (string.IsNullOrWhiteSpace(recipients))
+            {
+                //get default email
+                config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode);
+                recipients = config?.Recipients;
+                if (string.IsNullOrWhiteSpace(recipients))
+                {
+                    //get default email
+                    config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, "*");
+                    recipients = config?.Recipients;
+                }
+            }
+            if (string.IsNullOrWhiteSpace(recipients))
+                return;
+
+            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => o.Trim());
+            if (tos.Any())
+            {
+                LogInfo($"Sending Test completion email of plate plan: {platePlanName} to following recipients: {string.Join(",", tos)}");
+                var subject = $"Plate plan {platePlanName} changed to completed";
+                await emailService.SendEmailAsync(tos, subject.AddEnv(), body);
+                LogInfo($"Sending Test completion email completed.");
             }
         }
 
@@ -607,10 +704,11 @@ namespace Enza.UTM.BusinessAccess.Services
             }
             return dt;
         }
-        private async Task<List<MigrationDataResult>> CumulateAsync(List<TestResultCumulate> result, List<TraitDeterminationValue> traitValue, string cropCode, int testId, string testName, List<MigrationDataResult> migrationData)
+        private async Task<List<MigrationDataResult>> CumulateAsync(List<TestResultCumulate> result, string cropCode, int testId, string testName, List<MissingConversion> missingConversions, List<MigrationDataResult> migrationdata)
         {
             //var test = await repository.CumulateAsync();
             //var result = data;
+            var traitValue = new List<TraitDeterminationValue>();
             var result1 = result.GroupBy(x => new { x.ListID, x.ColumnLabel })
                 .Select(y => new TestResultToCreate
                 {
@@ -669,47 +767,25 @@ namespace Enza.UTM.BusinessAccess.Services
                             //send email based on templete for missing conversion
                             var determinationName = "";
                             var statusCode = 0;
-                            var migrationResult = migrationData.Where(x => x.ColumnLabel == _result.ColumnLabel).FirstOrDefault();
+                            var migrationResult = migrationdata.Where(x => x.ColumnLabel == _result.ColumnLabel).FirstOrDefault();
                             if (migrationResult != null)
                             {
-                                migrationResult.IsValid = false;
+                                //migrationResult.IsValid = false;
                                 statusCode = migrationResult.StatusCode;
                                 determinationName = migrationResult.DeterminationName;
                             }
-                            if(statusCode !=625)
-                            {
-                                var missingConversion = new[]
-                                {
-                                    new {
-                                            DeterminationName = determinationName,
-                                            ColumnLabel = _result.ColumnLabel,
-                                            DeterminationValue = "5555"
-                                        }
-                                }.ToList();
-
-
-                                var tpl = EmailTemplate.GetMissingConversionMail();
-
-                                var model = new
-                                {
-                                    CropCode = cropCode,
-                                    TestName = testName,
-                                    Determinations = missingConversion,
-                                };
-                                var body = Template.Render(tpl, model);
-                                //send email to mapped recipients fo this crop
-                                await validationService.SendEmailAsync(cropCode, body);
-
-                                //update test status to 625
-                                await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
-                                {
-                                    TestId = testId,
-                                    StatusCode = 625
-                                });
-                            }
                             
-                            //throw new BusinessException($"Conversion not found for Value 5555 for crop {cropCode} and trait {_result.ColumnLabel}");
+                            missingConversions.Add(new MissingConversion
+                            {
+                                TestID = testId,
+                                TestName = testName,
+                                ColumnLabel = _result.ColumnLabel,
+                                DeterminationName = determinationName,
+                                CropCode = cropCode,                                    
+                                DeterminationValue = "5555"
 
+                            });
+                           
                         }
                         else
                         {

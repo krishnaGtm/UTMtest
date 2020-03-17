@@ -374,7 +374,9 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             {
                 TestID = reader.Get<int>(0),
                 TestName = reader.Get<string>(1),
-                StatusCode = reader.Get<int>(2)
+                StatusCode = reader.Get<int>(2),
+                PlatePlanName = reader.Get<string>(3),
+                BrStationCode = reader.Get<string>(4)
             });
         }
 
