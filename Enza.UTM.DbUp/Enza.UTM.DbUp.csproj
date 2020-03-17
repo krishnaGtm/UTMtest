@@ -286,7 +286,6 @@
     <EmbeddedResource Include="Scripts\000166.SP_Changes_After_View_Changes_Index_Created.sql" />
     <EmbeddedResource Include="Scripts\000165.32836Index_Created_Performance_Optimization.sql" />
     <EmbeddedResource Include="Scripts\000164.PR_Get_PlatePlanOverview.sql" />
-    <EmbeddedResource Include="Scripts\000163.SCHEMA_CHANGES_FOR_32749.sql" />
     <EmbeddedResource Include="Scripts\000181.PR_Get_PlatePlanOverview.sql" />
     <EmbeddedResource Include="Scripts\000183.New table S2SCapacitySlot S2SDonorInfo S2SDonorMarkerScore.sql" />
     <EmbeddedResource Include="Scripts\000182.PR_PlateFillingForGroupTesting.sql" />
@@ -319,7 +318,6 @@
     <EmbeddedResource Include="Scripts\000209.33664_GetMarkerTestData.sql" />
     <EmbeddedResource Include="Scripts\000208.General_Bug_fixes.sql" />
     <EmbeddedResource Include="Scripts\000207.Update_TestType.sql" />
-    <EmbeddedResource Include="Scripts\000206.PR_GetMaterialWithMarker_ForS2s.sql" />
     <EmbeddedResource Include="Scripts\000213.Alter_type_TVP_DonorInfo.sql" />
     <EmbeddedResource Include="Scripts\000214.Add_PR_S2S_CreateCapacitySlot.sql" />
     <EmbeddedResource Include="Scripts\000215.Add_PR_UpdateDonorNumber.sql" />
