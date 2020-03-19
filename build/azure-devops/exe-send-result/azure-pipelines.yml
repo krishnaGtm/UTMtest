@@ -10,13 +10,7 @@ trigger:
       - '*' 
   paths:
     include:
-      - Enza.UTM.SendResult/*
-      - Enza.UTM.BusinessAccess/*
-      - Enza.UTM.Common/*
-      - Enza.UTM.DataAccess/*
-      - Enza.UTM.DataAccess.Data/*
-      - Enza.UTM.Entities/*      
-      - Enza.UTM.Services/*    
+      - Enza.UTM.SendResult/* 
 
 pool: 
   vmImage: 'vs2017-win2016'

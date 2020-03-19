@@ -11,12 +11,6 @@ trigger:
   paths:
     include:
       - Enza.UTM.CreateDH0/*
-      - Enza.UTM.BusinessAccess/*
-      - Enza.UTM.Common/*
-      - Enza.UTM.DataAccess/*
-      - Enza.UTM.DataAccess.Data/*
-      - Enza.UTM.Entities/*      
-      - Enza.UTM.Services/*      
 
 pool: 
   vmImage: 'vs2017-win2016'
