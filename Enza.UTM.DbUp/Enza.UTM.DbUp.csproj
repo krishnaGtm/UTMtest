@@ -95,7 +95,9 @@
     <None Include="Enza.UTM.DbUp.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000305.11243.PR_GET_Test_With_Plate_And_Well.sql" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000295.11373_PR_Import_ExternalData.sql" />
     <EmbeddedResource Include="Scripts\000296.11373_PR_Import_ExternalData.sql" />
