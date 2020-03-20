@@ -1,7 +1,12 @@
-INSERT EmailConfig(ConfigGroup, CropCode) 
-VALUES('TEST_COMPLETE_NOTIFICATION', '*')
+IF NOT EXISTS (
+  SELECT * 
+  FROM EmailConfig 
+  WHERE ConfigGroup = 'TEST_COMPLETE_NOTIFICATION'
+) BEGIN
+    INSERT EmailConfig(ConfigGroup, CropCode) 
+    VALUES('TEST_COMPLETE_NOTIFICATION', '*')
+END
 GO
-
 -- EXEC PR_GetTestsForTraitDeterminationResults 'Phenome'
 ALTER PROCEDURE [dbo].[PR_GetTestsForTraitDeterminationResults]
 (

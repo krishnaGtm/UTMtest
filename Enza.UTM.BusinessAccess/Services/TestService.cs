@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -24,7 +26,9 @@ using Enza.UTM.Services.Proxies;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -168,8 +172,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 LogInfo("logged in to Phenome successful.");
 
-                //get test complete email body template
-                var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+                
 
                 foreach (var test in tests)
                 {
@@ -478,12 +481,18 @@ namespace Enza.UTM.BusinessAccess.Services
                                             await MarkSentResult(wells, test.TestID);
                                             LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
 
-                                            //send test completion email to respective groups
-                                            var body = Template.Render(testCompleteBoy, new
+                                            //only send test completing email for completed status (statusCode = 700)
+                                            //if test is imported from more than 1 field then there test status will not change to 700 after sending result
+                                            // test status will only change to 700 (completed) if all result is sent to Phenome
+                                            var testDetail = await GetTestDetailAsync(new GetTestDetailRequestArgs
                                             {
-                                                test.PlatePlanName
-                                            });
-                                            await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, body);
+                                                TestID = test.TestID
+                                            });                                            
+                                            if(testDetail.StatusCode == 700)
+                                            {
+                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                            }
+                                            
                                         }
                                     }
 
@@ -510,7 +519,6 @@ namespace Enza.UTM.BusinessAccess.Services
                 }
             }
             LogInfo("Sending result process is completed.");
-
             return success;
         }
 
@@ -521,7 +529,7 @@ namespace Enza.UTM.BusinessAccess.Services
             string message = "Test Successfully deleted.";
             await repository.DeleteTestAsync(args);
             //if previous status is greater than 200 then we have to send email and update response accordingly 
-            if (args.StatusCode > 200)
+            if (args.StatusCode > 200 && !args.IsLabUser)
             {
                 //send email
                 string messageBody = $"Plate plan: { args.PlatePlanName }  is deleted by user.";
@@ -537,36 +545,55 @@ namespace Enza.UTM.BusinessAccess.Services
 
         }
 
-        #region Private Methods
-
-        private async Task SendEmailAsync(string body)
+        public async Task<byte[]> PlatePlanResultToExcelAsync(int testID)
         {
-            var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.MOLECULAR_LAB_GROUP,"*");
-            var recipients = config?.Recipients;
-            if (string.IsNullOrWhiteSpace(recipients))
-            {
-                if (string.IsNullOrWhiteSpace(recipients))
-                {
-                    //get default email
-                    config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.DEFAULT_EMAIL_GROUP, "*");
-                    recipients = config?.Recipients;
-                }
-            }
+            //get data
+            var data = await repository.PlatePlanResultAsync(testID);
+            //create excel
+            var createExcel = CreateExcelFile(data);
+            //apply formating 
+            CreateFormatting(createExcel,data.Tables[0].Columns.Count);
 
-            if (string.IsNullOrWhiteSpace(recipients))
-                return;
-
-            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Where(o => !string.IsNullOrWhiteSpace(o))
-                .Select(o => o.Trim());
-            if (tos.Any())
+            //return created excel
+            byte[] result = null;
+            using (var ms = new MemoryStream())
             {
-                await emailService.SendEmailAsync(tos, "Plate Plan deleted".AddEnv(), body);
+                createExcel.Write(ms);
+                //ms.Seek(0, SeekOrigin.Begin);
+                result = ms.ToArray();
             }
+            return result;
+
+        }
+        public async Task<byte[]> TestToExcelAsync(int testID)
+        {
+            //get data
+            var data = await repository.TestToExcelAsync(testID);
+            //create excel
+            var createExcel = CreateExcelFile(data);
+
+            //return created excel
+            byte[] result = null;
+            using (var ms = new MemoryStream())
+            {
+                createExcel.Write(ms);
+                //ms.Seek(0, SeekOrigin.Begin);
+                result = ms.ToArray();
+            }
+            return result;
         }
 
-        private async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName, string body)
+        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName)
         {
+            //get test complete email body template
+            var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+
+            //send test completion email to respective groups
+            var body = Template.Render(testCompleteBoy, new
+            {
+                platePlanName
+            });
+
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
             var recipients = config?.Recipients;
             if (string.IsNullOrWhiteSpace(recipients))
@@ -595,6 +622,133 @@ namespace Enza.UTM.BusinessAccess.Services
                 LogInfo($"Sending Test completion email completed.");
             }
         }
+
+        #region Private Methods
+
+        private XSSFWorkbook CreateExcelFile(DataSet data)
+        {
+            //create workbook 
+            var wb = new NPOI.XSSF.UserModel.XSSFWorkbook();
+            //create sheet
+            var sheet1 = wb.CreateSheet("Sheet1");
+
+            var header = sheet1.CreateRow(0);
+            foreach (DataColumn dc in data.Tables[0].Columns)
+            {
+                var cell = header.CreateCell(dc.Ordinal);
+                cell.SetCellValue(dc.ColumnName);
+            }
+            //create data
+            var rowNr = 1;
+            foreach (DataRow dr in data.Tables[0].Rows)
+            {
+                var row = sheet1.CreateRow(rowNr);
+                foreach (DataColumn dc in data.Tables[0].Columns)
+                {
+                    var cell = row.CreateCell(dc.Ordinal);
+                    if (dc.ColumnName.EqualsIgnoreCase("Well"))
+                    {
+                        cell.SetCellType(CellType.Numeric);
+                        cell.SetCellValue(dr[dc.ColumnName].ToInt32());
+                    }
+                    else
+                    {
+                        cell.SetCellType(CellType.String);
+                        cell.SetCellValue(dr[dc.ColumnName].ToText());
+                    }
+                }
+                rowNr++;
+            }
+            return wb;
+        }
+
+        private void CreateFormatting(XSSFWorkbook wb,int columnCount)
+        {
+            var sheet1 = wb.GetSheetAt(0);
+
+            //add formating
+            XSSFSheetConditionalFormatting sCF = (XSSFSheetConditionalFormatting)sheet1.SheetConditionalFormatting;
+
+            var dict = ColorForValue();
+            foreach(var _dict in dict)
+            {
+                var a = "\""+_dict.Key + "\"";
+                XSSFConditionalFormattingRule  cf1=
+                (XSSFConditionalFormattingRule)sCF.CreateConditionalFormattingRule(ComparisonOperator.Equal, a);
+
+                XSSFPatternFormatting fill = (XSSFPatternFormatting)cf1.CreatePatternFormatting();
+                fill.FillBackgroundColor = _dict.Value;
+                fill.FillPattern = FillPattern.SolidForeground;
+                CellRangeAddress[] cfRange1 = { new CellRangeAddress(0, sheet1.LastRowNum, 0, columnCount - 1) };
+                sCF.AddConditionalFormatting(cfRange1, cf1);
+            }
+        }
+        private Dictionary<string,short> ColorForValue()
+        {
+            var dict = new Dictionary<string,short>();
+            dict.Add("0202", IndexedColors.Grey50Percent.Index);
+            dict.Add("0101", IndexedColors.Red.Index);
+            dict.Add("0102", IndexedColors.LightBlue.Index);
+            dict.Add("0303", IndexedColors.Yellow.Index);
+            dict.Add("0404", IndexedColors.Green.Index);
+            dict.Add("0103", IndexedColors.SkyBlue.Index);
+            dict.Add("0104", IndexedColors.LightOrange.Index);
+            dict.Add("0203", IndexedColors.Pink.Index);
+            dict.Add("0204", IndexedColors.LightBlue.Index);
+            dict.Add("0304", IndexedColors.LightGreen.Index);
+            dict.Add("0505", IndexedColors.SeaGreen.Index);
+            dict.Add("0105", IndexedColors.SkyBlue.Index);
+            dict.Add("0205", IndexedColors.LightCornflowerBlue.Index);
+            dict.Add("0305", IndexedColors.LightYellow.Index);
+            dict.Add("0405", IndexedColors.Orange.Index);
+            dict.Add("0606", IndexedColors.Teal.Index);
+            dict.Add("0001", IndexedColors.OliveGreen.Index);
+            dict.Add("0002", IndexedColors.Violet.Index);
+            dict.Add("9999", IndexedColors.Brown.Index);
+            dict.Add("0707", IndexedColors.Brown.Index);
+            dict.Add("0106", IndexedColors.Pink.Index);
+            dict.Add("0107", IndexedColors.Orange.Index);
+            dict.Add("0206", IndexedColors.LightYellow.Index);
+            dict.Add("0207", IndexedColors.SeaGreen.Index);
+            dict.Add("0306", IndexedColors.Grey80Percent.Index);
+            dict.Add("0307", IndexedColors.LightBlue.Index);
+            dict.Add("0406", IndexedColors.Maroon.Index);
+            dict.Add("0407", IndexedColors.DarkBlue.Index);
+            dict.Add("0506", IndexedColors.CornflowerBlue.Index);
+            dict.Add("0507", IndexedColors.Orange.Index);
+            dict.Add("0607", IndexedColors.DarkBlue.Index);
+
+            return dict;
+
+        }
+
+        private async Task SendEmailAsync(string body)
+        {
+            var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.MOLECULAR_LAB_GROUP,"*");
+            var recipients = config?.Recipients;
+            if (string.IsNullOrWhiteSpace(recipients))
+            {
+                if (string.IsNullOrWhiteSpace(recipients))
+                {
+                    //get default email
+                    config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.DEFAULT_EMAIL_GROUP, "*");
+                    recipients = config?.Recipients;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(recipients))
+                return;
+
+            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => o.Trim());
+            if (tos.Any())
+            {
+                await emailService.SendEmailAsync(tos, "Plate Plan deleted".AddEnv(), body);
+            }
+        }
+
+        
 
         private void LogInfo(string msg)
         {
@@ -928,7 +1082,9 @@ namespace Enza.UTM.BusinessAccess.Services
                 return await phenome.SignInAsync(client);
             }
         }
-        
+
+       
+
         #endregion
 
     }

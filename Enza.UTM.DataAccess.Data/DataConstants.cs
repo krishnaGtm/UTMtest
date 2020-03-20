@@ -87,6 +87,8 @@
 
         public const string PR_DELETE_TEST = "PR_Delete_Test";
         public const string PR_GET_PLATE_PLAN_OVERVIEW = "PR_Get_PlatePlanOverview";
+        public const string PR_GET_PLATEPLAN_WITH_RESULT = "PR_GET_PlatePlan_With_Result";
+        public const string PR_GET_TEST_WITH_PLATE_AND_WELL = "PR_GET_Test_With_Plate_And_Well";
 
 
         public const string PR_GET_EMAIL_CONFIGS = "PR_GetEmailConfigs";

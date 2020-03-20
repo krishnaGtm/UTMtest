@@ -356,6 +356,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             args =>
             {
                 args.Add("@TestID", requestargs.TestID);
+                args.Add("@ForceDelete", requestargs.IsLabUser);
                 args.Add("@Status", p1);
                 args.Add("@PlatePlanName", p2);
             });
@@ -430,6 +431,23 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 });
             return res.FirstOrDefault();
             
+
+        }
+
+        public async Task<DataSet> PlatePlanResultAsync(int testID)
+        {
+            return await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_PLATEPLAN_WITH_RESULT, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", testID);
+            });
+            
+        }
+        public async Task<DataSet> TestToExcelAsync(int testID)
+        {
+            return await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_TEST_WITH_PLATE_AND_WELL, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", testID);
+            });
 
         }
     }

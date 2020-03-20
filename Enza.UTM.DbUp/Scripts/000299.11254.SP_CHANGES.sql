@@ -1,5 +1,12 @@
-ALTER TABLE EmailConfig
-ADD BrStationCode   NVARCHAR(20);
+IF NOT EXISTS (
+  SELECT * 
+  FROM   sys.columns 
+  WHERE  object_id = OBJECT_ID(N'EmailConfig') 
+         AND name = 'BrStationCode'
+) BEGIN
+    ALTER TABLE EmailConfig
+    ADD BrStationCode   NVARCHAR(20);
+END
 GO
 
 --EXEC PR_GetEmailConfigs 'CREATE_DH0_DH1_DATA_ERROR', '*', null, 1, 20

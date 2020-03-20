@@ -56,4 +56,13 @@ namespace Enza.UTM.Entities
         public string ExpectedDate { get; set; } 
 
     }
+
+    public class TestDetailExternal
+    {
+        public string CropCode { get; set; }
+        public string BreedingStationCode { get; set; }
+        public string LabPlatePlanName { get; set; }
+        public int StatusCode { get; set; }
+
+    }
 }

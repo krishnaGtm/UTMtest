@@ -5,6 +5,9 @@ using Enza.UTM.Entities;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net;
 
 namespace Enza.UTM.Web.Services.Controllers
 {
@@ -192,10 +195,14 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(true);
         }
 
+
+        [OverrideAuthorization]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
         [HttpPost]
         [Route("deleteTest")]
         public async Task<IHttpActionResult> DeleteTest([FromBody] DeleteTestRequestArgs args)
         {
+            args.IsLabUser = User.IsInRole(AppRoles.HANDLE_LAB_CAPACITY);
             return Ok(await testService.DeleteTestAsync(args));
         }
 
@@ -207,6 +214,41 @@ namespace Enza.UTM.Web.Services.Controllers
         {
             args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
             return Ok(await testService.getPlatePlanOverviewAsync(args));
+        }
+
+
+        [HttpPost]
+        [Route("PlatePlanResultToExcel")]
+        public async Task<IHttpActionResult> PlatePlanResultToExcel([FromBody]TestRequestArgs args)
+        {
+            var data = await testService.PlatePlanResultToExcelAsync(args.TestID);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(data)
+            };
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = $"{args.TestID}.xlsx"
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            return ResponseMessage(result);
+        }
+
+        [HttpPost]
+        [Route("TestToExcel")]
+        public async Task<IHttpActionResult> TestToExcel([FromBody] TestRequestArgs args)
+        {
+            var data = await testService.TestToExcelAsync(args.TestID);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(data)
+            };
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = $"{args.TestID}.xlsx"
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            return ResponseMessage(result);
         }
     }
 }

@@ -16,9 +16,11 @@ namespace Enza.UTM.BusinessAccess.Services
     public class ExternalTestService : IExternalTestService
     {
         readonly IExternalTestRepository _externalTestRepository;
-        public ExternalTestService(IExternalTestRepository externalTestRepository)
+        readonly ITestService _testService;
+        public ExternalTestService(IExternalTestRepository externalTestRepository,ITestService testService)
         {
             _externalTestRepository = externalTestRepository;
+            _testService = testService;
         }
         public async Task<ImportDataResult> ImportDataAsync(ExternalTestImportRequestArgs requestArgs)
         {
@@ -169,7 +171,21 @@ namespace Enza.UTM.BusinessAccess.Services
 
         public async Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false)
         {
+            //get det
+            var initialTestDetail = await _testService.GetTestDetailAsync(new GetTestDetailRequestArgs
+            {
+                TestID = testID
+            });
+
             var rs = await _externalTestRepository.GetExternalTestDataForExportAsync(testID, markAsExported);
+            
+            //get test detail including status and other required information
+            var testDetail = await _externalTestRepository.GetExternalTestDetail(testID);
+            if (testDetail != null && testDetail.StatusCode != initialTestDetail.StatusCode)
+            {
+                await _testService.SendTestCompletionEmailAsync(testDetail.CropCode, testDetail.BreedingStationCode, testDetail.LabPlatePlanName);
+            }
+            
             using (var ms = new MemoryStream())
             {
                 var book = new XSSFWorkbook();
