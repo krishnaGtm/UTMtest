@@ -216,7 +216,7 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(await testService.getPlatePlanOverviewAsync(args));
         }
 
-
+        [OverrideAuthentication]
         [HttpGet]
         [Route("PlatePlanResultToExcel")]
         public async Task<IHttpActionResult> PlatePlanResultToExcel(int testID)
@@ -234,8 +234,9 @@ namespace Enza.UTM.Web.Services.Controllers
             return ResponseMessage(result);
         }
 
+        [OverrideAuthentication]
         [HttpGet]
-        [Route("TestToExcel")]
+        [Route("TestToExcel")]        
         public async Task<IHttpActionResult> TestToExcel(int testID)
         {
             var data = await testService.TestToExcelAsync(testID);
