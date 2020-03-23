@@ -110,6 +110,9 @@
     <EmbeddedResource Include="Scripts\000303.11351.PR_GET_PlatePlan_With_Result.sql" />
     <EmbeddedResource Include="Scripts\000304.11243.PR_GET_Test_With_Plate_And_Well.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000306.11249.PR_GET_Selected_Data.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
