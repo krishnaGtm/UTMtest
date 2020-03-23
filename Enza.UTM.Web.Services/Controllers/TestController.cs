@@ -217,35 +217,35 @@ namespace Enza.UTM.Web.Services.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet]
         [Route("PlatePlanResultToExcel")]
-        public async Task<IHttpActionResult> PlatePlanResultToExcel([FromBody]TestRequestArgs args)
+        public async Task<IHttpActionResult> PlatePlanResultToExcel(int testID)
         {
-            var data = await testService.PlatePlanResultToExcelAsync(args.TestID);
+            var data = await testService.PlatePlanResultToExcelAsync(testID);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new ByteArrayContent(data)
             };
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
             {
-                FileName = $"{args.TestID}.xlsx"
+                FileName = $"{testID}.xlsx"
             };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseMessage(result);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("TestToExcel")]
-        public async Task<IHttpActionResult> TestToExcel([FromBody] TestRequestArgs args)
+        public async Task<IHttpActionResult> TestToExcel(int testID)
         {
-            var data = await testService.TestToExcelAsync(args.TestID);
+            var data = await testService.TestToExcelAsync(testID);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new ByteArrayContent(data)
             };
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
             {
-                FileName = $"{args.TestID}.xlsx"
+                FileName = $"{testID}.xlsx"
             };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseMessage(result);
