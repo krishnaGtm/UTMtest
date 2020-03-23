@@ -12,7 +12,7 @@ using System.Net;
 namespace Enza.UTM.Web.Services.Controllers
 {
     [RoutePrefix("api/v1/test")]
-    //[Authorize(Roles = AppRoles.PUBLIC)]
+    [Authorize(Roles = AppRoles.PUBLIC)]
     public class TestController : BaseApiController
     {
         readonly ITestService testService;
@@ -216,7 +216,7 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(await testService.getPlatePlanOverviewAsync(args));
         }
 
-        //[OverrideAuthentication]
+        [OverrideAuthentication]
         [HttpGet]
         [Route("PlatePlanResultToExcel")]
         public async Task<IHttpActionResult> PlatePlanResultToExcel(int testID)
@@ -228,13 +228,13 @@ namespace Enza.UTM.Web.Services.Controllers
             };
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
             {
-                FileName = $"test{testID}.xlsx"
+                FileName = $"{testID}.xlsx"
             };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseMessage(result);
         }
 
-        //[OverrideAuthentication]
+        [OverrideAuthentication]
         [HttpGet]
         [Route("TestToExcel")]        
         public async Task<IHttpActionResult> TestToExcel(int testID)
@@ -246,7 +246,7 @@ namespace Enza.UTM.Web.Services.Controllers
             };
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
             {
-                FileName = $"test{testID}.xlsx"
+                FileName = $"{testID}.xlsx"
             };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseMessage(result);
