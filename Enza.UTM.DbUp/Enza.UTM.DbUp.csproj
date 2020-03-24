@@ -128,6 +128,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000311.11242_ALter_Table_SP_Changes.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000312.11250_Add_BTR no control.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
