@@ -165,7 +165,8 @@ namespace Enza.UTM.BusinessAccess.Services
                             dtCellTVP.Rows.Add(drCell);
                         }
                     }
-                    dtRowTVP.Rows.Add(drRow);
+                    if(!breakLoop)
+                        dtRowTVP.Rows.Add(drRow);
                 }
             }
             await _externalTestRepository.ImportDataAsync(requestArgs, dtColumnsTVP, dtRowTVP, dtCellTVP);
