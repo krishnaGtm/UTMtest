@@ -50,6 +50,7 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                     param.Add("@NrOfTests", args.NrOfTests);
                     param.Add("@User", userContext.GetContext().FullName);
                     param.Add("@Forced", args.Forced);
+                    param.Add("@Remark", args.Remark);
                     param.Add("@IsSuccess",p1);
                     param.Add("@Message",p2);
                 });
