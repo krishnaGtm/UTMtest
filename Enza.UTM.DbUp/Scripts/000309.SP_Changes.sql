@@ -80,13 +80,6 @@ AS BEGIN
 END
 GO
 
-USE [DTC_TEST]
-GO
-/****** Object:  StoredProcedure [dbo].[PR_GET_PlatePlan_With_Result]    Script Date: 3/24/2020 4:30:35 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
 
 /*
 	Author					Date			Description
