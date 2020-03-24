@@ -118,9 +118,8 @@ namespace Enza.UTM.BusinessAccess.Services
                         {
                             //validate if material key is empty
                             if (string.IsNullOrWhiteSpace(cellValue))
-                            {
-                                result.Errors.Add("Value of a Numerical ID is missing.");
-                                return result;
+                            { 
+                                break;
                             }
                             drRow["MaterialKey"] = cellValue;                            
                         }
@@ -129,8 +128,7 @@ namespace Enza.UTM.BusinessAccess.Services
                             //validate if plant name is empty
                             if (string.IsNullOrWhiteSpace(cellValue))
                             {
-                                result.Errors.Add("Value of a Sample name is missing.");
-                                return result;
+                                break;
                             }
                         }
                         else if (column.Value.EqualsIgnoreCase("Country"))
@@ -140,8 +138,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                 //validate if country is empty
                                 if (string.IsNullOrWhiteSpace(cellValue))
                                 {
-                                    result.Errors.Add("Country can not be null or empty.");
-                                    return result;
+                                    break;
                                 }
                             }
                             //only one country code is enough since it will be passed as single data in sp
