@@ -101,8 +101,11 @@ namespace Enza.UTM.BusinessAccess.Services
             }
             var columns = headers.ToList();
             var totalCols = headerRow.LastCellNum;
+            bool breakLoop = false;
             for (var i = 1; i <= sheet.LastRowNum; i++)
             {
+                if (breakLoop)
+                    break;
                 var row = sheet.GetRow(i);
                 if (row != null)
                 {
@@ -118,16 +121,19 @@ namespace Enza.UTM.BusinessAccess.Services
                         {
                             //validate if material key is empty
                             if (string.IsNullOrWhiteSpace(cellValue))
-                            { 
+                            {
+                                breakLoop = true;
                                 break;
                             }
-                            drRow["MaterialKey"] = cellValue;                            
+                            else
+                                drRow["MaterialKey"] = cellValue;                            
                         }
                         else if (column.Value.EqualsIgnoreCase("Sample name"))
                         {
                             //validate if plant name is empty
                             if (string.IsNullOrWhiteSpace(cellValue))
                             {
+                                breakLoop = true;
                                 break;
                             }
                         }
@@ -138,6 +144,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                 //validate if country is empty
                                 if (string.IsNullOrWhiteSpace(cellValue))
                                 {
+                                    breakLoop = true;
                                     break;
                                 }
                             }
