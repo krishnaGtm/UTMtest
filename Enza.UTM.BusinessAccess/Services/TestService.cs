@@ -657,16 +657,8 @@ namespace Enza.UTM.BusinessAccess.Services
                 foreach (DataColumn dc in data.Tables[0].Columns)
                 {
                     var cell = row.CreateCell(dc.Ordinal);
-                    if (dc.ColumnName.EqualsIgnoreCase("Well"))
-                    {
-                        cell.SetCellType(CellType.Numeric);
-                        cell.SetCellValue(dr[dc.ColumnName].ToInt32());
-                    }
-                    else
-                    {
-                        cell.SetCellType(CellType.String);
-                        cell.SetCellValue(dr[dc.ColumnName].ToText());
-                    }
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(dr[dc.ColumnName].ToText());
                 }
                 rowNr++;
             }
