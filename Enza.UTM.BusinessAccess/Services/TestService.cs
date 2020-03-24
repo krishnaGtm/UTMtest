@@ -201,8 +201,10 @@ namespace Enza.UTM.BusinessAccess.Services
                         {
                             try
                             {
+                                //var dataPerTest1 = dataPerTest.ToList();
                                 missingConversionList.Clear();
-                                var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                //var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                var result = dataPerTest.ToList();
                                 var statusCode = result.FirstOrDefault().StatusCode;
                                 var testId = dataPerTest.FirstOrDefault().TestID;
                                 var testName = dataPerTest.FirstOrDefault().TestName;
@@ -235,6 +237,15 @@ namespace Enza.UTM.BusinessAccess.Services
                                     result.AddRange(cummulatedData);
                                 }
                                 #endregion
+
+                                //get setting for selected test whether score 9999 is required or not
+                                var cropSettings = await repository.GetSettingToExcludeScoreAsync(testId);
+                                if(cropSettings)
+                                {
+                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank.
+                                    var excludeList = result.Where(x => x.DeterminationValue == "9999" || string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                    result = result.Except(excludeList).ToList();
+                                }
 
                                 //send email for missing conversion and break current loop
                                 var data1 = dataPerTest.Where(x => !x.IsValid).Select(x=>new MissingConversion
@@ -962,10 +973,12 @@ namespace Enza.UTM.BusinessAccess.Services
                 else
                 {
                     var finalScore = _result.Score.FirstOrDefault(x => x.DetScore == _result.FinalScore)?.Score;
-                    if (!string.IsNullOrWhiteSpace(finalScore))
-                    {
-                        _result.FinalScore = finalScore;
-                    }
+                    //if (!string.IsNullOrWhiteSpace(finalScore))
+                    //{
+                    //    _result.FinalScore = finalScore;
+                    //}
+                    //this could be null so set this value
+                    _result.FinalScore = finalScore;
 
                 }
             }

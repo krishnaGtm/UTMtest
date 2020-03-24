@@ -116,6 +116,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000307.11699.PR_CNT_GetDataWithMarker.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000308.11247_Alter_Table.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

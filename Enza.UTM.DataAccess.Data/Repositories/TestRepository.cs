@@ -450,5 +450,23 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             });
 
         }
+
+        public async Task<bool> GetSettingToExcludeScoreAsync(int testId)
+        {
+            var query = @"SELECT 
+                                T.TestID
+                        FROM [Test] T
+                        JOIN[File] F ON F.FileID = T.FileID
+                        JOIN CropRD C ON C.CropCode = F.CropCode
+                        WHERE T.TestID = @TestID AND ISNULL(C.ExcludeUndefindScore,0) = 1";
+            var result = await DbContext.ExecuteDataSetAsync(query, CommandType.Text,
+                args =>
+                {
+                    args.Add("@TestID", testId);
+                });
+            if (result.Tables[0].Rows.Count > 0)
+                return true;
+            return false;
+        }
     }
 }
