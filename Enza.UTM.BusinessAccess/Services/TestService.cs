@@ -248,7 +248,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                 }
 
                                 //send email for missing conversion and break current loop
-                                var data1 = dataPerTest.Where(x => !x.IsValid).Select(x=>new MissingConversion
+                                var data1 = result.Where(x => !x.IsValid).Select(x=>new MissingConversion
                                 {
                                     ColumnLabel = x.ColumnLabel,
                                     CropCode = x.CropCode,
