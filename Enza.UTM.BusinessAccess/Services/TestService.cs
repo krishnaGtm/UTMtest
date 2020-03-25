@@ -634,7 +634,7 @@ namespace Enza.UTM.BusinessAccess.Services
             }
         }
 
-        public async Task<int> GetTotalMarkers(int testID)
+        public async Task<int> GetTotalMarkerAsync(int testID)
         {
             return await repository.GetTotalMarkerAsync(testID);
         }

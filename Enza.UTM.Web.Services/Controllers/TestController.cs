@@ -269,7 +269,7 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("GetTotalMarkers")]
         public async Task<IHttpActionResult> GetTotalMarkers(int testID)
         {
-            var data = await testService.GetTotalMarkers(testID);
+            return Ok(await testService.GetTotalMarkerAsync(testID));
             
         }
     }
