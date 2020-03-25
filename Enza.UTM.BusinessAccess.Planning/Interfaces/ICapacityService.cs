@@ -14,6 +14,6 @@ namespace Enza.UTM.BusinessAccess.Planning.Interfaces
         Task<ReserveCapacityResult> ReserveCapacityAsync(ReserveCapacityRequestArgs args);
         Task<DataSet> GetPlanApprovalListForLabAsync(int periodID);
         Task<bool> MoveSlotAsync(MoveSlotRequestArgs args);
-        Task<bool> DeleteSlotAsync(int SlotID);
+        Task<bool> DeleteSlotAsync(DeleteSlotRequestArgs args);
     }
 }

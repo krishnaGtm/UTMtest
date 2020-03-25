@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,11 +21,14 @@ using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
 using Enza.UTM.Services;
 using Enza.UTM.Services.Abstract;
+using Enza.UTM.Services.EmailTemplates;
 using Enza.UTM.Services.Proxies;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -141,6 +146,8 @@ namespace Enza.UTM.BusinessAccess.Services
             //change status if not validated or validated. send mail if mapping relation is missing
 
             var success = true;
+            var missingConversionList = new List<MissingConversion>();
+            var invalidTests = new List<int>();
             LogInfo("Validate test for mapping relation.");
             //get list of valid tests which contains results.
             var tests = await repository.GetTestsForTraitDeterminationResultsAsync(source);
@@ -155,7 +162,6 @@ namespace Enza.UTM.BusinessAccess.Services
             //sign in to phenome before processing data
             using (var client = new RestClient(BASE_SVC_URL))
             {
-                var traitValue = new List<TraitDeterminationValue>();
                 var resp = await SignInAsync(client);
 
                 await resp.EnsureSuccessStatusCodeAsync();
@@ -166,6 +172,8 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 LogInfo("logged in to Phenome successful.");
 
+                
+
                 foreach (var test in tests)
                 {
                     try
@@ -173,29 +181,36 @@ namespace Enza.UTM.BusinessAccess.Services
                         LogInfo($"Validating data for the TestID: {test.TestID}");
 
                         //validate and get results based on a test at a time.
-                        var traitDeterminationValues = await validationService.ValidateTraitDeterminationResultAndSendEmailAsync(test.TestID, true, source);
+                        //var traitDeterminationValues = await validationService.ValidateTraitDeterminationResultAndSendEmailAsync(test.TestID, true, source);
+                        var traitDeterminationValues = (await validationService.ValidateTraitDeterminationResultAsync(test.TestID, true, source)).ToList();
                         if (!traitDeterminationValues.Any())
                         {
                             LogInfo($"There is no any result data to process for TestID: {test.TestID}.");
                             continue;
                         }
 
-                        var invalidTests = traitDeterminationValues.Where(x => !x.IsValid).GroupBy(x=>x.TestID).Select(x => x.Key).ToList();
-                        var finalDetTraitVal = traitDeterminationValues.Where(x => !invalidTests.Contains(x.TestID));
+                        //var invalidTests = traitDeterminationValues.Where(x => !x.IsValid).GroupBy(x=>x.TestID).Select(x => x.Key).ToList();
+                        //var finalDetTraitVal = traitDeterminationValues.Where(x => !invalidTests.Contains(x.TestID));
 
-                        var dataPerTests = finalDetTraitVal
-                            .Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
-                            .GroupBy(x => new { x.InvalidPer, x.FieldID })
+                        var dataPerTests = traitDeterminationValues
+                            //.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
+                            .GroupBy(x => new { x.InvalidPer, x.FieldID, x.TestID })
                             .ToList();
 
                         foreach (var dataPerTest in dataPerTests)
                         {
                             try
                             {
+                                //var dataPerTest1 = dataPerTest.ToList();
+                                missingConversionList.Clear();
+                                //var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
                                 var result = dataPerTest.ToList();
+                                var statusCode = result.FirstOrDefault().StatusCode;
+                                var testId = dataPerTest.FirstOrDefault().TestID;
+                                var testName = dataPerTest.FirstOrDefault().TestName;
+                                var cropCode = dataPerTest.FirstOrDefault().CropCode;
 
                                 #region Cummulate result
-
                                 var data = result.Where(x => x.Cummulate || x.ListID.ToText() == x.Materialkey).Select(x => new TestResultCumulate
                                 {
                                     DeterminationID = x.DeterminationID,
@@ -209,9 +224,11 @@ namespace Enza.UTM.BusinessAccess.Services
                                 }).ToList();
                                 if (data.Any())
                                 {
+                                    
                                     //cummulate and send cummulate result on response
                                     LogInfo("Cummulation process started for test " + test.TestID);
-                                    var cummulatedData = await CumulateAsync(data, traitValue, traitDeterminationValues.FirstOrDefault()?.CropCode);
+                                    var cummulatedData = await CumulateAsync(data, cropCode, testId, testName, missingConversionList, result);
+                                    
                                     if (data.FirstOrDefault().ListID == data.FirstOrDefault().MaterialKey)//this means material is list not plant
                                     {
                                         //remove all material which are list material and then after add cummulated result.
@@ -219,8 +236,73 @@ namespace Enza.UTM.BusinessAccess.Services
                                     }
                                     result.AddRange(cummulatedData);
                                 }
-
                                 #endregion
+
+                                //get setting for selected test whether score 9999 is required or not
+                                var cropSettings = await repository.GetSettingToExcludeScoreAsync(testId);
+                                if(cropSettings)
+                                {
+                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank.
+                                    var excludeList = result.Where(x => x.DeterminationValue == "9999" || string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                    result = result.Except(excludeList).ToList();
+                                }
+
+                                //send email for missing conversion and break current loop
+                                var data1 = result.Where(x => !x.IsValid).Select(x=>new MissingConversion
+                                {
+                                    ColumnLabel = x.ColumnLabel,
+                                    CropCode = x.CropCode,
+                                    DeterminationName = x.DeterminationName,
+                                    DeterminationValue = x.DeterminationValue,
+                                    TestID = testId,
+                                    TestName = testName
+                                });
+                                
+                                missingConversionList.AddRange(data1);
+                                if(missingConversionList.Any())
+                                {
+                                    invalidTests.Add(missingConversionList.FirstOrDefault().TestID);
+                                    //if statusCode is 625 then do not send email and break loop
+                                    if (statusCode != 625)
+                                    {
+                                        //send email and update test status to 625
+                                        var distinctDeterminations1 = missingConversionList.GroupBy(g => new
+                                        {
+                                            g.DeterminationName,
+                                            g.ColumnLabel,
+                                            g.DeterminationValue
+                                        }).Select(x => new
+                                        {
+                                            x.Key.DeterminationName,
+                                            x.Key.ColumnLabel,
+                                            x.Key.DeterminationValue,
+                                        }).ToList();
+
+                                        var tpl = EmailTemplate.GetMissingConversionMail();
+                                        var model = new
+                                        {
+                                            CropCode = cropCode,
+                                            TestName = testName,
+                                            Determinations = distinctDeterminations1,
+                                        };
+                                        var body = Template.Render(tpl, model);
+                                        //send email to mapped recipients fo this crop
+                                        await validationService.SendEmailAsync(cropCode, body);
+
+                                        //update test status
+                                        await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+                                        {
+                                            TestId = testId,
+                                            StatusCode = 625
+                                        });
+                                    }
+                                    continue;
+                                }
+
+                                //if test is in invalid list break loop for current test.
+                                //send mail if conversion is missing for different field then break loop.
+                                if (invalidTests.Contains(dataPerTest.Key.TestID))
+                                    continue;
 
                                 var distinctTraits = result.OrderBy(x => x.ColumnLabel).GroupBy(x => x.ColumnLabel).Select(x => x.Key).ToList();
                                 var distinctMaterialWithCount = result.OrderBy(x => x.Materialkey).GroupBy(x => new
@@ -409,6 +491,19 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //var wells = string.Join(",", dataPerTest.Select(x => x.WellID)):
                                             await MarkSentResult(wells, test.TestID);
                                             LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
+
+                                            //only send test completing email for completed status (statusCode = 700)
+                                            //if test is imported from more than 1 field then there test status will not change to 700 after sending result
+                                            // test status will only change to 700 (completed) if all result is sent to Phenome
+                                            var testDetail = await GetTestDetailAsync(new GetTestDetailRequestArgs
+                                            {
+                                                TestID = test.TestID
+                                            });                                            
+                                            if(testDetail.StatusCode == 700)
+                                            {
+                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                            }
+                                            
                                         }
                                     }
 
@@ -435,7 +530,6 @@ namespace Enza.UTM.BusinessAccess.Services
                 }
             }
             LogInfo("Sending result process is completed.");
-
             return success;
         }
 
@@ -446,7 +540,7 @@ namespace Enza.UTM.BusinessAccess.Services
             string message = "Test Successfully deleted.";
             await repository.DeleteTestAsync(args);
             //if previous status is greater than 200 then we have to send email and update response accordingly 
-            if (args.StatusCode > 200)
+            if (args.StatusCode > 200 && !args.IsLabUser)
             {
                 //send email
                 string messageBody = $"Plate plan: { args.PlatePlanName }  is deleted by user.";
@@ -462,7 +556,174 @@ namespace Enza.UTM.BusinessAccess.Services
 
         }
 
+        public async Task<byte[]> PlatePlanResultToExcelAsync(int testID)
+        {
+            //get data
+            var data = await repository.PlatePlanResultAsync(testID);
+            //create excel
+            var createExcel = CreateExcelFile(data);
+            //apply formating 
+            CreateFormatting(createExcel,data.Tables[0].Columns.Count);
+
+            //return created excel
+            byte[] result = null;
+            using (var ms = new MemoryStream())
+            {
+                createExcel.Write(ms);
+                //ms.Seek(0, SeekOrigin.Begin);
+                result = ms.ToArray();
+            }
+            return result;
+
+        }
+        public async Task<byte[]> TestToExcelAsync(int testID)
+        {
+            //get data
+            var data = await repository.TestToExcelAsync(testID);
+            //create excel
+            var createExcel = CreateExcelFile(data);
+
+            //return created excel
+            byte[] result = null;
+            using (var ms = new MemoryStream())
+            {
+                createExcel.Write(ms);
+                //ms.Seek(0, SeekOrigin.Begin);
+                result = ms.ToArray();
+            }
+            return result;
+        }
+
+        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName)
+        {
+            //get test complete email body template
+            var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+
+            //send test completion email to respective groups
+            var body = Template.Render(testCompleteBoy, new
+            {
+                platePlanName
+            });
+
+            var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
+            var recipients = config?.Recipients;
+            if (string.IsNullOrWhiteSpace(recipients))
+            {
+                //get default email
+                config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode);
+                recipients = config?.Recipients;
+                if (string.IsNullOrWhiteSpace(recipients))
+                {
+                    //get default email
+                    config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, "*");
+                    recipients = config?.Recipients;
+                }
+            }
+            if (string.IsNullOrWhiteSpace(recipients))
+                return;
+
+            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => o.Trim());
+            if (tos.Any())
+            {
+                LogInfo($"Sending Test completion email of plate plan: {platePlanName} to following recipients: {string.Join(",", tos)}");
+                var subject = $"Plate plan {platePlanName} changed to completed";
+                await emailService.SendEmailAsync(tos, subject.AddEnv(), body);
+                LogInfo($"Sending Test completion email completed.");
+            }
+        }
+
         #region Private Methods
+
+        private XSSFWorkbook CreateExcelFile(DataSet data)
+        {
+            //create workbook 
+            var wb = new NPOI.XSSF.UserModel.XSSFWorkbook();
+            //create sheet
+            var sheet1 = wb.CreateSheet("Sheet1");
+
+            var header = sheet1.CreateRow(0);
+            foreach (DataColumn dc in data.Tables[0].Columns)
+            {
+                var cell = header.CreateCell(dc.Ordinal);
+                cell.SetCellValue(dc.ColumnName);
+            }
+            //create data
+            var rowNr = 1;
+            foreach (DataRow dr in data.Tables[0].Rows)
+            {
+                var row = sheet1.CreateRow(rowNr);
+                foreach (DataColumn dc in data.Tables[0].Columns)
+                {
+                    var cell = row.CreateCell(dc.Ordinal);
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(dr[dc.ColumnName].ToText());
+                }
+                rowNr++;
+            }
+            return wb;
+        }
+
+        private void CreateFormatting(XSSFWorkbook wb,int columnCount)
+        {
+            var sheet1 = wb.GetSheetAt(0);
+
+            //add formating
+            XSSFSheetConditionalFormatting sCF = (XSSFSheetConditionalFormatting)sheet1.SheetConditionalFormatting;
+
+            var dict = ColorForValue();
+            foreach(var _dict in dict)
+            {
+                var a = "\""+_dict.Key + "\"";
+                XSSFConditionalFormattingRule  cf1=
+                (XSSFConditionalFormattingRule)sCF.CreateConditionalFormattingRule(ComparisonOperator.Equal, a);
+
+                XSSFPatternFormatting fill = (XSSFPatternFormatting)cf1.CreatePatternFormatting();
+                fill.FillBackgroundColor = _dict.Value;
+                fill.FillPattern = FillPattern.SolidForeground;
+                CellRangeAddress[] cfRange1 = { new CellRangeAddress(0, sheet1.LastRowNum, 0, columnCount - 1) };
+                sCF.AddConditionalFormatting(cfRange1, cf1);
+            }
+        }
+        private Dictionary<string,short> ColorForValue()
+        {
+            var dict = new Dictionary<string,short>();
+            dict.Add("0202", IndexedColors.Grey50Percent.Index);
+            dict.Add("0101", IndexedColors.Red.Index);
+            dict.Add("0102", IndexedColors.LightBlue.Index);
+            dict.Add("0303", IndexedColors.Yellow.Index);
+            dict.Add("0404", IndexedColors.Green.Index);
+            dict.Add("0103", IndexedColors.SkyBlue.Index);
+            dict.Add("0104", IndexedColors.LightOrange.Index);
+            dict.Add("0203", IndexedColors.Pink.Index);
+            dict.Add("0204", IndexedColors.LightBlue.Index);
+            dict.Add("0304", IndexedColors.LightGreen.Index);
+            dict.Add("0505", IndexedColors.SeaGreen.Index);
+            dict.Add("0105", IndexedColors.SkyBlue.Index);
+            dict.Add("0205", IndexedColors.LightCornflowerBlue.Index);
+            dict.Add("0305", IndexedColors.LightYellow.Index);
+            dict.Add("0405", IndexedColors.Orange.Index);
+            dict.Add("0606", IndexedColors.Teal.Index);
+            dict.Add("0001", IndexedColors.OliveGreen.Index);
+            dict.Add("0002", IndexedColors.Violet.Index);
+            dict.Add("9999", IndexedColors.Brown.Index);
+            dict.Add("0707", IndexedColors.Brown.Index);
+            dict.Add("0106", IndexedColors.Pink.Index);
+            dict.Add("0107", IndexedColors.Orange.Index);
+            dict.Add("0206", IndexedColors.LightYellow.Index);
+            dict.Add("0207", IndexedColors.SeaGreen.Index);
+            dict.Add("0306", IndexedColors.Grey80Percent.Index);
+            dict.Add("0307", IndexedColors.LightBlue.Index);
+            dict.Add("0406", IndexedColors.Maroon.Index);
+            dict.Add("0407", IndexedColors.DarkBlue.Index);
+            dict.Add("0506", IndexedColors.CornflowerBlue.Index);
+            dict.Add("0507", IndexedColors.Orange.Index);
+            dict.Add("0607", IndexedColors.DarkBlue.Index);
+
+            return dict;
+
+        }
 
         private async Task SendEmailAsync(string body)
         {
@@ -489,6 +750,8 @@ namespace Enza.UTM.BusinessAccess.Services
                 await emailService.SendEmailAsync(tos, "Plate Plan deleted".AddEnv(), body);
             }
         }
+
+        
 
         private void LogInfo(string msg)
         {
@@ -598,18 +861,17 @@ namespace Enza.UTM.BusinessAccess.Services
             }
             return dt;
         }
-        private async Task<List<MigrationDataResult>> CumulateAsync(List<TestResultCumulate> result, List<TraitDeterminationValue> traitValue, string cropCode)
+        private async Task<List<MigrationDataResult>> CumulateAsync(List<TestResultCumulate> result, string cropCode, int testId, string testName, List<MissingConversion> missingConversions, List<MigrationDataResult> migrationdata)
         {
             //var test = await repository.CumulateAsync();
             //var result = data;
+            var traitValue = new List<TraitDeterminationValue>();
             var result1 = result.GroupBy(x => new { x.ListID, x.ColumnLabel })
                 .Select(y => new TestResultToCreate
                 {
                     ListID = y.Key.ListID,
                     ColumnLabel = y.FirstOrDefault().ColumnLabel,
-                    Materialkey = y.FirstOrDefault().MaterialKey,
-                    //DeterminationID = y.Key.DeterminationID,
-                    //TestID = 0,
+                    Materialkey = y.FirstOrDefault().MaterialKey,                    
                     Count = y.Count(),
                     Same = true,
                     UndefinedCount = 0,
@@ -652,18 +914,48 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 if(_result.FinalScore == "5555")
                 {
-                    var convertedValue = traitValue.FirstOrDefault(x => x.CropCode == cropCode && x.ColumnLabel == _result.ColumnLabel);
+                    var convertedValue = traitValue.FirstOrDefault(x => x.CropCode == cropCode && x.ColumnLabel == _result.ColumnLabel && x.DeterminationValue == "5555");
                     if(convertedValue == null)
                     {
                         var fetchFromDatabase = await repository.GetTraitValue(cropCode, _result.ColumnLabel);
                         if(fetchFromDatabase == null)
                         {
-                            throw new BusinessException($"Conversion not found for Value 5555 for crop {cropCode} and trait {_result.ColumnLabel}");
+                            LogInfo($"Conversion not found for Cumulation result of 5555 for Determination {_result.ColumnLabel}");
+                            //send email based on templete for missing conversion
+                            var determinationName = "";
+                            var statusCode = 0;
+                            var migrationResult = migrationdata.Where(x => x.ColumnLabel == _result.ColumnLabel).FirstOrDefault();
+                            if (migrationResult != null)
+                            {
+                                //migrationResult.IsValid = false;
+                                statusCode = migrationResult.StatusCode;
+                                determinationName = migrationResult.DeterminationName;
+                            }
+                            
+                            missingConversions.Add(new MissingConversion
+                            {
+                                TestID = testId,
+                                TestName = testName,
+                                ColumnLabel = _result.ColumnLabel,
+                                DeterminationName = determinationName,
+                                CropCode = cropCode,                                    
+                                DeterminationValue = "5555"
+
+                            });
+                           
                         }
                         else
+                        {
                             traitValue.Add(fetchFromDatabase);
-
-                        _result.FinalScore = fetchFromDatabase.TraitValue;
+                            _result.FinalScore = fetchFromDatabase.TraitValue;
+                            traitValue.Add(new TraitDeterminationValue
+                            {
+                                ColumnLabel = _result.ColumnLabel,
+                                CropCode = cropCode,
+                                DeterminationValue = "5555",
+                                TraitValue = fetchFromDatabase.TraitValue
+                            });
+                        }
                     }
                     else
                     {
@@ -673,10 +965,12 @@ namespace Enza.UTM.BusinessAccess.Services
                 else
                 {
                     var finalScore = _result.Score.FirstOrDefault(x => x.DetScore == _result.FinalScore)?.Score;
-                    if (!string.IsNullOrWhiteSpace(finalScore))
-                    {
-                        _result.FinalScore = finalScore;
-                    }
+                    //if (!string.IsNullOrWhiteSpace(finalScore))
+                    //{
+                    //    _result.FinalScore = finalScore;
+                    //}
+                    //this could be null so set this value
+                    _result.FinalScore = finalScore;
 
                 }
             }
@@ -793,7 +1087,9 @@ namespace Enza.UTM.BusinessAccess.Services
                 return await phenome.SignInAsync(client);
             }
         }
-        
+
+       
+
         #endregion
 
     }

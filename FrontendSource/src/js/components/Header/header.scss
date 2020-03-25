@@ -1,0 +1,197 @@
+@import '../../../styles/_var';
+
+$height: 40px;
+$width: 60px;
+$borderSize: 2px;
+header {
+  display: flex;
+  background: $lightgreen;
+  padding: 0;
+  color: #fff; //text-align: center;
+  font-family: 'robotoregular', sans-serif;
+  display: flex;
+  height: $height;
+  flex-direction: column;
+  .toggleBtn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    button {
+      background: darken($lightgreen, 5%);
+      height: 100%;
+      width: 45px;
+      &:hover {
+        background: darken($lightgreen, 10%);
+      }
+      i {
+        font-size: 14px;
+        text-shadow: 1px 1px 2px #6da52f;
+        display: block; //transition: all .25s linear;
+      }
+    }
+  }
+  .headBar {
+    display: flex;
+    flex: 1;
+    padding-left: 50px;
+    position: relative;
+    .title {
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      width: 120px;
+      span {
+        font-family: robotoregular;
+        font-weight: normal;
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+    }
+    nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex: 1;
+      padding: 0 15px;
+      .headerLinks,
+      button {
+        color: #fff;
+        background: none;
+        //border: 1px solid #71a734;
+        margin-left: 10px;
+        padding: 7px 3px;
+        font-size: 12px;
+        //-webkit-border-radius: 15px;
+        //-moz-border-radius: 15px;
+        //border-radius: 15px;
+        transition: background-color .3s ease-out;
+        border-bottom: $borderSize solid $lightgreen;
+        &.selected {
+          //background-color: #365724;
+          //background-color: #6fa135;
+          //border-color:#365724;
+          border-bottom: $borderSize #fff solid;
+          cursor: default;
+          &:hover {
+            border-bottom: $borderSize #fff solid;
+            //background-color: #365724;
+            //border-color:#365724;
+          }
+        }
+        &:hover {
+          border-bottom: $borderSize #6fa135 solid;
+          //background: #77ad39;
+        }
+        &.disable {
+          background: #67a421;
+          color: #8bc44a;
+          cursor: not-allowed;
+        }
+      }
+      a {
+        i {
+          float: left;
+        }
+        span {
+          margin-left: 5px;
+          font-size: 12px;
+          letter-spacing: 1px;
+        }
+      }
+      div.user {
+        margin-left: 10px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        // background: #7db83d;
+        padding: 7px 10px;
+        border-radius: 20px;
+        // border: 1px solid #76b72f;
+      }
+    }
+    i.icon-menu {
+      display: block;
+    }
+    i.icon-down {
+      display: none;
+      transform: rotate(90deg);
+    }
+    &.active {
+      i.icon-menu {
+        display: none;
+      }
+      i.icon-down {
+        display: block;
+        transform: rotate(90deg);
+      }
+    }
+  }
+  .tit_le {
+    width: 100%;
+    flex: 0 0 200px; //text-align: center;
+    line-height: $height;
+    padding: 0 20px;
+    font-size: 20px;
+    text-shadow: 1px 1px 2px #6da52f;
+    transition: all .5s linear;
+    display: flex;
+    & > div {
+      flex: 1;
+    }
+    & .actionBtn {
+      justify-content: flex-end;
+      display: flex;
+      align-items: center;
+      button {
+        //outline:1px solid #fff;
+        height: 50px;
+        line-height: 50px; //width: 50px;
+        padding: 0;
+        background: transparent;
+        i {
+          font-size: 24px;
+          float: left; //outline:1px red solid;
+        }
+      }
+      button + button {
+        margin-left: 5px;
+      }
+    }
+    &.active {
+      display: none;
+      opacity: 0;
+    }
+  }
+
+}
+
+.base {
+  overflow-x: hidden;
+  &[data-aside=true] {
+    //overflow: hidden;
+    Header button i {
+      transform: rotate(90deg);
+    }
+  }
+  > div {
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 1140px) {
+  // header .headBar nav {
+  //   span {
+  //     display: none;
+  //   }
+  // }
+}
+@media screen and (max-width: 1240px) and (min-width: 520px) {
+  // header .headBar nav {
+  //   .user,
+  //   .headerLinks {
+  //     span {
+  //       display: none;
+  //     }
+  //   }
+  // }
+}

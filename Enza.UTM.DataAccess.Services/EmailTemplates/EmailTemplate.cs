@@ -8,5 +8,10 @@ namespace Enza.UTM.Services.EmailTemplates
         {
             return typeof(EmailTemplate).Assembly.GetString("Enza.UTM.Services.EmailTemplates.MissingConversionMail.st");
         }
+
+        public static string GetTestCompleteNotificationEmailTemplate()
+        {
+            return typeof(EmailTemplate).Assembly.GetString("Enza.UTM.Services.EmailTemplates.TestCompleteNotification.st");
+        }
     }
 }

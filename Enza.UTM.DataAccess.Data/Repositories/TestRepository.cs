@@ -356,6 +356,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             args =>
             {
                 args.Add("@TestID", requestargs.TestID);
+                args.Add("@ForceDelete", requestargs.IsLabUser);
                 args.Add("@Status", p1);
                 args.Add("@PlatePlanName", p2);
             });
@@ -374,7 +375,9 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             {
                 TestID = reader.Get<int>(0),
                 TestName = reader.Get<string>(1),
-                StatusCode = reader.Get<int>(2)
+                StatusCode = reader.Get<int>(2),
+                PlatePlanName = reader.Get<string>(3),
+                BrStationCode = reader.Get<string>(4)
             });
         }
 
@@ -429,6 +432,41 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return res.FirstOrDefault();
             
 
+        }
+
+        public async Task<DataSet> PlatePlanResultAsync(int testID)
+        {
+            return await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_PLATEPLAN_WITH_RESULT, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", testID);
+            });
+            
+        }
+        public async Task<DataSet> TestToExcelAsync(int testID)
+        {
+            return await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_TEST_WITH_PLATE_AND_WELL, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", testID);
+            });
+
+        }
+
+        public async Task<bool> GetSettingToExcludeScoreAsync(int testId)
+        {
+            var query = @"SELECT 
+                                T.TestID
+                        FROM [Test] T
+                        JOIN[File] F ON F.FileID = T.FileID
+                        JOIN CropRD C ON C.CropCode = F.CropCode
+                        WHERE T.TestID = @TestID AND ISNULL(C.ExcludeUndefindScore,0) = 1";
+            var result = await DbContext.ExecuteDataSetAsync(query, CommandType.Text,
+                args =>
+                {
+                    args.Add("@TestID", testId);
+                });
+            if (result.Tables[0].Rows.Count > 0)
+                return true;
+            return false;
         }
     }
 }

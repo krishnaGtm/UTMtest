@@ -1,0 +1,444 @@
+a { cursor: pointer;}
+
+label,
+input[type='text'],
+input[type='password'],
+input[type='number'],
+select,
+textarea,
+.Select-placeholder {
+  width: 100%;
+  color: #545454;
+  border-radius: 3px;
+  height: 40px;
+  height: 30px;
+  //box-shadow: 0 0 5px #dedede inset;
+  box-shadow: 0 0 5px #dedede;
+  &:focus {
+    outline: none;
+  }
+}
+textarea {
+  padding: 5px 10px;
+}
+
+label {
+  // font: normal 15px Roboto;
+  box-shadow: none;
+  font-size: 14px;
+  margin: 5px 0 5px 5px;
+  font-weight: 500;
+  line-height: 32px;
+  font-family: 'robotomedium', sans-serif;
+}
+
+input {
+  border: 1px solid #ddd;
+  //text-indent: 10px;
+  //padding-right: 40px;
+
+  &:disabled {
+    //background-color: #ccd2de;
+    background-color: #efefef;
+    //border-color: #bec7dc;
+    border-color: #e4e4e4;
+  }
+}
+select, input {
+  //height: 30px;
+  padding: 0 10px;
+  font-size: 14px;
+}
+textarea,
+select {
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  //font-size: 14px;
+  // margin-bottom: 10px;
+}
+.textarea {
+  padding: 0 10px;
+}
+select:disabled {
+  background: #efefef;
+  border-color: #e4e4e4;
+}
+
+input.xlsFile {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+  width: inherit;
+}
+
+div.triggerFile {
+
+  background: #fff;
+  height: 100%;
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #b7d335;
+  border-radius: 3px 0 0 3px;
+  cursor: pointer;
+  //letter-spacing: 1px;
+  border: #ddd 1px solid;
+  //font-size: 12px;
+  color: #3d4a5f;
+  box-shadow: 0 0 5px #dedede inset;
+}
+
+button {
+  height: 40px;
+  height: 30px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #fff;
+
+  padding: 0px 10px;
+  background: $btnBg;
+
+  display: inline-block;
+  border: none;
+  border-radius: 2px;
+  min-height: 40px;
+  min-height: 30px;
+  cursor: pointer;
+  transition: all .3s ease-out;
+  &:hover {
+    background: #242c3a;
+  }
+  &:disabled {
+    background-color: #d6d6d6;
+    color: #717171;
+    cursor: default;
+    &:hover {
+      background-color: #d6d6d6;
+      color: #717171;
+    }
+  }
+}
+.importWrap {
+  flex: 1 1 25% !important;
+  & > div {
+    display: flex;
+  }
+  div {
+    flex: 1;
+  }
+  .cellOr {
+
+    flex: 0 0 30px;
+    text-align: center;
+    //background: #ffff00;
+    //padding: 3px 3px 3px 0;
+      label, span {
+        display: block;
+        width:100%;
+        margin: 0;
+      }
+      span {
+        line-height:25px;
+        font-weight: bold;
+        font-size:20px;
+        width: 100%;
+        text-align: center;
+      }
+  }
+}
+@media screen and (max-width: 1400px) and (min-width: 520px) {
+    .importFileWrap button span {
+        display: none;
+    }
+}
+/*button {
+  background: #00bcd4;
+
+  !*&.btnImportFile {
+    margin-top: 5px;
+  }*!
+
+  &:hover {
+    background: darken(#00bcd4, 5%);
+  }
+}*/
+
+/**
+ * DATE BOX
+ */
+.dateBox {
+  position: relative;
+
+  i {
+    position: absolute;
+      pointer-events: none;
+    /*bottom: 10px;
+    right: 12px;*/
+    //right: 25px;
+    color: #3d4b60;
+    //top: 42px;
+    top: 36px;
+    right: 20px;
+    //color: #8bc34a;
+    font-size: 18px;
+  }
+}
+
+// checkbox marker
+.marker {
+    label {
+      display: block;
+      margin: 0 0 0 5px;
+      cursor: pointer;
+    }
+  input[type=checkbox] {
+    display: none;
+  }
+  /* to hide the checkbox itself */
+  input[type=checkbox] + label:before {
+    font-family: fontello;
+    display: inline-block;
+    width: 20px;
+  }
+
+  input[type=checkbox] + label:before {
+    content: "\f096";
+  }
+  /* unchecked icon */
+  input[type=checkbox] + label:before {
+    letter-spacing: 10px;
+  }
+  /* space between checkbox and label */
+
+  input[type=checkbox]:checked + label:before {
+    content: "\f14a";
+  }
+  /* checked icon */
+  input[type=checkbox]:checked + label:before {
+    letter-spacing: 10px;
+  }
+  /* allow space for check mark */
+}
+
+/**
+ * TAB
+ */
+
+.react-tabs__tab-list {
+  margin-bottom: 0;
+  .react-tabs__tab {
+    color:#666;
+    padding: 10px 15px;
+
+    &.react-tabs__tab--selected {
+      background: #fff;
+      //border-radius: 5px 5px 0 0 !important;
+      border-radius: 0 !important;
+      box-shadow: 0 -2px 3px #dfdfdf;
+      color:#000;
+      bottom:-1px;
+    }
+    //background: #eaeaea;
+    //border-radius: 0 5px 0 0;
+    &:first-child {
+      //border-radius: 5px 0 0 0;
+    }
+  }
+}
+
+.react-tabs__tab-list,
+.react-tabs__tab.react-tabs__tab--selected {
+  border-color: #dadada;
+}
+
+.react-tabs__tab-panel--selected {
+  display: block;
+  padding: 10px;
+  padding: 10px 0 0;
+  border: 1px #dadada solid;
+  border: 0;
+  border-top: 0;
+  //background: #fff;
+}
+
+/**
+ * FILTER
+ */
+.filterWrapper {
+  border: 1px solid #E6E6E6;
+  padding: 10px;
+  background: blue;
+  width: 240px;
+  position: absolute;
+  z-index: 2;
+  // top: 100%;
+  color: #666;
+  left: 0;
+  font: normal 14px robotoregular;
+}
+
+// .pagination {
+
+//     li {
+//         display: inline-block;
+//     }
+// }
+
+
+/**
+ * FIXES
+ */
+.react-datepicker__input-container,
+.react-datepicker-wrapper {
+  display: block;
+   width: 100%;
+}
+
+.react-datepicker-popper {
+  z-index: 2;
+}
+
+.react-datepicker__header,
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
+  background-color: #3d4b60 !important;
+}
+
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle,
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before {
+  border-bottom-color: #3d4b60;
+}
+
+.react-datepicker__current-month, .react-datepicker-time__header {
+  color: #fff !important;
+}
+
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle, .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before {
+  border-bottom-color: #3d4b60 !important;
+}
+
+.react-datepicker__header {
+  .react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+    color: #fff;
+  }
+}
+
+// cell font-size
+.public_fixedDataTableCell_cellContent {
+  font-size: 14px;
+}
+
+.react-tabs__tab--selected {
+  // padding: 10px 15px;
+}
+
+.public_fixedDataTable_header .public_fixedDataTableCell_main {
+  font-weight: 500;
+}
+
+.fixedDataTableCellLayout_wrap1 {
+  display: block;
+  width: 100%;
+  /* background: #f00; */
+  height: 39px;
+  display: flex;
+  align-items: center;
+}
+
+.filterBox {
+
+  padding: 10px 10px 0;
+  text-align: center;
+    background: #efefef;
+    box-shadow: inset 0px 11px 8px -10px #a9a9a9;
+
+  input {
+    width: 100%;
+    height: 31px;
+    border-color: #cecece;
+  }
+}
+
+// AUTO SUGGESTION FIXES
+
+.react-autosuggest__container {
+  position: relative;
+}
+
+.react-autosuggest__input {
+  width: 240px;
+  height: 30px;
+  padding: 10px 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.react-autosuggest__input--focused {
+  outline: none;
+}
+
+.react-autosuggest__input--open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.react-autosuggest__suggestions-container {
+  display: none;
+}
+
+.react-autosuggest__suggestions-container--open {
+  display: block;
+  position: absolute;
+  top: 51px;
+  // width: 280px;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 2;
+}
+
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 1px 20px 0 10px;
+  font-size: 14px;
+}
+
+.react-autosuggest__suggestion--highlighted {
+  background-color: #ddd;
+}
+
+input[type='text'].react-autosuggest__input {
+  padding: 0 10px !important;
+  border-color: #ddd !important;
+  font-size: 14px;
+  color: #545454;
+}
+.react-autosuggest__container {
+  .react-autosuggest__suggestions-container--open {
+    //top: 41px;
+    top: 35px;
+    border-radius: 4px 4px 0 0;
+    border-color: #dfdfdf;
+    width: auto;
+  }
+}
+/*
+ */

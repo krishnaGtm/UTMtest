@@ -5,6 +5,7 @@ using Enza.UTM.Common.Extensions;
 using Enza.UTM.DataAccess.Abstract;
 using Enza.UTM.DataAccess.Data.Interfaces;
 using Enza.UTM.DataAccess.Interfaces;
+using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
 
@@ -38,6 +39,31 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     ColumnLabel = o.Field<string>("ColumnLabel")
                 }).ToList()
             };
+        }
+
+        public async Task<TestDetailExternal> GetExternalTestDetail(int testID)
+        {
+            var query = @"SELECT 
+                            F.CropCode,
+                            T.BreedingStationCode,
+                            T.LabPlatePlanName,
+                            T.StatusCode
+                        FROM Test T JOIN[File] F ON F.FileID = T.FileID
+                        JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
+                        WHERE T.TestID = @TestID AND TT.TestTypeCode = @TestTypeCode";
+            var result = await DbContext.ExecuteReaderAsync(query, CommandType.Text, args =>
+              {
+                  args.Add("@TestID", testID);
+                  args.Add("@TestTypeCode", "MT");
+              },
+              reader=>new TestDetailExternal
+              {
+                  CropCode = reader.Get<string>(0),
+                  BreedingStationCode = reader.Get<string>(1),
+                  LabPlatePlanName = reader.Get<string>(2),
+                  StatusCode = reader.Get<int>(3)
+              });
+            return result.FirstOrDefault();
         }
 
         public async Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll)

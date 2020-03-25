@@ -16,9 +16,11 @@ namespace Enza.UTM.BusinessAccess.Services
     public class ExternalTestService : IExternalTestService
     {
         readonly IExternalTestRepository _externalTestRepository;
-        public ExternalTestService(IExternalTestRepository externalTestRepository)
+        readonly ITestService _testService;
+        public ExternalTestService(IExternalTestRepository externalTestRepository,ITestService testService)
         {
             _externalTestRepository = externalTestRepository;
+            _testService = testService;
         }
         public async Task<ImportDataResult> ImportDataAsync(ExternalTestImportRequestArgs requestArgs)
         {
@@ -99,8 +101,11 @@ namespace Enza.UTM.BusinessAccess.Services
             }
             var columns = headers.ToList();
             var totalCols = headerRow.LastCellNum;
+            bool breakLoop = false;
             for (var i = 1; i <= sheet.LastRowNum; i++)
             {
+                if (breakLoop)
+                    break;
                 var row = sheet.GetRow(i);
                 if (row != null)
                 {
@@ -117,18 +122,19 @@ namespace Enza.UTM.BusinessAccess.Services
                             //validate if material key is empty
                             if (string.IsNullOrWhiteSpace(cellValue))
                             {
-                                result.Errors.Add("Value of a Numerical ID is missing.");
-                                return result;
+                                breakLoop = true;
+                                break;
                             }
-                            drRow["MaterialKey"] = cellValue;                            
+                            else
+                                drRow["MaterialKey"] = cellValue;                            
                         }
                         else if (column.Value.EqualsIgnoreCase("Sample name"))
                         {
                             //validate if plant name is empty
                             if (string.IsNullOrWhiteSpace(cellValue))
                             {
-                                result.Errors.Add("Value of a Sample name is missing.");
-                                return result;
+                                breakLoop = true;
+                                break;
                             }
                         }
                         else if (column.Value.EqualsIgnoreCase("Country"))
@@ -138,8 +144,8 @@ namespace Enza.UTM.BusinessAccess.Services
                                 //validate if country is empty
                                 if (string.IsNullOrWhiteSpace(cellValue))
                                 {
-                                    result.Errors.Add("Country can not be null or empty.");
-                                    return result;
+                                    breakLoop = true;
+                                    break;
                                 }
                             }
                             //only one country code is enough since it will be passed as single data in sp
@@ -159,7 +165,8 @@ namespace Enza.UTM.BusinessAccess.Services
                             dtCellTVP.Rows.Add(drCell);
                         }
                     }
-                    dtRowTVP.Rows.Add(drRow);
+                    if(!breakLoop)
+                        dtRowTVP.Rows.Add(drRow);
                 }
             }
             await _externalTestRepository.ImportDataAsync(requestArgs, dtColumnsTVP, dtRowTVP, dtCellTVP);
@@ -169,7 +176,21 @@ namespace Enza.UTM.BusinessAccess.Services
 
         public async Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false)
         {
+            //get det
+            var initialTestDetail = await _testService.GetTestDetailAsync(new GetTestDetailRequestArgs
+            {
+                TestID = testID
+            });
+
             var rs = await _externalTestRepository.GetExternalTestDataForExportAsync(testID, markAsExported);
+            
+            //get test detail including status and other required information
+            var testDetail = await _externalTestRepository.GetExternalTestDetail(testID);
+            if (testDetail != null && testDetail.StatusCode != initialTestDetail.StatusCode)
+            {
+                await _testService.SendTestCompletionEmailAsync(testDetail.CropCode, testDetail.BreedingStationCode, testDetail.LabPlatePlanName);
+            }
+            
             using (var ms = new MemoryStream())
             {
                 var book = new XSSFWorkbook();

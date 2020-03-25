@@ -19,6 +19,7 @@ namespace Enza.UTM.Entities.Args
         public DateTime ExpectedDate { get; set; }
         public int NrOfPlates { get; set; }
         public int NrOfTests { get; set; }
+        public string Remark { get; set; }
         public bool Forced { get; set; }
     }
 }

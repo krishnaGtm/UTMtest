@@ -35,9 +35,9 @@ namespace Enza.UTM.BusinessAccess.Services
             return _emailConfigRepository.GetAllAsync(args);
         }
 
-        public Task<EmailConfig> GetEmailConfigAsync(string groupName, string cropCode)
+        public Task<EmailConfig> GetEmailConfigAsync(string groupName, string cropCode, string brStationCode = null)
         {
-            return _emailConfigRepository.GetEmailConfigAsync(groupName, cropCode);
+            return _emailConfigRepository.GetEmailConfigAsync(groupName, cropCode, brStationCode);
         }
 
         public Task<EmailConfig> GetEmailConfigByGroupAsync(string groupName)

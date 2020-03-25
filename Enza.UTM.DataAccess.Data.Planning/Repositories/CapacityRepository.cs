@@ -50,6 +50,7 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                     param.Add("@NrOfTests", args.NrOfTests);
                     param.Add("@User", userContext.GetContext().FullName);
                     param.Add("@Forced", args.Forced);
+                    param.Add("@Remark", args.Remark);
                     param.Add("@IsSuccess",p1);
                     param.Add("@Message",p2);
                 });
@@ -97,13 +98,15 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteSlotAsync(int slotID)
+        public async Task<bool> DeleteSlotAsync(DeleteSlotRequestArgs args)
         {
             await DbContext.ExecuteNonQueryAsync(DataConstants.PR_PLAN_REMOVE_SLOT,
                 CommandType.StoredProcedure, param =>
                 {
-                    param.Add("@SlotID", slotID);
+                    param.Add("@SlotID", args.SlotID);
                     param.Add("@User", userContext.GetContext().FullName);
+                    param.Add("@Crops", args.Crops);
+                    param.Add("@IsSuperUser", args.IsSuperUser);
 
                 });
             return true;

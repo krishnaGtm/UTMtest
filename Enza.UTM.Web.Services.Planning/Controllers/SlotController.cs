@@ -19,7 +19,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         }
 
         [OverrideAuthorization]
-        [Authorize(Roles = "requesttest")]
+        [Authorize(Roles = AppRoles.MANAGE_MASTER_DATA_UTM_REQUEST_TEST)]
         [Route("AvailablePlatesTests")]
         [HttpGet]        
         public async Task<IHttpActionResult> GetAvailPlatesTests([FromUri] GetAvailPlatesTestsRequestArgs args)
@@ -70,7 +70,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         }
 
         [OverrideAuthorization]
-        [Authorize(Roles = "requesttest")]
+        [Authorize(Roles = AppRoles.MANAGE_MASTER_DATA_UTM_REQUEST_TEST)]
         [HttpPost]
         [Route("breedingOverview")]
         public async Task<IHttpActionResult> BreedingOverview([FromBody]BreedingOverviewRequestArgs args)

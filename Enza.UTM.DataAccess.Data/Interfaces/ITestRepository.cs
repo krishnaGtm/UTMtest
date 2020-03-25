@@ -35,5 +35,8 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
 
         Task<PlatePlanResult> getPlatePlanOverviewAsync(PlatePlanRequestArgs args);
         Task<TraitDeterminationValue> GetTraitValue(string cropCode, string columnLabel);
+        Task<DataSet> PlatePlanResultAsync(int testID);
+        Task<DataSet> TestToExcelAsync(int testID);
+        Task<bool> GetSettingToExcludeScoreAsync(int testId);
     }
 }

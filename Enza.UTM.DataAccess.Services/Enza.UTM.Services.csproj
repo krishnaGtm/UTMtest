@@ -140,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EmbeddedResource Include="EmailTemplates\TestCompleteNotification.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <EmbeddedResource Include="Requests\GetAvailable3GBProjects.st">
       <SubType>Designer</SubType>

@@ -1,0 +1,195 @@
+@import '../var';
+
+/**
+ * TABLE FORMS
+ */
+.toolBar {
+  display: flex;
+  justify-items: right;
+  //flex-direction: row-reverse;
+  padding: 0 0 5px !important;
+
+  .fixColumn {
+    label {
+      //display: inline-block;
+      //float: left;
+      width: 90px;
+      padding: 0;
+      padding-right: 10px;
+      height: 22px;
+      //outline: 1px #f00 solid;
+      line-height: 22px;
+    }
+    select {
+      width: 80px;
+      height: 30px;
+      line-height: 30px;
+      padding-top: 5px;
+      padding: 0 10px;
+    }
+  }
+
+  .clearFilterBtn {
+    color: #fff;
+    min-height: 30px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 15px;
+    background: #8BC34A;
+    border-radius: 5px;
+    margin: 0px 0 0 10px;
+    transition: all .3s ease-out;
+    &:hover {
+      background: darken(#8BC34A, 10%)
+    }
+    &:disabled {
+      background-color: #d6d6d6;
+      color: #717171;
+      cursor: default;
+      &:hover {
+        background-color: #d6d6d6;
+        color: #717171;
+      }
+    }
+
+    &.icon {
+      padding-left: 10px;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 520px) {
+  .toolBar .clearFilterBtn {
+    padding-right: 10px;
+    span {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 1400px) and (min-width: 1024px) {
+  .plateFilling .trow {
+    flex-wrap: wrap;
+    .tcell {
+      //flex: 0 0 25% !important;
+      &.text-right {
+        flex: 0 0 100% !important;
+      }
+      &.wp20 {
+        flex: 0 0 20px !important;
+      }
+      /*&.wp400 {
+          flex: 0 0 400px !important;
+      }*/
+    }
+  }
+}
+
+/* TABLE HEADER CELL */
+.headerCell {
+  height: inherit;
+  // background: #f00;
+  // outline: 1px solid green;
+  display: flex;
+  align-items: center;
+  justify-content: normal;
+  padding: 0 0 0 10px;
+  height: 40px;
+  //background: #3d4a5f;
+  //background: #e2e2e2;
+  //background: $headBb;
+
+  span {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    color: #fff;
+    //color: $headColor;
+    font-size: 14px;
+    font-weight: 500;
+    color: #565656;
+    font-size: 14px;
+    font-weight: bold;
+
+    i {
+      //color: #adadad;
+    }
+    &.filterBtn {
+      // outline: 1px solid green;
+      flex: 0 0 30px;
+      i {
+        font-size: 11px;
+        cursor: pointer;
+        margin-left: 5px;
+        &:hover {
+          color: darken(#202a3c, 10%)
+        }
+      }
+    }
+  }
+}
+
+// checkbox marker
+.tableCheck {
+  text-align: center;
+  label {
+    font-size: 16px;
+    margin: 0 0 5px 5px;
+    line-height: 26px;
+    color: #7db83d;
+  }
+
+  input[type=checkbox] {
+    display: none;
+  }
+  /* to hide the checkbox itself */
+  input[type=checkbox] + label:before {
+    font-family: fontello;
+    display: inline-block;
+    width: 20px;
+  }
+
+  input[type=checkbox] + label:before {
+    content: "\f096";
+  }
+  /* unchecked icon */
+  input[type=checkbox] + label:before {
+    letter-spacing: 10px;
+  }
+  /* space between checkbox and label */
+
+  input[type=checkbox]:checked + label:before {
+    content: "\f14a";
+  }
+  /* checked icon */
+  input[type=checkbox]:checked + label:before {
+    letter-spacing: 10px;
+  }
+  /* allow space for check mark */
+}
+
+// Over wrigte
+
+.public_fixedDataTableCell_columnResizerKnob {
+  background-color: #8bc44a !important;
+}
+
+/*
+.public_fixedDataTableCell_main:hover {
+  background-color: yellow !important;
+}
+
+!*.fixedDataTableCellGroupLayout_cellGroupWrapper:hover {
+  & > div {
+    backgrond : red !important;
+  }
+}*!
+fixedDataTableCellGroupLayout_cellGroupWrapper:hover {
+  color: red;
+}*/
+
+.public_fixedDataTable_main {
+  border-radius: 5px;
+}

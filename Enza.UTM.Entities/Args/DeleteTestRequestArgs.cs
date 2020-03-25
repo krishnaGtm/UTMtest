@@ -6,6 +6,8 @@ namespace Enza.UTM.Entities.Args
     {
         public int TestID { get; set; }
         [SwaggerExclude]
+        public bool IsLabUser { get; set; }
+        [SwaggerExclude]
         public int StatusCode { get; set; }
         [SwaggerExclude]
         public string PlatePlanName { get; set; }

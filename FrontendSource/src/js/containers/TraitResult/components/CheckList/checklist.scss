@@ -1,0 +1,75 @@
+$width: 650px;
+$titleHeight: 60px;
+$titleWidth: $titleHeight;
+
+$error: #e48383;
+$info: #24cbe0;
+$ok: #79d279;
+$close: #ababab;
+
+.validationList.modalContent {
+  width: $width;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  // min-height: 200px;
+  background: #fff;
+  border-radius: 4px;
+
+  .modalTitle {
+    .warn {
+      color: #ffa500;
+    }
+  }
+
+  .modalBody {
+    display: block;
+
+    padding: 5px 20px 0;
+    line-height: 22px;
+    font-size: 14px;
+    table {
+      width: 100%;
+      width: 615px;
+      margin: 15px 0 20px;
+
+      &.scroller {
+        tbody {
+          overflow-y: scroll;
+          max-height: 180px; /* 35 height + 1 border */
+          th, td {
+            &:first-child {
+              width: 261px;
+            }
+            width: 111px;
+          }
+        }
+      }
+      &.noScroller {
+        th, td {
+          &:first-child {
+            width: 261px;
+          }
+          width: 116px;
+        }
+      }
+    }
+    tbody {
+      display: block;
+
+
+      td {
+        border-color: #eaeaea;
+      }
+    }
+    tr {
+      width: 465px;
+    }
+    th, td {
+      min-width: 0;
+      &:first-child {
+        width: 261px;
+      }
+      width: 111px;
+      display: inline-block;
+    }
+  }
+}

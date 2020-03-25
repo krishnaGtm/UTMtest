@@ -14,6 +14,6 @@ namespace Enza.UTM.DataAccess.Data.Planning.Interfaces
 
         Task<DataSet> GetPlanApprovalListForLabAsync(int periodID);
         Task<bool> MoveSlotAsync(MoveSlotRequestArgs args);
-        Task<bool> DeleteSlotAsync(int slotID);
+        Task<bool> DeleteSlotAsync(DeleteSlotRequestArgs args);
     }
 }

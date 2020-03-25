@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
+using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
@@ -61,10 +62,16 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
 
         [HttpPost]
         [Route("deleteSlot")]
-        [Authorize(Roles = "requesttest")]
+        [Authorize(Roles = AppRoles.MANAGE_MASTER_DATA_UTM_REQUEST_TEST)]
         public async Task<IHttpActionResult> DeleteSlot(int SlotID)
         {
-            var data = await capacityService.DeleteSlotAsync(SlotID);
+            var args = new DeleteSlotRequestArgs
+            {
+                Crops = string.Join(",", User.GetClaims("enzauth.crops")),
+                SlotID = SlotID,
+                IsSuperUser = User.IsInRole(AppRoles.MANAGE_MASTER_DATA_UTM)
+            };
+            var data = await capacityService.DeleteSlotAsync(args);
             return Ok(data);
         }
     }

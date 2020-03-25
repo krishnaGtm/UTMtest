@@ -13,16 +13,6 @@ trigger:
   paths:
     include: 
       - Enza.UTM.Web.Services.Planning/*
-      - Enza.UTM.BusinessAccess/*
-      - Enza.UTM.BusinessAccess.Planning/*      
-      - Enza.UTM.Common/*
-      - Enza.UTM.Entities/*      
-      - Enza.UTM.Entities.Externals/*
-      - Enza.UTM.Web.Services.Core/*
-      - Enza.UTM.DataAccess/*
-      - Enza.UTM.DataAccess.Data/*
-      - Enza.UTM.DataAccess.Data.Planning/*
-      - Enza.UTM.Services/*
 
 variables: 
   Buildconfiguration: Release 

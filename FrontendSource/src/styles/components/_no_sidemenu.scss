@@ -1,0 +1,48 @@
+$width: 200px;
+$height: 40px;
+
+$fontSize: 18px;
+
+aside, .bodyWrap {
+  transition: .30s ease-in-out;
+}
+aside {
+  position: fixed;
+  top: 0;
+  background: #fff;
+  width: $width;
+  height: 100%;
+  padding: 25px 15px;
+
+  ul {
+    list-style: none;
+
+    li {
+      line-height:$height;
+
+      a {
+        display: block;
+        //text-align: center;
+        font-size: $fontSize;
+      }
+    }
+  }
+}
+.base[data-aside=false] {
+  aside {
+    transform: translateX(-$width)
+  }
+  .bodyWrap {
+    transform: translateX(0px);
+  }
+}
+.base {
+  &[data-aside=true] {
+    aside {
+      transform: translateX(0)
+    }
+    .bodyWrap {
+      transform: translateX($width);
+    }
+  }
+}

@@ -35,62 +35,62 @@ namespace Enza.UTM.BusinessAccess.Services
             return await repo.ValidateTraitDeterminationResultAsync(testID, sendResult, source);
         }
 
-        public async Task<IEnumerable<MigrationDataResult>> ValidateTraitDeterminationResultAndSendEmailAsync(int? testID, bool sendResult, string source)
-        {
-            var tests = new List<int>();
-            var data = (await repo.ValidateTraitDeterminationResultAsync(testID, sendResult, source)).ToList();
-            var data1 = data.Where(x => !x.IsValid && x.StatusCode != 625);
-            //mail is only sent when any test conversion is failed and 
-            if (data1.Any())
-            {
-                tests.AddRange(data1.GroupBy(x => x.TestID).Select(g => g.Key));
-                //send mail per test because individual who created test should also need to be notified
-                var test = data1.FirstOrDefault();
-                var testname = test.TestName;
-                var distinctDeterminations = data1.GroupBy(g => new
-                {
-                    g.DeterminationName,
-                    g.ColumnLabel,
-                    g.DeterminationValue
-                }).Select(x => string.Concat($"Trait: { x.Key.ColumnLabel}, ", x.Key.DeterminationName, " : ", x.Key.DeterminationValue));
+        //public async Task<IEnumerable<MigrationDataResult>> ValidateTraitDeterminationResultAndSendEmailAsync(int? testID, bool sendResult, string source)
+        //{
+        //    var tests = new List<int>();
+        //    var data = (await repo.ValidateTraitDeterminationResultAsync(testID, sendResult, source)).ToList();
+        //    var data1 = data.Where(x => !x.IsValid && x.StatusCode != 625);
+        //    //mail is only sent when any test conversion is failed and 
+        //    if (data1.Any())
+        //    {
+        //        tests.AddRange(data1.GroupBy(x => x.TestID).Select(g => g.Key));
+        //        //send mail per test because individual who created test should also need to be notified
+        //        var test = data1.FirstOrDefault();
+        //        var testname = test.TestName;
+        //        var distinctDeterminations = data1.GroupBy(g => new
+        //        {
+        //            g.DeterminationName,
+        //            g.ColumnLabel,
+        //            g.DeterminationValue
+        //        }).Select(x => string.Concat($"Trait: { x.Key.ColumnLabel}, ", x.Key.DeterminationName, " : ", x.Key.DeterminationValue));
 
-                var distinctDeterminations1 = data1.GroupBy(g => new
-                {
-                    g.DeterminationName,
-                    g.ColumnLabel,
-                    g.DeterminationValue
-                }).Select(x=>new
-                {
-                    x.Key.DeterminationName,
-                    x.Key.ColumnLabel,
-                    x.Key.DeterminationValue,
-                }).ToList();                
-                var tpl = EmailTemplate.GetMissingConversionMail();
-                var model = new
-                {
-                    test.CropCode,
-                    TestName = testname,
-                    Determinations = distinctDeterminations1,
-                };
-                var body = Template.Render(tpl, model);
-                //send email to mapped recipients fo this crop
-                await SendEmailAsync(test, body);
-            }
-            //only update test whose status is 600 only
-            foreach(var _test in tests)
-            {
-                var result = await _testRepository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
-                {
-                    TestId = _test,
-                    StatusCode = 625
-                });
-            }
-            return data;
-        }
+        //        var distinctDeterminations1 = data1.GroupBy(g => new
+        //        {
+        //            g.DeterminationName,
+        //            g.ColumnLabel,
+        //            g.DeterminationValue
+        //        }).Select(x=>new
+        //        {
+        //            x.Key.DeterminationName,
+        //            x.Key.ColumnLabel,
+        //            x.Key.DeterminationValue,
+        //        }).ToList();                
+        //        var tpl = EmailTemplate.GetMissingConversionMail();
+        //        var model = new
+        //        {
+        //            test.CropCode,
+        //            TestName = testname,
+        //            Determinations = distinctDeterminations1,
+        //        };
+        //        var body = Template.Render(tpl, model);
+        //        //send email to mapped recipients fo this crop
+        //        await SendEmailAsync(test.CropCode, body);
+        //    }
+        //    //only update test whose status is 600 only
+        //    foreach(var _test in tests)
+        //    {
+        //        var result = await _testRepository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+        //        {
+        //            TestId = _test,
+        //            StatusCode = 625
+        //        });
+        //    }
+        //    return data;
+        //}
 
-        private async Task SendEmailAsync(MigrationDataResult result, string body)
+        public async Task SendEmailAsync(string cropCode, string body)
         {
-            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.SEND_RESULT_MAPPING_MISSING, result.CropCode);
+            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.SEND_RESULT_MAPPING_MISSING, cropCode);
             var recipients = config?.Recipients;
             if (string.IsNullOrWhiteSpace(recipients))
             {

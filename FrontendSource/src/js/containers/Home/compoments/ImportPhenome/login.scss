@@ -1,0 +1,16 @@
+.phenome-login {
+  .login-title {
+    display: block;
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 10px;
+    font-size: 18px;
+  }
+  .action {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    button {
+      flex: 0.49;
+    }
+  }
+}

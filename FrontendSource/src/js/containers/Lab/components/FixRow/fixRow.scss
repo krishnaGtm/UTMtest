@@ -1,0 +1,90 @@
+$width: 350px;
+$titleHeight: 46px;
+$titleWidth: $titleHeight;
+
+$error: #e48383;
+$info: #24cbe0;
+$ok: #79d279;
+$close: #ababab;
+
+.confirmWrap {
+  position: fixed;
+  z-index: 150;
+  background: rgba(0, 0, 0, 0.34);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .applyToAll {
+    width: $width;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    // min-height: 200px;
+    background: #fff;
+    color: #000;
+    border-radius: 4px;
+
+    .confirmTitle {
+      border-bottom: 1px solid #dfdfdf;
+      font-size: 22px;
+      height: $titleHeight;
+      line-height: $titleHeight;
+
+      i {
+        height: $titleHeight;
+        width: $titleWidth;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .error {color: $error; }
+      .info {color: $info; }
+      .ok {color: $ok; }
+      .close {
+        float: right;
+        color: $close;
+        cursor: pointer;
+        &:hover{
+          color:#ff5959;
+        }
+      }
+    }
+
+
+    .confirmBody {
+      padding: 5px 15px 10px;
+      line-height: 22px;
+      font-size: 14px;
+      ul {
+        list-style: disc;
+      }
+      input {
+        height: 30px;
+        border-radius: 3px;
+      }
+    }
+    .errorAction {
+      display: flex;
+      padding: 0 15px;
+      justify-content:flex-end;
+      margin-bottom: 10px;
+
+      button {
+        //border-radius: 5px;
+        //min-width: 80px;
+        height: 30px;
+        min-height: 30px;
+        padding: 0 10px;
+        &:focus {
+          background: #67a421;
+        }
+      }
+      button + button {
+        margin-left: 5px;
+      }
+    }
+  }
+}

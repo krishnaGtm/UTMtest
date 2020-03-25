@@ -1,0 +1,107 @@
+
+.plateWrap {
+    //outline: 1px dashed red;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom:50px;
+
+    h4 {
+        margin: 10px 0 0;
+    }
+    & > div > .plateRow {
+        text-align: center;
+    }
+    .barcodeContainer {
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .plateTitle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 10px;
+    }
+    .barcodeWrap {
+        height: 60px;
+        vertical-align: baseline;
+        overflow: hidden;
+        margin: 10px;
+
+        & > div {
+            width: 260px;
+            margin: 0 auto;
+        }
+    }
+
+    .fileTitle {
+        text-align: center;
+        padding: 10px;
+        // font-weight: bold;
+        font-size: 16px;
+    }
+    .plateRow {
+        border-left: 1px solid #e0e0e0;
+        display: flex;
+
+        .indent {
+            font-weight: bold;
+            background: #ececec;
+        }
+
+        & > div {
+            flex: 1;
+            //padding: 10px 15px;
+            width: 7.69%;
+
+            //outline:1px solid blue;
+            border: 1px solid #e0e0e0;
+            border-bottom: 0;
+            border-left: 0;
+
+            &:first-child {
+                text-align: center;
+                font-weight: bold;
+            }
+            & > div {
+                &:first-child {
+                    align-items: center;
+                    display: flex;
+                    justify-content: center;
+                }
+                padding: 10px 7px;
+                font-size:13px;
+                height: 100%;
+                word-break: break-all;
+                line-height:20px;
+
+                i {
+                    color: #f00;
+                }
+
+
+                &:hover {
+                    //background: #e0e0e0 !important;
+                    position: relative;
+                    z-index:10;
+                    //box-shadow: 0px 0px 4px #b9b9b9;
+                    //cursor: pointer;
+                }
+            }
+        }
+    }
+    .brokenItemIcon {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 1400px) and (min-width: 520px) {
+    .punchlist .trow {
+        flex-wrap: wrap;
+        .tcell {
+            flex: 0 0 100% !important;
+        }
+    }
+}

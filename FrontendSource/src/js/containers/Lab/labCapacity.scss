@@ -1,0 +1,133 @@
+.labCapacity {
+  //height: 100%;
+  //.fixedDataTableLayout_rowsContainer i {
+  //  float: right;
+  //  //outline: 1px red solid;
+  //  width: 30px;
+  //  text-align: center;
+  //  display: block;
+  //  cursor: pointer;
+  //}
+  .fileSection {
+    grid-template-columns: 200px 250px;
+    .fileSource {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+    }
+  }
+  .w350 {
+    width: 350px;
+    display: flex;
+    label {
+      flex: 0 0 100px;
+    }
+    select {
+      flex: 0 0 250px;
+    }
+
+    padding-left: 15px;
+  }
+
+  .labHeader {
+    //line-height: 34px;
+    //display: flex;
+    //align-items: center;
+    //justify-content: normal;
+    //padding: 0 0 0 10px;
+    //height: 40px;
+    //
+  }
+  .headerCell {
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: normal;
+
+
+    span {
+      display: flex;
+      flex: 1;
+      height: 100%;
+      justify-content: flex-start;
+      align-items: center;
+      //color: #fff;
+      //color: $headColor;
+      font-size: 14px;
+      font-weight: 500;
+      color: #565656;
+
+      i {
+        //color: #adadad;
+      }
+      &.filterBtn {
+        // outline: 1px solid green;
+        flex: 0 0 30px;
+        i {
+          font-size: 16px;
+          cursor: pointer;
+          margin-left: 5px;
+          &:hover {
+            color: darken(#202a3c, 10%)
+          }
+        }
+      }
+    }
+  }
+
+  .fixedDataTableLayout_rowsContainer input {
+    height: 26px;
+    //line-height: 28px;
+  }
+
+  input,
+  textarea{
+    width: 100%;
+    box-shadow: none;
+
+    &:read-only {
+      background-color: #f3f3f3;
+      //outline: 1px solid red;
+    }
+  }
+  textarea {
+    height: 34px;
+    resize: none;
+    padding: 3px 10px;
+    line-height: 26px;
+  }
+  .fixedToRight {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  button + button {
+    margin-left: 10px;
+  }
+}
+@media screen and (max-width: 1400px) and (min-width: 1024px) {
+  .labCapacity {
+    .trow .tcell.first {
+      //flex: 0 0 250px !important;
+      //padding-left: 15px;
+    }
+    .trow .tcell {
+      flex: 1 !important;
+    }
+  }
+}
+@media screen and (max-width: 1024px) and (min-width: 520px) {
+  .labCapacity {
+    .container {
+      & > .trow {
+
+      }
+    }
+    .trow .tcell.first {
+      //flex: 0 0 250px !important;
+      //padding-left: 15px;
+    }
+    .confirmBody .trow .tcell {
+      flex: 0 0 100% !important;
+    }
+  }
+}

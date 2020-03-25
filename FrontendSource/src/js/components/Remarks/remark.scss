@@ -1,0 +1,80 @@
+$width: 500px;
+$titleHeight: 46px;
+$titleWidth: $titleHeight;
+
+$error: #e48383;
+$info: #24cbe0;
+$ok: #79d279;
+$close: #ababab;
+
+.remarksWrap {
+    position: fixed;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.34);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .remarksContent {
+        width: $width;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        // min-height: 200px;
+        background: #fff;
+        border-radius: 4px;
+
+        .remarksTitle {
+            border-bottom: 1px solid #dfdfdf;
+            font-size: 22px;
+            height: $titleHeight;
+            line-height: $titleHeight;
+
+            i {
+                height: $titleHeight;
+                width: $titleWidth;
+                display: inline-block;
+                text-align: center;
+
+            }
+
+            .info {
+                color: #91d641;
+            }
+            .close {
+                float: right;
+                color: $close;
+                cursor: pointer;
+                &:hover{
+                    color:#ff5959;
+                }
+            }
+        }
+
+
+        .remarksBody {
+            padding: 15px 20px 0;
+            line-height: 22px;
+            font-size: 14px;
+            textarea {
+                width: 100%;
+                height: 110px;
+                resize: none;
+                line-height: 26px;
+            }
+        }
+        .remarksFooter {
+            display: flex;
+            justify-content: flex-end;
+            padding: 5px 20px 15px;
+        }
+        .errorAction {
+            display: flex;
+            padding: 0 15px;
+            flex-flow: row-reverse;
+            margin-bottom: 10px;
+        }
+    }
+}
