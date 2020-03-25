@@ -12,7 +12,7 @@ using System.Net;
 namespace Enza.UTM.Web.Services.Controllers
 {
     [RoutePrefix("api/v1/test")]
-    
+    [Authorize(Roles = AppRoles.PUBLIC)]
     public class TestController : BaseApiController
     {
         readonly ITestService testService;
@@ -24,7 +24,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpGet]
         [Route("gettestslookup")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> GetLookup(string cropCode, string breedingStationCode)
         {
             var testLookups = await testService.GetLookupAsync(cropCode, breedingStationCode);
@@ -32,7 +32,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
 
         [Route("completeTestRequest")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> Put([FromBody] CompleteTestRequestArgs args)
         {
             if (args == null)
@@ -61,7 +61,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPut]
         [Route("saveremark")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> SaveRemark([FromBody] SaveRemarkRequestArgs args)
         {
             if (args == null)
@@ -73,7 +73,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPost]
         [Route("printPlateLabels")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> PrintPlateLabels([FromBody]PrintPlateLabelRequestArgs args)
         {
             if (args == null)
@@ -85,7 +85,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPost]
         [Route("reserveplatesinlims")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> ReservePlatesInLims([FromBody] ReservePlatesInLIMSRequestArgs args)
         {
             if (args == null)
@@ -111,7 +111,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPost]
         [Route("fillPlatesInLims")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> FillPlatesInLims([FromBody]FillPlatesInLimsRequestArgs args)
         {
             if (args == null)
@@ -142,7 +142,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpGet]
         [Route("gettestdetail")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> GetTestDetail([FromUri] GetTestDetailRequestArgs args)
         {
             if (args == null)
@@ -153,7 +153,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
         [HttpGet]
         [Route("getslotpertest")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> GetSlotForTest([FromUri] int testID)
         {          
 
@@ -163,7 +163,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPut]
         [Route("saveplannedDate")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> SavePlannedDate([FromBody] SavePlannedDateRequestArgs args)
         {
             if (args == null)
@@ -175,7 +175,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpGet]
         [Route("getContainerTypes")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> GetContainerTypes()
         {
             var result = await testService.GetContainerTypeLookupAsync();
@@ -184,7 +184,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPost]
         [Route("updateTest")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> UpdateTest(UpdateTestArgs args)
         {
             var result = await testService.UpdateTest(args);
@@ -192,7 +192,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
         [HttpPost]
         [Route("linkslotntest")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> LinkSlotToTest([FromBody] SaveSlotTestRequestArgs args)
         {
             var result = await testService.LinkSlotToTest(args);
@@ -201,7 +201,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPost]
         [Route("saveNrOfSamples")]
-        [Authorize(Roles = AppRoles.PUBLIC)]
+        //[Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> SaveNrOfSamples([FromBody] SaveNrOfSamplesRequestArgs args)
         {
             await testService.SaveNrOfSamplesAsync(args);
@@ -209,7 +209,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
 
 
-        //[OverrideAuthorization]
+        [OverrideAuthorization]
         [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
         [HttpPost]
         [Route("deleteTest")]
@@ -219,7 +219,7 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(await testService.DeleteTestAsync(args));
         }
 
-        //[OverrideAuthorization]
+        [OverrideAuthorization]
         [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
         [HttpPost]
         [Route("getPlatePlanOverview")]
@@ -229,7 +229,7 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(await testService.getPlatePlanOverviewAsync(args));
         }
 
-        //[OverrideAuthentication]
+        
         [HttpGet]
         [Route("PlatePlanResultToExcel")]
         public async Task<IHttpActionResult> PlatePlanResultToExcel(int testID)
@@ -247,7 +247,7 @@ namespace Enza.UTM.Web.Services.Controllers
             return ResponseMessage(result);
         }
 
-        //[OverrideAuthentication]
+        
         [HttpGet]
         [Route("TestToExcel")]        
         public async Task<IHttpActionResult> TestToExcel(int testID)
@@ -263,6 +263,14 @@ namespace Enza.UTM.Web.Services.Controllers
             };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseMessage(result);
+        }
+
+        [HttpGet]
+        [Route("GetTotalMarkers")]
+        public async Task<IHttpActionResult> GetTotalMarkers(int testID)
+        {
+            var data = await testService.GetTotalMarkers(testID);
+            
         }
     }
 }

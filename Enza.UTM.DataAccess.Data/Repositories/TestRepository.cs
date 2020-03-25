@@ -450,6 +450,18 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             });
 
         }
+        public async Task<int> GetTotalMarkerAsync(int testID)
+        {
+            var p1 = DbContext.CreateOutputParameter("@TotalMarker", DbType.Int32);
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_GET_TOTAL_MARKER,
+              CommandType.StoredProcedure,
+            args =>
+            {
+                args.Add("@TestID", testID);
+                args.Add("@TotalMarker", p1);
+            });
+            return p1.Value.ToInt32();
+        }
 
         public async Task<bool> GetSettingToExcludeScoreAsync(int testId)
         {

@@ -131,6 +131,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000312.11250_Add_BTR no control.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000313.11244_Add_PR_Get_Total_Marker.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
