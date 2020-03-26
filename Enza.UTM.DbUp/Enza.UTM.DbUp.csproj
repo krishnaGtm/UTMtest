@@ -138,6 +138,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000312.11250_Feed_Data_Determination.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000314..7848_PR_PLAN_GetPlannedOverview.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
