@@ -387,6 +387,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 CommandType.StoredProcedure,
                 args =>
                 {
+                    args.Add("@Active", requestArgs.Active);
                     args.Add("@Crops", requestArgs.Crops);
                     args.Add("@Filter", requestArgs.ToFilterString());
                     args.Add("@Sort", "");
