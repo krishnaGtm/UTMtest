@@ -147,6 +147,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000316.11246.PR_Get_PlatePlanOverview.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000317.11938.PR_PLAN_Reserve_Capacity.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
