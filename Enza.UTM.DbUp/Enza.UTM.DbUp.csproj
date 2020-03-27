@@ -153,6 +153,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000318.PR_Get_PlatePlanOverview.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000319.11250_BTR_Remove_tesetType.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
