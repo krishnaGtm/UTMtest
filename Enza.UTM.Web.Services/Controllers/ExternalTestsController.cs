@@ -72,6 +72,7 @@ namespace Enza.UTM.Web.Services.Controllers
                 TestName = System.IO.Path.GetFileNameWithoutExtension(fileName),
                 ExpectedDate = provider.FormData["expectedDate"].ToNDateTime(),
                 PageSize = provider.FormData["pageSize"].ToInt32(),
+                ExcludeControlPosition = provider.FormData["ExcludeControlPosition"].ToBoolean(),
                 DataStream = fs
             };
             var result = await _externalTestService.ImportDataAsync(args);

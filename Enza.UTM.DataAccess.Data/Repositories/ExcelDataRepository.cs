@@ -216,21 +216,11 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args1.Add("@Cumulate", requestArgs.Cumulate);
                     args1.Add("@ImportLevel", requestArgs.ImportLevel);
                     args1.Add("@TVPList", dtListTVP);
+                    args1.Add("@ExcludeControlPosition", requestArgs.ExcludeControlPosition);
                     args1.Add("@FileID", requestArgs.FileID);
                 });
             requestArgs.TestID = p1.Value.ToInt32();
         }
-
-        //public async Task<DataSet> ValidateColumnsForUniqueDeterminations(DataTable dtColumnsTVP, string crop,string source)
-        //{
-        //    return await DbContext.ExecuteDataSetAsync(DataConstants.PR_VALIDATE_COLUMNS_DETERMINATIONS,
-        //        CommandType.StoredProcedure, args1 =>
-        //        {
-        //            args1.Add("@TVPColumns", dtColumnsTVP);
-        //            args1.Add("Crop", crop);
-        //            args1.Add("@Source", source);
-        //        });
-        //}
 
         public async Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs)
         {

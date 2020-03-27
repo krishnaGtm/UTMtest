@@ -20,6 +20,7 @@ namespace Enza.UTM.Entities.Args
         public int? ContainerTypeID { get; set; }
         public bool Isolated { get; set; }
         public string Source { get; set; }
+        public bool ExcludeControlPosition { get; set; }
 
         [SwaggerExclude]
         public Stream DataStream { get; set; }
