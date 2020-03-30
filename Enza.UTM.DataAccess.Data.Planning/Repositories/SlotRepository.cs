@@ -229,5 +229,15 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                 Data = data
             };
         }
+        public async Task<DataTable> GetApprovedSlotsAsync(string slotName)
+        {
+            var ds = await DbContext.ExecuteDataSetAsync(DataConstants.PR_PLAN_GET_APPROVED_SLOTS,
+                CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@SlotName", slotName);
+                });
+            return ds.Tables[0];
+        }
     }
 }
