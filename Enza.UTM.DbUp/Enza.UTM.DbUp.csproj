@@ -162,6 +162,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000321.11351_PR_Get_PlatePlanOverview.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000322.7848_PR_PLAN_GetCurrentPeriod.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
