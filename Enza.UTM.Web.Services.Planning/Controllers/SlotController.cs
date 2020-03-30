@@ -88,5 +88,12 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             var data = await slotService.EditSlotAsync(args);
             return Ok(data);
         }
+
+        [Route("GetApprovedSlots")]
+        public async Task<IHttpActionResult> GetApprovedSlots(string slotName)
+        {
+            var data = await slotService.GetApprovedSlotsAsync(slotName);
+            return Ok(data);
+        }
     }
 }

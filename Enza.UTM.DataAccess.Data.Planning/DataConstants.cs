@@ -27,5 +27,6 @@
         public const string PR_PLAN_REMOVE_SLOT = "PR_PLAN_Remove_Slot";
         public const string PR_PLAN_MOVE_CAPACITY_SLOT = "PR_PLAN_Move_Capacity_Slot";
         public const string PR_PLAN_EDIT_SLOT = "PR_PLAN_EditSlot";
+        public const string PR_PLAN_GET_APPROVED_SLOTS = "PR_PLAN_GetApprovedSlots";
     }
 }
