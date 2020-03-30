@@ -493,9 +493,11 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //we need a job status to know whether job is successfully queued on phenome.
                                             LogInfo("run job for upload file successful.");
 
-                                            var materialIds = from t1 in dataPerTest
-                                                              join t2 in MaterialKey on t1.Materialkey equals t2
-                                                              select t1.WellID;
+                                            //var materialIds = from t1 in dataPerTest
+                                            //                  join t2 in MaterialKey on t1.Materialkey equals t2
+                                            //                  select t1.WellID;
+
+                                            var materialIds = dataPerTest.ToList().Select(x => x.WellID);
                                             var wells = string.Join(",", materialIds.Distinct());
                                             //var wells = string.Join(",", dataPerTest.Select(x => x.WellID)):
                                             await MarkSentResult(wells, test.TestID);
