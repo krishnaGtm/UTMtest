@@ -544,6 +544,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
         private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID)
         {
+            LogInfo($"Set observation columns on field {fieldID}");
             var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
 
             var response = await client.PostAsync(Url, new MultipartFormDataContent
@@ -572,12 +573,13 @@ namespace Enza.UTM.BusinessAccess.Services
             content1.Add(new StringContent("7"), "fieldEntityType");//variableName
             content1.Add(new StringContent(""), "variableName");
 
+            LogInfo($"Calling set observation parameter for {fieldID}");
+
             foreach (var _a in a)
             {
+                LogInfo($"selectedVariablesIds: {_a.variable_id.ToText()}");
                 content1.Add(new StringContent(_a.variable_id.ToText()), "selectedVariablesIds");
             }
-
-
 
             var setColResp = await client.PostAsync(Url, content1, 600);
             await setColResp.EnsureSuccessStatusCodeAsync();
