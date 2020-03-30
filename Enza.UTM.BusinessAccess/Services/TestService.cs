@@ -544,50 +544,59 @@ namespace Enza.UTM.BusinessAccess.Services
 
         private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID)
         {
-            LogInfo($"Set observation columns on field {fieldID}");
-            var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
+            if (distinctTraits.Any())
+            {
+                LogInfo($"Set observation columns on field {fieldID}");
+                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
 
-            var response = await client.PostAsync(Url, new MultipartFormDataContent
+                var response = await client.PostAsync(Url, new MultipartFormDataContent
                                         {
                                             { new StringContent("24"), "object_type" },
                                             { new StringContent(fieldID), "object_id" },
                                             { new StringContent(fieldID), "base_entity_id" }
                                         }, 600);
-            await response.EnsureSuccessStatusCodeAsync();
-            var respCreateCol = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
+                await response.EnsureSuccessStatusCodeAsync();
+                var respCreateCol = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
 
 
-            var a = (from x in respCreateCol?.All_Columns
-                     join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
-                     select new
-                     {
-                         x.variable_id
-                     }).ToList();
+                var a = (from x in respCreateCol?.All_Columns
+                         join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                         select new
+                         {
+                             x.variable_id
+                         }).ToList();
+                if (!a.Any())
+                {
+                    LogError("No columns found to add observation column");
+                    return false;
+                }
 
-            Url = "/api/v2/fieldentity/columns/set/Existing";
+                Url = "/api/v2/fieldentity/columns/set/Existing";
 
-            var content1 = new MultipartFormDataContent();
-            content1.Add(new StringContent("2"), "addFactorVariablesType");
-            content1.Add(new StringContent("1"), "variableType");
-            content1.Add(new StringContent(fieldID), "objectId");
-            content1.Add(new StringContent("7"), "fieldEntityType");//variableName
-            content1.Add(new StringContent(""), "variableName");
+                var content1 = new MultipartFormDataContent();
+                content1.Add(new StringContent("2"), "addFactorVariablesType");
+                content1.Add(new StringContent("1"), "variableType");
+                content1.Add(new StringContent(fieldID), "objectId");
+                content1.Add(new StringContent("7"), "fieldEntityType");//variableName
+                content1.Add(new StringContent(""), "variableName");
 
-            LogInfo($"Calling set observation parameter for {fieldID}");
+                LogInfo($"Calling set observation parameter for {fieldID}");
 
-            foreach (var _a in a)
-            {
-                LogInfo($"selectedVariablesIds: {_a.variable_id.ToText()}");
-                content1.Add(new StringContent(_a.variable_id.ToText()), "selectedVariablesIds");
-            }
+                foreach (var _a in a)
+                {
+                    LogInfo($"selectedVariablesIds: {_a.variable_id.ToText()}");
+                    content1.Add(new StringContent(_a.variable_id.ToText()), "selectedVariablesIds");
+                }
 
-            var setColResp = await client.PostAsync(Url, content1, 600);
-            await setColResp.EnsureSuccessStatusCodeAsync();
-            var setColRespDesc = await setColResp.Content.DeserializeAsync<PhenomeResponse>();
+                var setColResp = await client.PostAsync(Url, content1, 600);
+                await setColResp.EnsureSuccessStatusCodeAsync();
+                var setColRespDesc = await setColResp.Content.DeserializeAsync<PhenomeResponse>();
 
-            if(!setColRespDesc.Success)
-            {
-                return false;
+                if (!setColRespDesc.Success)
+                {
+                    return false;
+                }
+                return true;
             }
             return true;
         }
