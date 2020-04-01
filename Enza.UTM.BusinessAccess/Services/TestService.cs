@@ -196,11 +196,13 @@ namespace Enza.UTM.BusinessAccess.Services
                             //.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
                             .GroupBy(x => new { x.InvalidPer, x.FieldID, x.TestID })
                             .ToList();
+                        var level = "";
 
                         foreach (var dataPerTest in dataPerTests)
                         {
                             try
                             {
+                                level = "Plant";
                                 //var dataPerTest1 = dataPerTest.ToList();
                                 missingConversionList.Clear();
                                 //var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
@@ -209,6 +211,12 @@ namespace Enza.UTM.BusinessAccess.Services
                                 var testId = dataPerTest.FirstOrDefault().TestID;
                                 var testName = dataPerTest.FirstOrDefault().TestName;
                                 var cropCode = dataPerTest.FirstOrDefault().CropCode;
+
+                                var firstResult = result.FirstOrDefault();
+                                if(firstResult.ListID.ToText() == firstResult.Materialkey)
+                                {
+                                    level = "List";
+                                }
 
                                 #region Cummulate result
                                 var data = result.Where(x => x.Cummulate || x.ListID.ToText() == x.Materialkey).Select(x => new TestResultCumulate
@@ -320,7 +328,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                 });
 
                                 //set colummn before creating observation record
-                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID);
+                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID, level);
                                 if (!setColResp)
                                 {
                                     invalidTests.Add(dataPerTest.Key.TestID);
@@ -544,13 +552,15 @@ namespace Enza.UTM.BusinessAccess.Services
             return success;
         }
 
-        private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID)
+        private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID, string level)
         {
             if (distinctTraits.Any())
             {
+                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldPlants";
                 LogInfo($"Set observation columns on field {fieldID}");
-                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
-
+                if (level == "List")
+                    Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
+               
                 var response = await client.PostAsync(Url, new MultipartFormDataContent
                                         {
                                             { new StringContent("24"), "object_type" },
