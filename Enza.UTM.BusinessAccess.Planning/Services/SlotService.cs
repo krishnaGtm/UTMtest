@@ -176,9 +176,9 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             return res;
         }
 
-        public Task<DataTable> GetApprovedSlotsAsync(string slotName)
+        public Task<DataTable> GetApprovedSlotsAsync(string userName, string slotName)
         {
-            return _repository.GetApprovedSlotsAsync(slotName);
+            return _repository.GetApprovedSlotsAsync(userName, slotName);
         }
     }
 }

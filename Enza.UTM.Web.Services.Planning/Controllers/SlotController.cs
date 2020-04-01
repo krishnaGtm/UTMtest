@@ -92,8 +92,13 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         [Authorize(Roles = AppRoles.PUBLIC)]
         [Route("GetApprovedSlots")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetApprovedSlots(string slotName)
+        public async Task<IHttpActionResult> GetApprovedSlots(bool userSlotsOnly, string slotName)
         {
+            var userName = string.Empty;
+            if (userSlotsOnly)
+            {
+                userName = User.Identity.Name;
+            }
             var data = await slotService.GetApprovedSlotsAsync(slotName);
             return Ok(data);
         }
