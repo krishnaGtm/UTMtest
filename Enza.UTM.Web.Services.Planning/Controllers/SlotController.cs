@@ -99,7 +99,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             {
                 userName = User.Identity.Name;
             }
-            var data = await slotService.GetApprovedSlotsAsync(slotName);
+            var data = await slotService.GetApprovedSlotsAsync(userName, slotName);
             return Ok(data);
         }
     }
