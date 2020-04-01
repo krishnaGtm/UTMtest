@@ -148,6 +148,9 @@ namespace Enza.UTM.BusinessAccess.Services
             var success = true;
             var missingConversionList = new List<MissingConversion>();
             var invalidTests = new List<int>();
+
+            //await SendTestCompletionEmailAsync("TO", "NLEN", "Sample Plate Plan Name");
+
             LogInfo("Validate test for mapping relation.");
             //get list of valid tests which contains results.
             var tests = await repository.GetTestsForTraitDeterminationResultsAsync(source);
@@ -424,8 +427,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                             status = jsonresp["status"];
 
                                             await Task.Delay(1000);
-
-
                                         }
                                         if (status.ToText() == "1")
                                         {
@@ -666,11 +667,10 @@ namespace Enza.UTM.BusinessAccess.Services
         {
             //get test complete email body template
             var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
-
             //send test completion email to respective groups
             var body = Template.Render(testCompleteBoy, new
             {
-                platePlanName
+                PlatePlanName = platePlanName
             });
 
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
@@ -697,7 +697,8 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 LogInfo($"Sending Test completion email of plate plan: {platePlanName} to following recipients: {string.Join(",", tos)}");
                 var subject = $"Plate plan {platePlanName} changed to completed";
-                await emailService.SendEmailAsync(tos, subject.AddEnv(), body);
+                var sender = ConfigurationManager.AppSettings["TestCompletedEmailSender"];
+                await emailService.SendEmailAsync(sender, tos, subject.AddEnv(), body);
                 LogInfo($"Sending Test completion email completed.");
             }
         }
