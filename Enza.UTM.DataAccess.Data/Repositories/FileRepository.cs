@@ -51,7 +51,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     PlatePlanName = reader.Get<string>(19),
                     Source = reader.Get<string>(20),
                     Cumulate = reader.Get<bool>(21),
-                    ImportLevel = reader.Get<string>(22)
+                    ImportLevel = reader.Get<string>(22),
+                    ExcludeControlPosition = reader.Get<bool>(23)
                 });
         }
 

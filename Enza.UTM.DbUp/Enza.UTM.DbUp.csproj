@@ -180,6 +180,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000327.11245_PR_PLAN_GetApprovedSlots.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000328.PR_Get_Files.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

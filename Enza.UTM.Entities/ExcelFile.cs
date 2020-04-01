@@ -27,5 +27,6 @@ namespace Enza.UTM.Entities
         public string Source { get; set; }
         public bool Cumulate { get; set; }
         public string ImportLevel { get; set; }
+        public bool ExcludeControlPosition { get; set; }
     }
 }
