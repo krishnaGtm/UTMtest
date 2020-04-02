@@ -187,6 +187,7 @@
     <EmbeddedResource Include="Scripts\000329.11250.PR_Insert_ExcelData.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000331.11250.PR_Import_ExternalData.sql" />
     <EmbeddedResource Include="Scripts\000330.11250.PR_GetPunchList.sql" />
   </ItemGroup>
   <ItemGroup>
