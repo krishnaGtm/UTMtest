@@ -706,7 +706,7 @@ namespace Enza.UTM.BusinessAccess.Services
             if (tos.Any())
             {
                 LogInfo($"Sending Test completion email of plate plan: {platePlanName} to following recipients: {string.Join(",", tos)}");
-                var subject = $"Plate plan {platePlanName} changed to completed";
+                var subject = $"Folder {platePlanName} changed to completed";
                 var sender = ConfigurationManager.AppSettings["TestCompletedEmailSender"];
                 await emailService.SendEmailAsync(sender, tos, subject.AddEnv(), body);
                 LogInfo($"Sending Test completion email completed.");
