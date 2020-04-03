@@ -17,6 +17,6 @@ namespace Enza.UTM.DataAccess.Data.Planning.Interfaces
         Task<DataTable> GetPlannedOverviewAsync(int year, int? periodID);
         Task<BreedingOverviewResult> GetBreedingOverviewAsync(BreedingOverviewRequestArgs requestArgs);
         Task<EditSlotResult> EditSlotAsync(EditSlotRequestArgs args);
-        Task<DataTable> GetApprovedSlotsAsync(string userName, string slotName);
+        Task<DataTable> GetApprovedSlotsAsync(string userName, string slotName, string crops);
     }
 }

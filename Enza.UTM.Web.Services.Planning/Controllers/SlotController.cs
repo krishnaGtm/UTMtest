@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
+using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
@@ -99,7 +100,8 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             {
                 userName = User.Identity.Name;
             }
-            var data = await slotService.GetApprovedSlotsAsync(userName, slotName);
+            var crops = string.Join(",", User.GetClaims("enzauth.crops"));
+            var data = await slotService.GetApprovedSlotsAsync(userName, slotName, crops);
             return Ok(data);
         }
     }
