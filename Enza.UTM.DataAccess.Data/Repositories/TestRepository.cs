@@ -152,7 +152,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     PlantNr = o.Field<string>("PlantNr"),
                     PlantName = o.Field<string>("PlantName"),
                     BreedingStationCode = o.Field<string>("BreedingStationCode")
-                });
+                }).OrderBy(x => new { x.LimsPlateID, x.PlateRow, x.PlateColumn });
 
             if (!items.Any())
                 throw new BusinessException($"Couldn't find any plate information of the specified TestID = {testID}.");
@@ -177,7 +177,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                         PlantNr = w.PlantNr,
                         PlantName = w.PlantName,
                         BreedingStationCode = w.BreedingStationCode
-                    }).ToList(),
+                    }).OrderBy(a => new { a.PlateRow, a.PlateColumn }).ToList(),
                     Markers = markers.Where(m => m.LimsPlateID == o.Key.LimsPlateID).Select(m => new MarkerInfo
                     {
                         MarkerNr = m.MarkerNr,
