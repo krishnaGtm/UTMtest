@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enza.UTM.Entities", "Enza.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enza.UTM.Tests", "Enza.UTM.Tests\Enza.UTM.Tests.csproj", "{50D98267-CFAD-4A51-93D4-36CA403564B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enza.UTM.Web", "Enza.UTM.Web\Enza.UTM.Web.csproj", "{253F6E42-6C09-442B-B494-76BE2F0FAAEB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enza.UTM.Web.Services", "Enza.UTM.Web.Services\Enza.UTM.Web.Services.csproj", "{DF977E00-D5CE-4683-9FDA-466E6F5C8B77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enza.UTM.Web.Services.Soap", "Enza.UTM.Web.Services.Soap\Enza.UTM.Web.Services.Soap.csproj", "{7C1A1400-868A-4B0E-A0BB-D1B807D9E136}"
@@ -71,10 +69,6 @@ Global
 		{50D98267-CFAD-4A51-93D4-36CA403564B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50D98267-CFAD-4A51-93D4-36CA403564B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50D98267-CFAD-4A51-93D4-36CA403564B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{253F6E42-6C09-442B-B494-76BE2F0FAAEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{253F6E42-6C09-442B-B494-76BE2F0FAAEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{253F6E42-6C09-442B-B494-76BE2F0FAAEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{253F6E42-6C09-442B-B494-76BE2F0FAAEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF977E00-D5CE-4683-9FDA-466E6F5C8B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF977E00-D5CE-4683-9FDA-466E6F5C8B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF977E00-D5CE-4683-9FDA-466E6F5C8B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
