@@ -152,7 +152,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     PlantNr = o.Field<string>("PlantNr"),
                     PlantName = o.Field<string>("PlantName"),
                     BreedingStationCode = o.Field<string>("BreedingStationCode")
-                });
+                }).ToList();
 
             if (!items.Any())
                 throw new BusinessException($"Couldn't find any plate information of the specified TestID = {testID}.");
