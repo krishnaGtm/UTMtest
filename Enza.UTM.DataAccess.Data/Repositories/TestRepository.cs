@@ -170,14 +170,14 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 {
                     LimsPlateID = o.Key.LimsPlateID,
                     LimsPlateName = o.Key.LimsPlateName,
-                    Wells = o.Select(w => new WellInfo
+                    Wells = o.OrderBy(x=> x.PlateRow).ThenBy(x=>x.PlateColumn).Select(w => new WellInfo
                     {
                         PlateColumn = w.PlateColumn,
                         PlateRow = w.PlateRow,
                         PlantNr = w.PlantNr,
                         PlantName = w.PlantName,
                         BreedingStationCode = w.BreedingStationCode
-                    }).OrderBy(a => new { a.PlateRow, a.PlateColumn }).ToList(),
+                    }).ToList(),
                     Markers = markers.Where(m => m.LimsPlateID == o.Key.LimsPlateID).Select(m => new MarkerInfo
                     {
                         MarkerNr = m.MarkerNr,
