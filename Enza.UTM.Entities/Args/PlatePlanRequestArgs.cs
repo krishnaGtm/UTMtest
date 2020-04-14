@@ -7,6 +7,7 @@ namespace Enza.UTM.Entities.Args
 {
     public class PlatePlanRequestArgs : PagedRequestArgs
     {
+        public bool? Active { get; set; }
         public string Crops { get; set; }
 
     }

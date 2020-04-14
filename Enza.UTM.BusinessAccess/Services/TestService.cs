@@ -148,6 +148,9 @@ namespace Enza.UTM.BusinessAccess.Services
             var success = true;
             var missingConversionList = new List<MissingConversion>();
             var invalidTests = new List<int>();
+
+            //await SendTestCompletionEmailAsync("TO", "NLEN", "Sample Plate Plan Name");
+
             LogInfo("Validate test for mapping relation.");
             //get list of valid tests which contains results.
             var tests = await repository.GetTestsForTraitDeterminationResultsAsync(source);
@@ -196,11 +199,13 @@ namespace Enza.UTM.BusinessAccess.Services
                             //.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
                             .GroupBy(x => new { x.InvalidPer, x.FieldID, x.TestID })
                             .ToList();
+                        var level = "";
 
                         foreach (var dataPerTest in dataPerTests)
                         {
                             try
                             {
+                                level = "Plant";
                                 //var dataPerTest1 = dataPerTest.ToList();
                                 missingConversionList.Clear();
                                 //var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
@@ -209,6 +214,12 @@ namespace Enza.UTM.BusinessAccess.Services
                                 var testId = dataPerTest.FirstOrDefault().TestID;
                                 var testName = dataPerTest.FirstOrDefault().TestName;
                                 var cropCode = dataPerTest.FirstOrDefault().CropCode;
+
+                                var firstResult = result.FirstOrDefault();
+                                if(firstResult.ListID.ToText() == firstResult.Materialkey)
+                                {
+                                    level = "List";
+                                }
 
                                 #region Cummulate result
                                 var data = result.Where(x => x.Cummulate || x.ListID.ToText() == x.Materialkey).Select(x => new TestResultCumulate
@@ -317,7 +328,16 @@ namespace Enza.UTM.BusinessAccess.Services
                                 {
                                     Count = x.Max(o => o.Count1),
                                     x.Key.Materialkey
-                                });                   
+                                });
+
+                                //set colummn before creating observation record
+                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID, level);
+                                if (!setColResp)
+                                {
+                                    invalidTests.Add(dataPerTest.Key.TestID);
+                                    LogError($"Unable to set column for field: {dataPerTest.Key.FieldID}");
+                                    throw new Exception($"Unable to set column for field: {dataPerTest.Key.FieldID}");
+                                }
 
                                 var discinctCount = distinctMaterialWithCount.GroupBy(x => x.Count).Select(x => x.Key);
                                 foreach (var materialcount in discinctCount)
@@ -415,8 +435,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                             status = jsonresp["status"];
 
                                             await Task.Delay(1000);
-
-
                                         }
                                         if (status.ToText() == "1")
                                         {
@@ -484,9 +502,11 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //we need a job status to know whether job is successfully queued on phenome.
                                             LogInfo("run job for upload file successful.");
 
-                                            var materialIds = from t1 in dataPerTest
-                                                              join t2 in MaterialKey on t1.Materialkey equals t2
-                                                              select t1.WellID;
+                                            //var materialIds = from t1 in dataPerTest
+                                            //                  join t2 in MaterialKey on t1.Materialkey equals t2
+                                            //                  select t1.WellID;
+
+                                            var materialIds = dataPerTest.ToList().Select(x => x.WellID);
                                             var wells = string.Join(",", materialIds.Distinct());
                                             //var wells = string.Join(",", dataPerTest.Select(x => x.WellID)):
                                             await MarkSentResult(wells, test.TestID);
@@ -533,7 +553,66 @@ namespace Enza.UTM.BusinessAccess.Services
             return success;
         }
 
-        
+        private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID, string level)
+        {
+            if (distinctTraits.Any())
+            {
+                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldPlants";
+                LogInfo($"Set observation columns on field {fieldID}");
+                if (level == "List")
+                    Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
+               
+                var response = await client.PostAsync(Url, new MultipartFormDataContent
+                                        {
+                                            { new StringContent("24"), "object_type" },
+                                            { new StringContent(fieldID), "object_id" },
+                                            { new StringContent(fieldID), "base_entity_id" }
+                                        }, 600);
+                await response.EnsureSuccessStatusCodeAsync();
+                var respCreateCol = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
+
+
+                var a = (from x in respCreateCol?.All_Columns
+                         join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                         select new
+                         {
+                             x.variable_id
+                         }).ToList();
+                if (!a.Any())
+                {
+                    LogError("No columns found to add observation column");
+                    return false;
+                }
+
+                Url = "/api/v2/fieldentity/columns/set/Existing";
+
+                var content1 = new MultipartFormDataContent();
+                content1.Add(new StringContent("2"), "addFactorVariablesType");
+                content1.Add(new StringContent("1"), "variableType");
+                content1.Add(new StringContent(fieldID), "objectId");
+                content1.Add(new StringContent("7"), "fieldEntityType");//variableName
+                content1.Add(new StringContent(""), "variableName");
+
+                LogInfo($"Calling set observation parameter for {fieldID}");
+
+                foreach (var _a in a)
+                {
+                    LogInfo($"selectedVariablesIds: {_a.variable_id.ToText()}");
+                    content1.Add(new StringContent(_a.variable_id.ToText()), "selectedVariablesIds");
+                }
+
+                var setColResp = await client.PostAsync(Url, content1, 600);
+                await setColResp.EnsureSuccessStatusCodeAsync();
+                var setColRespDesc = await setColResp.Content.DeserializeAsync<PhenomeResponse>();
+
+                if (!setColRespDesc.Success)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
 
         public async Task<string> DeleteTestAsync(DeleteTestRequestArgs args)
         {
@@ -598,11 +677,10 @@ namespace Enza.UTM.BusinessAccess.Services
         {
             //get test complete email body template
             var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
-
             //send test completion email to respective groups
             var body = Template.Render(testCompleteBoy, new
             {
-                platePlanName
+                PlatePlanName = platePlanName
             });
 
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
@@ -628,11 +706,18 @@ namespace Enza.UTM.BusinessAccess.Services
             if (tos.Any())
             {
                 LogInfo($"Sending Test completion email of plate plan: {platePlanName} to following recipients: {string.Join(",", tos)}");
-                var subject = $"Plate plan {platePlanName} changed to completed";
-                await emailService.SendEmailAsync(tos, subject.AddEnv(), body);
+                var subject = $"Folder {platePlanName} changed to completed";
+                var sender = ConfigurationManager.AppSettings["TestCompletedEmailSender"];
+                await emailService.SendEmailAsync(sender, tos, subject.AddEnv(), body);
                 LogInfo($"Sending Test completion email completed.");
             }
         }
+
+        public async Task<int> GetTotalMarkerAsync(int testID)
+        {
+            return await repository.GetTotalMarkerAsync(testID);
+        }
+
 
         #region Private Methods
 
@@ -978,7 +1063,8 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 Materialkey = x.ListID,
                 TraitValue = x.FinalScore,
-                ColumnLabel = x.ColumnLabel
+                ColumnLabel = x.ColumnLabel,
+                IsValid = string.IsNullOrWhiteSpace(x.FinalScore)?false:true
             }).ToList();
 
             return await Task.FromResult(rs);
@@ -1088,7 +1174,6 @@ namespace Enza.UTM.BusinessAccess.Services
             }
         }
 
-       
 
         #endregion
 

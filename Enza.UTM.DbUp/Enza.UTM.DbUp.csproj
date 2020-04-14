@@ -131,6 +131,77 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000312.11250_Add_BTR no control.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000313.11248_PR_PLAN_GetSlotsForBreeder.sql" />
+    <EmbeddedResource Include="Scripts\000313.11244_Add_PR_Get_Total_Marker.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000312.11250_Feed_Data_Determination.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000314..7848_PR_PLAN_GetPlannedOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000315..7848_PR_PLAN_GetPlannedOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000316.11246.PR_Get_PlatePlanOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000317.11938.PR_PLAN_Reserve_Capacity.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000318.PR_Get_PlatePlanOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000319.11250_BTR_Remove_tesetType.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000320.11250_SP_Changes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000321.11351_PR_Get_PlatePlanOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000322.7848_PR_PLAN_GetCurrentPeriod.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000323.11245_PR_PLAN_GetApprovedSlots.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000324.11245_PR_PLAN_GetApprovedSlots.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000325.11351_PR_GET_PlatePlan_With_Result.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000326.11351_PR_GET_PlatePlan_With_Result.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000327.11245_PR_PLAN_GetApprovedSlots.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000328.PR_Get_Files.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000329.11250.PR_Insert_ExcelData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000331.11250.PR_Import_ExternalData.sql" />
+    <EmbeddedResource Include="Scripts\000330.11250.PR_GetPunchList.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000331.11250.SP_Changes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000331.11251.SP_Changes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000332.11251.SP_Changes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000333.11245.SP_Changes.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -152,7 +152,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     PlantNr = o.Field<string>("PlantNr"),
                     PlantName = o.Field<string>("PlantName"),
                     BreedingStationCode = o.Field<string>("BreedingStationCode")
-                });
+                }).ToList();
 
             if (!items.Any())
                 throw new BusinessException($"Couldn't find any plate information of the specified TestID = {testID}.");
@@ -170,7 +170,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 {
                     LimsPlateID = o.Key.LimsPlateID,
                     LimsPlateName = o.Key.LimsPlateName,
-                    Wells = o.Select(w => new WellInfo
+                    Wells = o.OrderBy(x=> x.PlateRow).ThenBy(x=>x.PlateColumn).Select(w => new WellInfo
                     {
                         PlateColumn = w.PlateColumn,
                         PlateRow = w.PlateRow,
@@ -387,6 +387,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 CommandType.StoredProcedure,
                 args =>
                 {
+                    args.Add("@Active", requestArgs.Active);
                     args.Add("@Crops", requestArgs.Crops);
                     args.Add("@Filter", requestArgs.ToFilterString());
                     args.Add("@Sort", "");
@@ -449,6 +450,18 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 args.Add("@TestID", testID);
             });
 
+        }
+        public async Task<int> GetTotalMarkerAsync(int testID)
+        {
+            var p1 = DbContext.CreateOutputParameter("@TotalMarker", DbType.Int32);
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_GET_TOTAL_MARKER,
+              CommandType.StoredProcedure,
+            args =>
+            {
+                args.Add("@TestID", testID);
+                args.Add("@TotalMarker", p1);
+            });
+            return p1.Value.ToInt32();
         }
 
         public async Task<bool> GetSettingToExcludeScoreAsync(int testId)

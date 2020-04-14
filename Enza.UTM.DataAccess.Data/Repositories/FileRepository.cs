@@ -51,7 +51,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     PlatePlanName = reader.Get<string>(19),
                     Source = reader.Get<string>(20),
                     Cumulate = reader.Get<bool>(21),
-                    ImportLevel = reader.Get<string>(22)
+                    ImportLevel = reader.Get<string>(22),
+                    ExcludeControlPosition = reader.Get<bool>(23)
                 });
         }
 
@@ -85,7 +86,9 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     WellsPerPlate = reader.Get<int>(16),
                     BreedingStationCode = reader.Get<string>(17),
                     ExpectedDate = reader.Get<DateTime>(18),
-                    Cumulate = reader.Get<bool>(21)
+                    Cumulate = reader.Get<bool>(21),
+                    ImportLevel = reader.Get<string>(22),
+                    ExcludeControlPosition = reader.Get<bool>(23)
                 });
             return files.FirstOrDefault();
         }

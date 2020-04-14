@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
+using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
@@ -86,6 +87,21 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         public async Task<IHttpActionResult> EditSlot([FromBody]EditSlotRequestArgs args)
         {
             var data = await slotService.EditSlotAsync(args);
+            return Ok(data);
+        }
+        [OverrideAuthorization]
+        [Authorize(Roles = AppRoles.PUBLIC)]
+        [Route("GetApprovedSlots")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetApprovedSlots(bool userSlotsOnly, string slotName)
+        {
+            var userName = string.Empty;
+            if (userSlotsOnly)
+            {
+                userName = User.Identity.Name;
+            }
+            var crops = string.Join(",", User.GetClaims("enzauth.crops"));
+            var data = await slotService.GetApprovedSlotsAsync(userName, slotName, crops);
             return Ok(data);
         }
     }

@@ -69,6 +69,7 @@ namespace Enza.UTM.Web.Services.Controllers
                 DataStream = stream,
                 ExpectedDate = provider.FormData["expectedDate"].ToNDateTime(),
                 Cumulate = provider.FormData["cumulate"].ToBoolean(),
+                ExcludeControlPosition = provider.FormData["excludeControlPosition"].ToBoolean()
             };
             var data = await excelDataService.ExportExcelDataToDBAsync(args);
             //get recently uploaded file details

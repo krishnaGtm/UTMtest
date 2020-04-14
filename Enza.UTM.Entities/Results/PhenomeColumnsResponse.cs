@@ -39,7 +39,9 @@ namespace Enza.UTM.Entities.Results
         {
             properties = new List<GermplasmColumnProperty>();
         }
+        public string desc { get; set; }
         public string col_num { get; set; }
+        public string variable_id { get; set; }
         public List<GermplasmColumnProperty> properties { get; set; }
     }
     public class GermplasmColumnProperty
