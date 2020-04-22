@@ -110,7 +110,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args.Add("@Cumulate", false);
                     args.Add("@ImportLevel", "PLT");
                     args.Add("@ExcludeControlPosition", requestArgs.ExcludeControlPosition);
-                    args.Add("@FileID", 0);
+                    args.Add("@FileID", requestArgs.FileID);
                 });
             requestArgs.TestID = p1.Value.ToInt32();
         }        
