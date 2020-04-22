@@ -18,5 +18,6 @@ namespace Enza.UTM.Entities.Args
         public string GridID { get; set; }
         public string CropCode { get; set; }
         public bool ForcedImport { get; set; }
+        public int FileID { get; set; }
     }    
 }
