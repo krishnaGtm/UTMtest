@@ -202,6 +202,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000333.11245.SP_Changes.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000334.12732.PR_CNT_ImportMaterials.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000335.12732.PR_CNT_GetDataWithMarker.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000336.12732.PR_CNT_GetDataWithMarker.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

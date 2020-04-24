@@ -598,6 +598,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args.Add("@TVPCell", tVPCells);
                     args.Add("@TVPList", tVPList);
                     args.Add("@DonorNrColumnName", donorNrColumnName);
+                    args.Add("@FileID", requestArgs.FileID);
                 });
             requestArgs.TestID = p1.Value.ToInt32();
         }
