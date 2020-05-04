@@ -137,7 +137,7 @@ BEGIN
 	 T.MaterialStateID,  
 	 T.MaterialTypeID,  
 	 T.ContainerTypeID,  
-	 MaterialReplicated = 0,-- CAST((CASE WHEN ISNULL(T2.ReplicatedCount,1) = 1 THEN 0 ELSE 1 END) AS BIT),  
+	 MaterialReplicated = CAST(0 AS BIT),-- CAST((CASE WHEN ISNULL(T2.ReplicatedCount,1) = 1 THEN 0 ELSE 1 END) AS BIT),  
 	 T.PlannedDate,  
 	 T.Isolated,  
 	 ST1.SlotID,  
