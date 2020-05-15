@@ -13,5 +13,10 @@ namespace Enza.UTM.Services.EmailTemplates
         {
             return typeof(EmailTemplate).Assembly.GetString("Enza.UTM.Services.EmailTemplates.TestCompleteNotification.st");
         }
+
+        public static string GetColumnSetErrorEmailTemplate()
+        {
+            return typeof(EmailTemplate).Assembly.GetString("Enza.UTM.Services.EmailTemplates.SetColumnError.st");
+        }
     }
 }
