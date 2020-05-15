@@ -329,10 +329,17 @@ namespace Enza.UTM.BusinessAccess.Services
                                 var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID);
                                 if (!setColResp)
                                 {
-                                    //send email for not able to set column to user
-                                    
-                                    invalidTests.Add(dataPerTest.Key.TestID);
-                                    await SendAddColumnErrorEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                    if(test.StatusCode < 650)
+                                    {
+                                        invalidTests.Add(dataPerTest.Key.TestID);
+                                        await SendAddColumnErrorEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                        //update test status
+                                        await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+                                        {
+                                            TestId = testId,
+                                            StatusCode = 650
+                                        });
+                                    }
                                     continue;
                                 }
 

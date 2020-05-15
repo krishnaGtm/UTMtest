@@ -367,7 +367,15 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         public Task<IEnumerable<TraitDeterminationResultTest>> GetTestsForTraitDeterminationResultsAsync(string source)
         {
-            return DbContext.ExecuteReaderAsync(DataConstants.PR_GET_TESTS_FOR_TRAIT_DETERMINATION_RESULTS, CommandType.StoredProcedure, args =>
+            var query = @"SELECT 
+		                        T.TestID,
+		                        T.TestName,
+		                        T.StatusCode,
+                                T.LabPlatePlanName,
+                                T.BreedingStationCode	
+	                        FROM Test T 
+	                        WHERE T.RequestingSystem  = @Source AND T.StatusCode BETWEEN 600 AND 650 AND TestTypeID = 1";
+            return DbContext.ExecuteReaderAsync(query, CommandType.Text, args =>
             {
                 args.Add("@Source", source);
             },
