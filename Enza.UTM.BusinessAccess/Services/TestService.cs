@@ -502,7 +502,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             await responseToUpload.EnsureSuccessStatusCodeAsync();
 
                                             var runJobResp = await responseToUpload.Content.ReadAsStringAsync();
-                                                                                   
+
                                             //we need a job status to know whether job is successfully queued on phenome.
                                             LogInfo("run job for upload file successful.");
 
@@ -511,9 +511,9 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //                  select t1.WellID;
 
                                             var wellIDS = from x in dataPerTest.ToList()
-                                                       join y in MaterialKey on x.Materialkey.ToText() equals y
-                                                       select x.WellID;
-                                            
+                                                          join y in MaterialKey on x.Materialkey.ToText() equals y
+                                                          select x.WellID;
+
                                             var wells = string.Join(",", wellIDS.Distinct());
                                             await MarkSentResult(wells, test.TestID);
                                             LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
