@@ -217,6 +217,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000336.13089.SP_Changes.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000337.14158.Index_Added.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
