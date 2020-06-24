@@ -121,8 +121,8 @@ namespace Enza.UTM.Web.Services.Controllers
             {
                 TestID = args.TestID
             });
-            if(result1.StatusCode < 400)
-                return InvalidRequest("Unable to send request to LIMS without completing request.");
+            if(result1.StatusCode < 300)
+                return InvalidRequest("Unable to send request to LIMS without getting response of reserve plate from  LIMS.");
 
             await testService.FillPlatesInLimsAsync(args.TestID);
             //update teststatus when reserveplateservice call is success.
