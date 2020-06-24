@@ -183,7 +183,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                         MarkerNr = m.MarkerNr,
                         MarkerName = m.MarkerName
                     }).ToList()
-                }).ToList();
+                }).OrderBy(x=>x.LimsPlateID).ToList();
 
             var plate = items.FirstOrDefault();
             var rs = new PlateForLimsResult
