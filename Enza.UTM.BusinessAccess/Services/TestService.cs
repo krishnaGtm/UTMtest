@@ -529,7 +529,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             });                                            
                                             if(testDetail.StatusCode == 700)
                                             {
-                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName);
+                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName,test.TestID);
                                             }
                                             
                                         }
@@ -720,9 +720,8 @@ namespace Enza.UTM.BusinessAccess.Services
             return result;
         }
 
-        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName,string testName)
-        {
-            var testID = 0;
+        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName,string testName,int testID)
+        {            
             //get test complete email body template
             var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
             var slotDetail = await repository.GetSlotDetailForTestAsync(testID);
@@ -731,7 +730,7 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 PlatePlanName = platePlanName,
                 TestName = testName,
-                Remarks = slotDetail.Remarks
+                Remarks = slotDetail?.Remarks
             });
 
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
