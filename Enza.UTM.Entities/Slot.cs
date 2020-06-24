@@ -19,4 +19,11 @@ namespace Enza.UTM.Entities
         public DateTime PlannedDate { get; set; }
         public DateTime ExpectedDate { get; set; }
     }
+
+    public class Slot
+    {
+        public int SlotID { get; set; }
+        public string SlotName { get; set; }
+        public string Remarks { get; set; }
+    }
 }

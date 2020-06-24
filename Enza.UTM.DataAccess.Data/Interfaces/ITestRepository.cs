@@ -39,5 +39,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<DataSet> TestToExcelAsync(int testID);
         Task<bool> GetSettingToExcludeScoreAsync(int testId);
         Task<int> GetTotalMarkerAsync(int testID);
+        Task<Slot> GetSlotDetailForTestAsync(int testID);
     }
 }
