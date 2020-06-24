@@ -783,6 +783,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 }
 
                 var foundGIDColumn = false;
+                var foundEntryCodeColumn = false;
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var col = columns[i];
@@ -790,6 +791,10 @@ namespace Enza.UTM.BusinessAccess.Services
                     if (col.ColLabel.EqualsIgnoreCase("GID"))
                     {
                         foundGIDColumn = true;
+                    }
+                    else if (col.ColLabel.EqualsIgnoreCase("Entry Code"))
+                    {
+                        foundEntryCodeColumn = true;
                     }
                     dr["ColumnNr"] = i;
                     dr["TraitID"] = col.TraitID;
@@ -803,6 +808,12 @@ namespace Enza.UTM.BusinessAccess.Services
                     result.Errors.Add("GID column not found on " + args.Source + ". Please add GID column on data grid.");
                     return result;
                 }
+                if (!foundEntryCodeColumn)
+                {
+                    result.Errors.Add("Entry code column not found on " + args.Source + ". Please add Entry code column on data grid.");
+                    return result;
+                }
+
                 var getColIndex = new Func<string, int>(name =>
                 {
                     var fldName = columns.FirstOrDefault(o => o.ColLabel.EqualsIgnoreCase(name));
