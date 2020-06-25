@@ -2,10 +2,8 @@ Dear User,
 <br />
 <br/>
 
-Following test is changed to completed.<br/>
-FolderName: $Model.PlatePlanName$ <br/>
-TestName: $Model.TestName$ <br/>
-Remarks: $Model.Remarks$ <br/><br/>
+The folder $Model.PlatePlanName$, test $Model.TestName$ has changed to completed. <br/>
+SlotRemark: $Model.Remarks$ <br/><br/>
 
 Best Regards, <br/>
 BTA-MM lab
