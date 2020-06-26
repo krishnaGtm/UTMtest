@@ -246,13 +246,14 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                 //get setting for selected test whether score 9999 is required or not
                                 var cropSettings = await repository.GetSettingToExcludeScoreAsync(testId);
+                                var excludeList = new List<MigrationDataResult>();
                                 if(cropSettings)
                                 {
-                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank.
-                                    var excludeList = result.Where(x => x.DeterminationValue == "9999" || string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                    excludeList.Clear();
+                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank. but this list will have wellID value 0
+                                    excludeList = result.Where(x => x.DeterminationValue == "9999" || (string.IsNullOrWhiteSpace(x.TraitValue) && x.WellID <= 0)).ToList();
                                     result = result.Except(excludeList).ToList();
                                 }
-
                                 //send email for missing conversion and break current loop
                                 var data1 = result.Where(x => !x.IsValid).Select(x=>new MissingConversion
                                 {
@@ -511,10 +512,15 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //                  select t1.WellID;
 
 
-                                            var wellIDS = from x in dataPerTest.ToList()
+                                            var wellIDS = (from x in dataPerTest.ToList()
                                                           join y in MaterialKey on x.Materialkey.ToText() equals y
-                                                          select x.WellID;
+                                                          select x.WellID).ToList();
 
+                                            if(excludeList.Any())
+                                            {
+                                                wellIDS.AddRange(excludeList.Where(x => x.WellID > 0).Select(x => x.WellID));
+                                                excludeList.Clear();
+                                            }
                                             var wells = string.Join(",", wellIDS.Distinct());
                                             await MarkSentResult(wells, test.TestID);
                                             LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
