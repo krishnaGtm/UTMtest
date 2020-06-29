@@ -1033,24 +1033,23 @@ namespace Enza.UTM.BusinessAccess.Services
                     AcceptablePercentage = y.FirstOrDefault().InvalidPer,
                     Score = y.Select(z => new Scores
                     {
-                        Score = z.Score.Trim(),
-                        DetScore = z.DetScore.Trim()
+                        Score = z.Score?.Trim(),
+                        DetScore = z.DetScore?.Trim()
                     }).ToList()
                 }).ToList();
 
             foreach (var _result in result1)
             {
-                //_result.FinalScore = _result.Score[0]?.Score.ToString();
-                _result.FinalScore = _result.Score[0]?.DetScore.ToString();
+                _result.FinalScore = _result.Score[0]?.DetScore.ToText();
                 foreach (var _val in _result.Score)
                 {
-                    if (_val.DetScore.ToString() == "9999")
+                    if (_val.DetScore.ToText() == "9999")
                         _result.UndefinedCount++;
 
-                    if (_result.FinalScore != _val.DetScore.ToString() && _val.DetScore.ToString() != "9999" && _result.FinalScore != "9999")
+                    if (_result.FinalScore != _val.DetScore.ToText() && _val.DetScore.ToText() != "9999" && _result.FinalScore != "9999")
                         _result.Same = false;
 
-                    if (_val.DetScore.ToString() != "9999" && _result.FinalScore != _val.DetScore.ToString())
+                    if (_val.DetScore.ToText() != "9999" && _result.FinalScore != _val.DetScore.ToText())
                         _result.FinalScore = _val.DetScore.ToString();
                 }
                 decimal Undefinedpercentage = 0;
