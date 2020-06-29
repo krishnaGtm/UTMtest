@@ -507,11 +507,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //we need a job status to know whether job is successfully queued on phenome.
                                             LogInfo("run job for upload file successful.");
 
-                                            //var materialIds = from t1 in dataPerTest
-                                            //                  join t2 in MaterialKey on t1.Materialkey equals t2
-                                            //                  select t1.WellID;
-
-
                                             var wellIDS = (from x in dataPerTest.ToList()
                                                           join y in MaterialKey on x.Materialkey.ToText() equals y
                                                           select x.WellID).ToList();
@@ -541,6 +536,29 @@ namespace Enza.UTM.BusinessAccess.Services
                                     }
 
                                 }
+
+                                //this is required when all result are successfully sent and only exclude list remain
+                                if (excludeList.Any())
+                                {
+                                    var wellIDs = excludeList.Where(x => x.WellID > 0).Select(x => x.WellID).ToList();
+                                    excludeList.Clear();
+
+                                    var wells = string.Join(",", wellIDs.Distinct());
+                                    await MarkSentResult(wells, test.TestID);
+                                    LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
+
+                                    //only send test completing email for completed status (statusCode = 700)
+
+                                    var testDetail = await GetTestDetailAsync(new GetTestDetailRequestArgs
+                                    {
+                                        TestID = test.TestID
+                                    });
+                                    if (testDetail.StatusCode == 700)
+                                    {
+                                        await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                    }
+                                }
+                                
 
                             }
                             catch(BusinessException ex)
