@@ -556,7 +556,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     });
                                     if (testDetail.StatusCode == 700)
                                     {
-                                        await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                        await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName, test.TestID);
                                     }
                                 }
                                 
