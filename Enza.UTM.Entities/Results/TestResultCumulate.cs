@@ -31,6 +31,7 @@ namespace Enza.UTM.Entities.Results
         public int UndefinedCount { get; set; }
         public decimal AcceptablePercentage { get; set; }
         public string FinalScore { get; set; }
+        public string FinalDetScore { get; set; }
         public string ColumnLabel { get; set; }
     }
     public class Scores

@@ -1071,6 +1071,8 @@ namespace Enza.UTM.BusinessAccess.Services
                 else if( _result.Same == false)
                     _result.FinalScore = "5555";
 
+                _result.FinalDetScore = _result.FinalScore;
+
                 if(_result.FinalScore == "5555")
                 {
                     var convertedValue = traitValue.FirstOrDefault(x => x.CropCode == cropCode && x.ColumnLabel == _result.ColumnLabel && x.DeterminationValue == "5555");
@@ -1137,6 +1139,7 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 Materialkey = x.ListID,
                 TraitValue = x.FinalScore,
+                DeterminationValue = x.FinalDetScore,
                 ColumnLabel = x.ColumnLabel,
                 IsValid = string.IsNullOrWhiteSpace(x.FinalScore)?false:true
             }).ToList();
