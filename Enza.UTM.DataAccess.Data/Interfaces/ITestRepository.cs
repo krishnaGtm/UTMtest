@@ -32,7 +32,7 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task DeleteTestAsync(DeleteTestRequestArgs args);
 
         Task<IEnumerable<TraitDeterminationResultTest>> GetTestsForTraitDeterminationResultsAsync(string source);
-
+        Task<string> GetCropOfTestAsync(int testID);
         Task<PlatePlanResult> getPlatePlanOverviewAsync(PlatePlanRequestArgs args);
         Task<TraitDeterminationValue> GetTraitValue(string cropCode, string columnLabel);
         Task<DataSet> PlatePlanResultAsync(int testID);
