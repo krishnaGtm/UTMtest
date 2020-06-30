@@ -492,7 +492,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         public async Task<Slot> GetSlotDetailForTestAsync(int testID)
         {
-            var query = @"  SELECT 
+            var query = @"  SELECT  
                                 S.SlotID, 
                                 S.SlotName, 
                                 S.Remark 
