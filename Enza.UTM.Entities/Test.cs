@@ -62,6 +62,7 @@ namespace Enza.UTM.Entities
         public string CropCode { get; set; }
         public string BreedingStationCode { get; set; }
         public string LabPlatePlanName { get; set; }
+        public string TestName { get; set; }
         public int StatusCode { get; set; }
 
     }

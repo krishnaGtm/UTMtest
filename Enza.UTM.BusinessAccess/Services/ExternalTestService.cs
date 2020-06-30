@@ -188,7 +188,7 @@ namespace Enza.UTM.BusinessAccess.Services
             var testDetail = await _externalTestRepository.GetExternalTestDetail(testID);
             if (testDetail != null && testDetail.StatusCode != initialTestDetail.StatusCode)
             {
-                await _testService.SendTestCompletionEmailAsync(testDetail.CropCode, testDetail.BreedingStationCode, testDetail.LabPlatePlanName);
+                await _testService.SendTestCompletionEmailAsync(testDetail.CropCode, testDetail.BreedingStationCode, testDetail.LabPlatePlanName, testDetail.TestName,testID);
             }
             
             using (var ms = new MemoryStream())

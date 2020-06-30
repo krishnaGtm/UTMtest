@@ -15,6 +15,7 @@ using Enza.UTM.Common;
 using Enza.UTM.Common.Exceptions;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.DataAccess.Data.Interfaces;
+using Enza.UTM.DataAccess.Data.Repositories;
 using Enza.UTM.DataAccess.Interfaces;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
@@ -529,7 +530,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             });                                            
                                             if(testDetail.StatusCode == 700)
                                             {
-                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName,test.TestID);
                                             }
                                             
                                         }
@@ -555,7 +556,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     });
                                     if (testDetail.StatusCode == 700)
                                     {
-                                        await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                        await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName, test.TestID);
                                     }
                                 }
                                 
@@ -743,14 +744,17 @@ namespace Enza.UTM.BusinessAccess.Services
             return result;
         }
 
-        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName)
-        {
+        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName,string testName,int testID)
+        {            
             //get test complete email body template
-            var testCompleteBoy = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+            var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+            var slotDetail = await repository.GetSlotDetailForTestAsync(testID);
             //send test completion email to respective groups
-            var body = Template.Render(testCompleteBoy, new
+            var body = Template.Render(testCompleteBody, new
             {
-                PlatePlanName = platePlanName
+                PlatePlanName = platePlanName,
+                TestName = testName,
+                Remarks = slotDetail?.Remarks
             });
 
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);

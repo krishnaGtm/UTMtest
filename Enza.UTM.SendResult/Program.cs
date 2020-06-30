@@ -53,7 +53,7 @@ namespace Enza.UTM.SendResult
             catch (Exception ex2)
             {
                 ErrorLog(ex2);
-                return 1;
+                return 1; 
             }
         }
 

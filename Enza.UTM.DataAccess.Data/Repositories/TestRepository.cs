@@ -197,7 +197,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
         }       
         public async Task<Test> GetTestDetailAsync(GetTestDetailRequestArgs request)
         {
-            var data = await DbContext.ExecuteReaderAsync<Test>(DataConstants.PR_GET_TEST_DETAIL,
+            var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_GET_TEST_DETAIL,
                 CommandType.StoredProcedure,
                 args =>
                 {
@@ -488,6 +488,31 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             if (result.Tables[0].Rows.Count > 0)
                 return true;
             return false;
+        }
+
+        public async Task<Slot> GetSlotDetailForTestAsync(int testID)
+        {
+            var query = @"  SELECT  
+                                S.SlotID, 
+                                S.SlotName, 
+                                S.Remark 
+                            FROM Slot S 
+                            JOIN SlotTest ST ON S.SlotID = ST.SlotID
+                            WHERE ST.TestID = @TestID";
+
+            var res = await DbContext.ExecuteReaderAsync(query,
+                CommandType.Text,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                }, reader => new Slot
+                {
+                    SlotID = reader.Get<int>(0),
+                    SlotName = reader.Get<string>(1),
+                    Remarks = reader.Get<string>(2)
+
+                }); 
+            return res.FirstOrDefault();
         }
     }
 }

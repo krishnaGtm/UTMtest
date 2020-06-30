@@ -47,8 +47,10 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                             F.CropCode,
                             T.BreedingStationCode,
                             T.LabPlatePlanName,
-                            T.StatusCode
-                        FROM Test T JOIN[File] F ON F.FileID = T.FileID
+                            T.StatusCode,
+                            T.TestName
+                        FROM Test T 
+                        JOIN [File] F ON F.FileID = T.FileID
                         JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
                         WHERE T.TestID = @TestID AND TT.TestTypeCode = @TestTypeCode";
             var result = await DbContext.ExecuteReaderAsync(query, CommandType.Text, args =>
@@ -61,7 +63,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                   CropCode = reader.Get<string>(0),
                   BreedingStationCode = reader.Get<string>(1),
                   LabPlatePlanName = reader.Get<string>(2),
-                  StatusCode = reader.Get<int>(3)
+                  StatusCode = reader.Get<int>(3),
+                  TestName = reader.Get<string>(4)
               });
             return result.FirstOrDefault();
         }
