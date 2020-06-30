@@ -511,7 +511,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     SlotName = reader.Get<string>(1),
                     Remarks = reader.Get<string>(2)
 
-                });
+                }); 
             return res.FirstOrDefault();
         }
     }
