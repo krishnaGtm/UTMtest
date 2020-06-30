@@ -246,13 +246,14 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                 //get setting for selected test whether score 9999 is required or not
                                 var cropSettings = await repository.GetSettingToExcludeScoreAsync(testId);
+                                var excludeList = new List<MigrationDataResult>();
                                 if(cropSettings)
                                 {
-                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank.
-                                    var excludeList = result.Where(x => x.DeterminationValue == "9999" || string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
+                                    excludeList.Clear();
+                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank. but this list will have wellID value 0
+                                    excludeList = result.Where(x => x.DeterminationValue == "9999" || (string.IsNullOrWhiteSpace(x.TraitValue) && x.WellID <= 0)).ToList();
                                     result = result.Except(excludeList).ToList();
                                 }
-
                                 //send email for missing conversion and break current loop
                                 var data1 = result.Where(x => !x.IsValid).Select(x=>new MissingConversion
                                 {
@@ -506,14 +507,15 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //we need a job status to know whether job is successfully queued on phenome.
                                             LogInfo("run job for upload file successful.");
 
-                                            //var materialIds = from t1 in dataPerTest
-                                            //                  join t2 in MaterialKey on t1.Materialkey equals t2
-                                            //                  select t1.WellID;
-
-                                            var wellIDS = from x in dataPerTest.ToList()
+                                            var wellIDS = (from x in dataPerTest.ToList()
                                                           join y in MaterialKey on x.Materialkey.ToText() equals y
-                                                          select x.WellID;
+                                                          select x.WellID).ToList();
 
+                                            if(excludeList.Any())
+                                            {
+                                                wellIDS.AddRange(excludeList.Where(x => x.WellID > 0).Select(x => x.WellID));
+                                                excludeList.Clear();
+                                            }
                                             var wells = string.Join(",", wellIDS.Distinct());
                                             await MarkSentResult(wells, test.TestID);
                                             LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
@@ -534,6 +536,29 @@ namespace Enza.UTM.BusinessAccess.Services
                                     }
 
                                 }
+
+                                //this is required when all result are successfully sent and only exclude list remain
+                                if (excludeList.Any())
+                                {
+                                    var wellIDs = excludeList.Where(x => x.WellID > 0).Select(x => x.WellID).ToList();
+                                    excludeList.Clear();
+
+                                    var wells = string.Join(",", wellIDs.Distinct());
+                                    await MarkSentResult(wells, test.TestID);
+                                    LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
+
+                                    //only send test completing email for completed status (statusCode = 700)
+
+                                    var testDetail = await GetTestDetailAsync(new GetTestDetailRequestArgs
+                                    {
+                                        TestID = test.TestID
+                                    });
+                                    if (testDetail.StatusCode == 700)
+                                    {
+                                        await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                    }
+                                }
+                                
 
                             }
                             catch(BusinessException ex)
@@ -1008,24 +1033,23 @@ namespace Enza.UTM.BusinessAccess.Services
                     AcceptablePercentage = y.FirstOrDefault().InvalidPer,
                     Score = y.Select(z => new Scores
                     {
-                        Score = z.Score.Trim(),
-                        DetScore = z.DetScore.Trim()
+                        Score = z.Score?.Trim(),
+                        DetScore = z.DetScore?.Trim()
                     }).ToList()
                 }).ToList();
 
             foreach (var _result in result1)
             {
-                //_result.FinalScore = _result.Score[0]?.Score.ToString();
-                _result.FinalScore = _result.Score[0]?.DetScore.ToString();
+                _result.FinalScore = _result.Score[0]?.DetScore.ToText();
                 foreach (var _val in _result.Score)
                 {
-                    if (_val.DetScore.ToString() == "9999")
+                    if (_val.DetScore.ToText() == "9999")
                         _result.UndefinedCount++;
 
-                    if (_result.FinalScore != _val.DetScore.ToString() && _val.DetScore.ToString() != "9999" && _result.FinalScore != "9999")
+                    if (_result.FinalScore != _val.DetScore.ToText() && _val.DetScore.ToText() != "9999" && _result.FinalScore != "9999")
                         _result.Same = false;
 
-                    if (_val.DetScore.ToString() != "9999" && _result.FinalScore != _val.DetScore.ToString())
+                    if (_val.DetScore.ToText() != "9999" && _result.FinalScore != _val.DetScore.ToText())
                         _result.FinalScore = _val.DetScore.ToString();
                 }
                 decimal Undefinedpercentage = 0;
@@ -1041,6 +1065,8 @@ namespace Enza.UTM.BusinessAccess.Services
                 }
                 else if( _result.Same == false)
                     _result.FinalScore = "5555";
+
+                _result.FinalDetScore = _result.FinalScore;
 
                 if(_result.FinalScore == "5555")
                 {
@@ -1108,6 +1134,7 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 Materialkey = x.ListID,
                 TraitValue = x.FinalScore,
+                DeterminationValue = x.FinalDetScore,
                 ColumnLabel = x.ColumnLabel,
                 IsValid = string.IsNullOrWhiteSpace(x.FinalScore)?false:true
             }).ToList();
