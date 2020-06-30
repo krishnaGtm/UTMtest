@@ -189,23 +189,7 @@ namespace Enza.UTM.BusinessAccess.Services
                         if (!traitDeterminationValues.Any())
                         {
                             LogInfo($"There is no any result data to process for TestID: {test.TestID}.");
-                            
-                            var testDetail = await GetTestDetailAsync(new GetTestDetailRequestArgs
-                            {
-                                TestID = test.TestID
-                            });
-                            if(testDetail.StatusCode < 700)
-                            {
-                                var cropCode = await repository.GetCropCode(test.TestID);
-                                
-                                var response = await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs { TestId = test.TestID, StatusCode = 700 });
-                                if(response)
-                                {
-                                    await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
-                                }
-                            }
                             continue;
-
                         }
 
                         //var invalidTests = traitDeterminationValues.Where(x => !x.IsValid).GroupBy(x=>x.TestID).Select(x => x.Key).ToList();

@@ -489,25 +489,5 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 return true;
             return false;
         }
-
-        public async Task<string> GetCropCode(int testID)
-        {
-            var query = @"SELECT 
-                                F.CropCode
-                        FROM [Test] T
-                        JOIN[File] F ON F.FileID = T.FileID
-                        WHERE T.TestID = @TestID";
-            var result = await DbContext.ExecuteReaderAsync(query, CommandType.Text,
-                args =>
-                {
-                    args.Add("@TestID", testID);
-                },
-                reader=>new
-                {
-                    CropCode = reader.Get<string>(0)
-                });
-
-            return result.FirstOrDefault()?.CropCode;
-        }
     }
 }
