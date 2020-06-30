@@ -198,7 +198,7 @@ namespace Enza.UTM.BusinessAccess.Services
                             var crop = await repository.GetCropOfTestAsync(test.TestID);
                             if (testDetail.StatusCode == 700)
                             {
-                                await SendTestCompletionEmailAsync(crop, test.BrStationCode, test.PlatePlanName);
+                                await SendTestCompletionEmailAsync(crop, test.BrStationCode, test.PlatePlanName, test.TestName, test.TestID);
                             }
                             continue;
                         }
