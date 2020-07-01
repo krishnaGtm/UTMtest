@@ -9,6 +9,7 @@ using Enza.UTM.Common.Extensions;
 using Enza.UTM.DataAccess.Data.Interfaces;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 namespace Enza.UTM.BusinessAccess.Services
@@ -46,7 +47,7 @@ namespace Enza.UTM.BusinessAccess.Services
             }
             for (int i = 0; i < headerRow.LastCellNum; i++)
             {
-                var headerText = headerRow.GetCell(i)?.ToText().Trim();
+                var headerText = headerRow.GetCell(i)?.ToText();
                 if (!string.IsNullOrWhiteSpace(headerText))
                     headers.Add(i, headerText);
             }
@@ -116,53 +117,80 @@ namespace Enza.UTM.BusinessAccess.Services
                     for (var j = 0; j < columns.Count; j++)
                     {
                         var column = columns[j];
-                        var cellValue = row.GetCell(column.Key).ToText().Trim();
-                        if (column.Value.EqualsIgnoreCase("Numerical ID"))
+                        var cell = row.GetCell(column.Key);
+                        if (cell != null)
                         {
-                            //validate if material key is empty
-                            if (string.IsNullOrWhiteSpace(cellValue))
+                            object cValue = string.Empty;
+                            switch (cell.CellType)
                             {
-                                breakLoop = true;
-                                break;
+                                case (CellType.Unknown | CellType.Formula | CellType.Blank):
+                                    cValue = cell.ToString();
+                                    break;
+                                case CellType.Numeric:
+                                    cValue = cell.NumericCellValue;
+                                    break;
+                                case CellType.String:
+                                    cValue = cell.StringCellValue;
+                                    break;
+                                case CellType.Boolean:
+                                    cValue = cell.BooleanCellValue;
+                                    break;
+                                case CellType.Error:
+                                    cValue = cell.ErrorCellValue;
+                                    break;
+                                default:
+                                    cValue = string.Empty;
+                                    break;
                             }
-                            else
-                                drRow["MaterialKey"] = cellValue;                            
-                        }
-                        else if (column.Value.EqualsIgnoreCase("Sample name"))
-                        {
-                            //validate if plant name is empty
-                            if (string.IsNullOrWhiteSpace(cellValue))
+
+                            var cellValue = cValue.ToText();
+                            if (column.Value.EqualsIgnoreCase("Numerical ID"))
                             {
-                                breakLoop = true;
-                                break;
+                                //validate if material key is empty
+                                if (string.IsNullOrWhiteSpace(cellValue))
+                                {
+                                    breakLoop = true;
+                                    break;
+                                }
+                                else
+                                    drRow["MaterialKey"] = cellValue;
                             }
-                        }
-                        else if (column.Value.EqualsIgnoreCase("Country"))
-                        {
-                            if (countryRequired)
+                            else if (column.Value.EqualsIgnoreCase("Sample name"))
                             {
-                                //validate if country is empty
+                                //validate if plant name is empty
                                 if (string.IsNullOrWhiteSpace(cellValue))
                                 {
                                     breakLoop = true;
                                     break;
                                 }
                             }
-                            //only one country code is enough since it will be passed as single data in sp
-                            if (string.IsNullOrWhiteSpace(requestArgs.CountryCode))
+                            else if (column.Value.EqualsIgnoreCase("Country"))
                             {
-                                requestArgs.CountryCode = cellValue;
+                                if (countryRequired)
+                                {
+                                    //validate if country is empty
+                                    if (string.IsNullOrWhiteSpace(cellValue))
+                                    {
+                                        breakLoop = true;
+                                        break;
+                                    }
+                                }
+                                //only one country code is enough since it will be passed as single data in sp
+                                if (string.IsNullOrWhiteSpace(requestArgs.CountryCode))
+                                {
+                                    requestArgs.CountryCode = cellValue;
+                                }
                             }
-                        }
-                        //we don't need to send country information in cell. We already send it for test.
-                        if (!column.Value.EqualsIgnoreCase("Country") && !string.IsNullOrWhiteSpace(cellValue))
-                        {
-                            //get value for celltvp
-                            var drCell = dtCellTVP.NewRow();
-                            drCell["RowID"] = rowNr;
-                            drCell["ColumnID"] = j;
-                            drCell["Value"] = cellValue;
-                            dtCellTVP.Rows.Add(drCell);
+                            //we don't need to send country information in cell. We already send it for test.
+                            if (!column.Value.EqualsIgnoreCase("Country") && !string.IsNullOrWhiteSpace(cellValue))
+                            {
+                                //get value for celltvp
+                                var drCell = dtCellTVP.NewRow();
+                                drCell["RowID"] = rowNr;
+                                drCell["ColumnID"] = j;
+                                drCell["Value"] = cellValue;
+                                dtCellTVP.Rows.Add(drCell);
+                            }
                         }
                     }
                     if(!breakLoop)
