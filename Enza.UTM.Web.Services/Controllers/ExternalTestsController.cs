@@ -104,9 +104,9 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("export")]
         [HttpGet]
         [Authorize(Roles = "utm_importexternal")]
-        public async Task<IHttpActionResult> ExportTest(int testID, bool mark = false)
+        public async Task<IHttpActionResult> ExportTest(int testID, bool mark = false, bool TraitScore = false)
         {
-            var data = await _externalTestService.GetExcelFileForExternalTestAsync(testID, mark);
+            var data = await _externalTestService.GetExcelFileForExternalTestAsync(testID, mark, TraitScore);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
