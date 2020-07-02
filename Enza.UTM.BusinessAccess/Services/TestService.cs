@@ -231,6 +231,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     level = "List";
                                 }
 
+
                                 #region Cummulate result
                                 var data = result.Where(x => x.Cummulate || x.ListID.ToText() == x.Materialkey).Select(x => new TestResultCumulate
                                 {
@@ -639,10 +640,10 @@ namespace Enza.UTM.BusinessAccess.Services
         private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID, string level)
         {
             if (distinctTraits.Any())
-            {                
+            {
                 var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldPlants";
                 LogInfo($"Set observation columns on field {fieldID} if required");
-                if(level == "List")
+                if (level == "List")
                     Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
 
                 var response = await client.PostAsync(Url, new MultipartFormDataContent
@@ -660,7 +661,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 //                      select y).ToList();
 
                 //get defined columns
-                 Url = "/api/v1/simplegrid/grid/get_columns_list/FieldObservations";                
+                Url = "/api/v1/simplegrid/grid/get_columns_list/FieldObservations";
                 response = await client.PostAsync(Url, new MultipartFormDataContent
                                         {
                                             { new StringContent("29"), "object_type" },
@@ -672,18 +673,18 @@ namespace Enza.UTM.BusinessAccess.Services
 
 
                 var definedColumns = (from x in respdefinedColumns?.All_Columns?.Where(x => !x.id.Contains("~"))
-                                        join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
-                                        select y).ToList();
+                                      join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                      select y).ToList();
 
                 var tobeDefined = distinctTraits.Except(definedColumns);
-                                     
+
 
                 var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
-                         join y in tobeDefined on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
-                         select new
-                         {
-                             x.variable_id
-                         }).ToList().GroupBy(x=>x.variable_id).Select(x=>x.Key);
+                                            join y in tobeDefined on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                            select new
+                                            {
+                                                x.variable_id
+                                            }).ToList().GroupBy(x => x.variable_id).Select(x => x.Key);
                 if (tobeDefinedVariables.Any())
                 {
                     Url = "/api/v2/fieldentity/columns/set/Existing";
