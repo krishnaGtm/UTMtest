@@ -199,11 +199,12 @@ namespace Enza.UTM.BusinessAccess.Services
                             //.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue))
                             .GroupBy(x => new { x.InvalidPer, x.FieldID, x.TestID })
                             .ToList();
-                       
+                        var level = "";
                         foreach (var dataPerTest in dataPerTests)
                         {
                             try
-                            {                                
+                            {
+                                level = "Plant";
                                 //var dataPerTest1 = dataPerTest.ToList();
                                 missingConversionList.Clear();
                                 //var result = dataPerTest.Where(x => !string.IsNullOrWhiteSpace(x.TraitValue)).ToList();
@@ -214,7 +215,10 @@ namespace Enza.UTM.BusinessAccess.Services
                                 var cropCode = dataPerTest.FirstOrDefault().CropCode;
 
                                 var firstResult = result.FirstOrDefault();
-                                
+                                if (firstResult.ListID.ToText() == firstResult.Materialkey)
+                                {
+                                    level = "List";
+                                }
 
                                 #region Cummulate result
                                 var data = result.Where(x => x.Cummulate || x.ListID.ToText() == x.Materialkey).Select(x => new TestResultCumulate
@@ -326,7 +330,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                 });
 
                                 //set colummn before creating observation record
-                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID);
+                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID,level);
                                 if (!setColResp)
                                 {
                                     if(test.StatusCode < 650)
@@ -596,37 +600,55 @@ namespace Enza.UTM.BusinessAccess.Services
             }
         }
 
-        private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID)
+        private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID, string level)
         {
             if (distinctTraits.Any())
             {                
-                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldObservations";
+                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldPlants";
                 LogInfo($"Set observation columns on field {fieldID} if required");
-                
+                if(level == "List")
+                    Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
+
                 var response = await client.PostAsync(Url, new MultipartFormDataContent
+                                        {
+                                            { new StringContent("24"), "object_type" },
+                                            { new StringContent(fieldID), "object_id" },
+                                            { new StringContent(fieldID), "base_entity_id" }
+                                        }, 600);
+                await response.EnsureSuccessStatusCodeAsync();
+                var respAllColumns = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
+
+
+                //var availableColumns = (from x in respAllColumns?.All_Columns
+                //                      join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                //                      select y).ToList();
+
+                //get defined columns
+                 Url = "/api/v1/simplegrid/grid/get_columns_list/FieldObservations";                
+                response = await client.PostAsync(Url, new MultipartFormDataContent
                                         {
                                             { new StringContent("29"), "object_type" },
                                             { new StringContent(fieldID), "object_id" },
                                             { new StringContent(fieldID), "base_entity_id" }
                                         }, 600);
                 await response.EnsureSuccessStatusCodeAsync();
-                var respCreateCol = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
+                var respdefinedColumns = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
 
 
-                var definedColumns = (from x in respCreateCol?.All_Columns?.Where(x => !x.id.Contains("~"))
-                                      join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
-                                      select y).ToList();
+                var definedColumns = (from x in respdefinedColumns?.All_Columns?.Where(x => !x.id.Contains("~"))
+                                        join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                        select y).ToList();
 
                 var tobeDefined = distinctTraits.Except(definedColumns);
                                      
 
-                var a = (from x in respCreateCol?.All_Columns
+                var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
                          join y in tobeDefined on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
                          select new
                          {
                              x.variable_id
                          }).ToList().GroupBy(x=>x.variable_id).Select(x=>x.Key);
-                if (a.Any())
+                if (tobeDefinedVariables.Any())
                 {
                     Url = "/api/v2/fieldentity/columns/set/Existing";
 
@@ -638,9 +660,9 @@ namespace Enza.UTM.BusinessAccess.Services
                     content1.Add(new StringContent(""), "variableName");
 
                     LogInfo($"Calling set observation parameter for {fieldID}");
-                    LogInfo($"Variables IDS {string.Join(",", a)}");
+                    LogInfo($"Variables IDS {string.Join(",", tobeDefinedVariables)}");
 
-                    foreach (var _a in a)
+                    foreach (var _a in tobeDefinedVariables)
                     {
                         content1.Add(new StringContent(_a), "selectedVariablesIds");
                     }
