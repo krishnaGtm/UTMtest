@@ -16,6 +16,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
         }
         public async Task<IEnumerable<MigrationDataResult>> ValidateTraitDeterminationResultAsync(int? testID, bool sendResult, string source)
         {
+
             DbContext.CommandTimeout = 600;
             return await DbContext.ExecuteReaderAsync(DataConstants.PR_UPDATE_AND_VERIFY_TRAIT_DETERMINATION_RESULT, CommandType.StoredProcedure, args =>
             {

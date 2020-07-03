@@ -671,12 +671,17 @@ namespace Enza.UTM.BusinessAccess.Services
                 await response.EnsureSuccessStatusCodeAsync();
                 var respdefinedColumns = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
 
+                
+
+                //add two extra columns wellID and plateID
+                distinctTraits.Add("WellID");
+                distinctTraits.Add("PlatID");
 
                 var definedColumns = (from x in respdefinedColumns?.All_Columns?.Where(x => !x.id.Contains("~"))
                                       join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
                                       select y).ToList();
 
-                var tobeDefined = distinctTraits.Except(definedColumns);
+                var tobeDefined = distinctTraits.Except(definedColumns).ToList();
 
 
                 var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
@@ -684,7 +689,42 @@ namespace Enza.UTM.BusinessAccess.Services
                                             select new
                                             {
                                                 x.variable_id
-                                            }).ToList().GroupBy(x => x.variable_id).Select(x => x.Key);
+                                            }).GroupBy(x => x.variable_id).Select(x => x.Key).ToList();
+
+                if (tobeDefined.Any(x => x.EqualsIgnoreCase("WellID") || x.EqualsIgnoreCase("PlatID")))
+                {
+                    //get wellID and PlatID variables IDS so that we can add those if they are missing
+                    Url = $"/api/v1/field/info/{fieldID}";
+                    response = await client.PostAsync(Url, new MultipartFormDataContent());
+                    await response.EnsureSuccessStatusCodeAsync();
+                    var rgid = await response.Content.DeserializeAsync<PhenomeFolderInfo>();
+                    if (!rgid.Status.EqualsIgnoreCase("1"))
+                    {
+                        LogError($"Invalid response from phenome for call ../api/v1/field/info/{fieldID}");
+                        return false;
+                    }
+                    var wellID = rgid.Info?.RG_Variables?.FirstOrDefault(x => x.Name.EqualsIgnoreCase("WellID"))?.VID;
+                    var platID = rgid.Info?.RG_Variables?.FirstOrDefault(x => x.Name.EqualsIgnoreCase("PlatID"))?.VID;
+                    if (string.IsNullOrWhiteSpace(wellID))
+                    {
+                        LogError($"WellID column not found on response of ../api/v1/field/info/{fieldID}");
+                        return false;
+                    }
+                    if (string.IsNullOrWhiteSpace(platID))
+                    {
+                        LogError($"platID column not found on response of ../api/v1/field/info/{fieldID}");
+                        return false;
+                    }
+                    if(!tobeDefinedVariables.Contains(wellID) && tobeDefined.Contains("WellID"))
+                    {
+                        tobeDefinedVariables.Add(wellID);
+                    }
+                    if (!tobeDefinedVariables.Contains(platID) && tobeDefined.Contains("PlatID"))
+                    {
+                        tobeDefinedVariables.Add(platID);
+                    }
+                }
+
                 if (tobeDefinedVariables.Any())
                 {
                     Url = "/api/v2/fieldentity/columns/set/Existing";
