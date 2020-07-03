@@ -223,6 +223,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000338.14023.PR_GetExternalTestDataForExport.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000339.14023.PR_GetExternalTestDataForExport.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
