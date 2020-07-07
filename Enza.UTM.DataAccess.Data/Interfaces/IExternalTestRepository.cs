@@ -11,7 +11,7 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
     {
         Task ImportDataAsync(ExternalTestImportRequestArgs requestArgs, DataTable dtColumnsTVP, DataTable dtRowTVP, DataTable dtCellTVP);
 
-        Task<ExternalTestExportDataResult> GetExternalTestDataForExportAsync(int testID, bool markAsExported = false);
+        Task<ExternalTestExportDataResult> GetExternalTestDataForExportAsync(int testID, bool markAsExported = false, bool traitScore = false);
         Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll);
         Task<TestDetailExternal> GetExternalTestDetail(int testID);
     }

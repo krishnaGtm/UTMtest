@@ -174,7 +174,7 @@ namespace Enza.UTM.BusinessAccess.Services
             return result;
         }
 
-        public async Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false)
+        public async Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false, bool traitScore = false)
         {
             //get det
             var initialTestDetail = await _testService.GetTestDetailAsync(new GetTestDetailRequestArgs
@@ -182,7 +182,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 TestID = testID
             });
 
-            var rs = await _externalTestRepository.GetExternalTestDataForExportAsync(testID, markAsExported);
+            var rs = await _externalTestRepository.GetExternalTestDataForExportAsync(testID, markAsExported,traitScore);
             
             //get test detail including status and other required information
             var testDetail = await _externalTestRepository.GetExternalTestDetail(testID);

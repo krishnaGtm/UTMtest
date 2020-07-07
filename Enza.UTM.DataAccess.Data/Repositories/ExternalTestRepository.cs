@@ -20,13 +20,14 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             this.userContext = userContext;
         }
 
-        public async Task<ExternalTestExportDataResult> GetExternalTestDataForExportAsync(int testID, bool markAsExported = false)
+        public async Task<ExternalTestExportDataResult> GetExternalTestDataForExportAsync(int testID, bool markAsExported = false, bool traitScore = false)
         {
             var ds = await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_EXTERNAL_TEST_DATA_FOR_EXPORT,
                 CommandType.StoredProcedure, args =>
                 {
                     args.Add("@TestID", testID);
                     args.Add("@MarkAsExported", markAsExported);
+                    args.Add("@TraitScore",traitScore);
                 });
 
             return new ExternalTestExportDataResult

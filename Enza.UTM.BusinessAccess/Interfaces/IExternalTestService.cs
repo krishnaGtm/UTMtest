@@ -8,7 +8,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
     public interface IExternalTestService
     {
         Task<ImportDataResult> ImportDataAsync(ExternalTestImportRequestArgs requestArgs);
-        Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false);
+        Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false, bool traitScore = false);
         Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll);
     }
 }
