@@ -45,8 +45,10 @@ namespace Enza.UTM.BusinessAccess.Services
             _emailConfigService = emailConfigService;
         }
 
-        
-
+        public async Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs)
+        {
+            return await excelDataRepository.GetDataAsync(requestArgs)
+        }
     }
 
     

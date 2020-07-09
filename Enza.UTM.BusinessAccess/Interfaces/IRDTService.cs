@@ -13,7 +13,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
     {
         //Task<ExcelDataResult> ImportDataAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
         //Task<IEnumerable<S2SCapacitySlotResult>> GetS2SCapacityAsync(S2SCapacitySlotArgs args);
-        //Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs);
+        Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs);
         //Task<MaterialsWithMarkerResult> MarkerWithMaterialS2SAsync(MaterialsWithMarkerRequestArgs args);
         //Task<Test> AssignDeterminationsAsync(AssignDeterminationForS2SRequestArgs args);
         //Task<S2SFillRateDetail> GetFillRateDetailsAsync(int testID);
