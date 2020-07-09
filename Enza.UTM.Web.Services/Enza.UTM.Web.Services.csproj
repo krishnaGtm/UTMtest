@@ -159,6 +159,7 @@
     <Compile Include="Controllers\ExternalTestsController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
     <Compile Include="Controllers\CNTController.cs" />
+    <Compile Include="Controllers\RDTController.cs" />
     <Compile Include="Controllers\S2SController.cs" />
     <Compile Include="Controllers\MaterialTypeTestProtocolsController.cs" />
     <Compile Include="Controllers\ThreeGBController.cs" />
