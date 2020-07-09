@@ -47,7 +47,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
         public async Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs)
         {
-            return await excelDataRepository.GetDataAsync(requestArgs)
+            return await excelDataRepository.GetDataAsync(requestArgs);
         }
     }
 
