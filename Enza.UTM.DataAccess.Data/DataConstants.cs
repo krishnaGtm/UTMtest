@@ -108,6 +108,9 @@
         public const string PR_CNT_GET_DATA_WITH_MARKER = "PR_CNT_GetDataWithMarker";
         public const string PR_CNT_GET_DATA_WITH_MARKER_FOR_EXCEL = "PR_CNT_GetDataWithMarkerForExcel";
 
+        //RDT test type
+        public const string PR_RDT_GET_MATERIAL_WITH_TESTS = "PR_RDT_GetMaterialWithTests";
+
 
         //MASTER DATA
         public const string PR_CNT_GET_PROCESSES = "PR_CNT_GetProcesses";

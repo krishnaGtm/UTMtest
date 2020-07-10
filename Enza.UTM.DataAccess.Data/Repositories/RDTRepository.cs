@@ -23,12 +23,42 @@ namespace Enza.UTM.DataAccess.Data.Repositories
     public class RDTRepository : Repository<object>, IRDTRepository
     {
         private readonly IUserContext userContext;
-        private readonly string BASE_SVC_URL = ConfigurationManager.AppSettings["BasePhenomeServiceUrl"];
+        //private readonly string BASE_SVC_URL = ConfigurationManager.AppSettings["BasePhenomeServiceUrl"];
         public RDTRepository(IDatabase dbContext, IUserContext userContext) : base(dbContext)
         {
             this.userContext = userContext;
         }
 
+        public async Task<MaterialsWithMarkerResult> GetMaterialWithtTestsAsync(MaterialsWithMarkerRequestArgs args)
+        {
+            var result = new MaterialsWithMarkerResult();
+            DbContext.CommandTimeout = 2 * 60; //time out is set to 2 minutes
+            var data = await DbContext.ExecuteDataSetAsync(DataConstants.PR_RDT_GET_MATERIAL_WITH_TESTS, CommandType.StoredProcedure, args1 =>
+            {
+                args1.Add("@TestID", args.TestID);
+                args1.Add("@Page", args.PageNumber);
+                args1.Add("@PageSize", args.PageSize);
+                args1.Add("@Filter", args.ToFilterString());
+            });
+            if (data.Tables.Count == 2)
+            {
+                var table0 = data.Tables[0];
+                if (table0.Columns.Contains("TotalRows"))
+                {
+                    if (table0.Rows.Count > 0)
+                    {
+                        result.Total = table0.Rows[0]["TotalRows"].ToInt32();
+                    }
+                    table0.Columns.Remove("TotalRows");
+                }
+                result.Data = new
+                {
+                    Columns = data.Tables[1],
+                    Data = table0
+                };
+            }
+            return result;
+        }
     }
     
 }

@@ -11,7 +11,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
 {
     public interface IRDTRepository : IRepository<object>
     {
-        //Task<PhenoneImportDataResult> ImportDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
-        //Task<DataSet> GetDataAsync(ImportDataRequestArgs requestArgs);
+        Task<MaterialsWithMarkerResult> GetMaterialWithtTestsAsync(MaterialsWithMarkerRequestArgs args);
     }
 }

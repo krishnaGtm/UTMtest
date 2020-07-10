@@ -37,9 +37,9 @@ namespace Enza.UTM.BusinessAccess.Services
         private readonly IEmailService _emailService;
         private readonly IEmailConfigService _emailConfigService;
 
-        public RDTService(IS2SRepository s2SRepository, IExcelDataRepository excelDataRepository, IEmailService emailService, IEmailConfigService emailConfigService)
+        public RDTService(IRDTRepository rdtRepository, IExcelDataRepository excelDataRepository, IEmailService emailService, IEmailConfigService emailConfigService)
         {
-            //this.s2SRepository = s2SRepository;
+            this.rdtRepository = rdtRepository;
             this.excelDataRepository = excelDataRepository;
             _emailService = emailService;
             _emailConfigService = emailConfigService;
@@ -48,6 +48,12 @@ namespace Enza.UTM.BusinessAccess.Services
         public async Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs)
         {
             return await excelDataRepository.GetDataAsync(requestArgs);
+        }
+
+        public async Task<MaterialsWithMarkerResult> GetMaterialWithTestsAsync(MaterialsWithMarkerRequestArgs args)
+        {
+            return await rdtRepository.GetMaterialWithtTestsAsync(args);
+            
         }
     }
 

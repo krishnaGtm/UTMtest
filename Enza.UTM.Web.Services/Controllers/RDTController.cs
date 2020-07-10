@@ -52,9 +52,22 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("getData")]
         [HttpPost]
-        public async Task<IHttpActionResult> GetData([FromBody]ExcelDataRequestArgs args)
+        public async Task<IHttpActionResult> GetData([FromBody] ExcelDataRequestArgs args)
         {
             var ds = await _rdtService.GetDataAsync(args);
+            var rs = new
+            {
+                Data = ds,
+                args.TotalRows
+            };
+            return Ok(rs);
+        }
+
+        [Route("getmaterialwithtests")]
+        [HttpPost]
+        public async Task<IHttpActionResult> Getmaterialwithtests([FromBody] MaterialsWithMarkerRequestArgs args)
+        {
+            var ds = await _rdtService.GetMaterialWithTestsAsync(args);
             var rs = new
             {
                 Data = ds,
