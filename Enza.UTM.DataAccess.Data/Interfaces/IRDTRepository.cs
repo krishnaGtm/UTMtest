@@ -12,5 +12,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
     public interface IRDTRepository : IRepository<object>
     {
         Task<MaterialsWithMarkerResult> GetMaterialWithtTestsAsync(MaterialsWithMarkerRequestArgs args);
+        Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args);
     }
 }

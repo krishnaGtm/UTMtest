@@ -55,6 +55,11 @@ namespace Enza.UTM.BusinessAccess.Services
             return await rdtRepository.GetMaterialWithtTestsAsync(args);
             
         }
+
+        public async Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args)
+        {
+            return await rdtRepository.AssignTestAsync(args);
+        }
     }
 
     

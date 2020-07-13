@@ -71,5 +71,18 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(rs);
         }
 
+
+        [Route("assignTests")]
+        [HttpPost]
+        public async Task<IHttpActionResult> AssignTest([FromBody] AssignDeterminationForRDTRequestArgs args)
+        {
+            var ds = await _rdtService.AssignTestAsync(args);
+            var rs = new
+            {
+                Data = ds,
+                args.TotalRows
+            };
+            return Ok(rs);
+        }
     }
 }

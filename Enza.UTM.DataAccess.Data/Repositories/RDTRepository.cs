@@ -59,6 +59,26 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
             return result;
         }
+
+        public async Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs request)
+        {
+            var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_SAVE_TEST_MATERIAL_DETERMINATION_ForRDT, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestTypeID", request.TestTypeID);
+                args.Add("@TestID", request.TestID);
+                args.Add("@Columns", request.ToColumnsString());
+                args.Add("@Filter", request.ToFilterString());
+                args.Add("@TVPTestWithExpDate", request.ToTVPTestMaterialDetermation());
+                args.Add("@Determinations", request.ToTVPDeterminations());
+            },
+            reader => new Test
+            {
+                TestID = reader.Get<int>(0),
+                StatusCode = reader.Get<int>(1)
+
+            });
+            return data.FirstOrDefault();
+        }
     }
     
 }

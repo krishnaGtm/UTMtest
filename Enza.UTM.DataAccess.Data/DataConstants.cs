@@ -110,6 +110,7 @@
 
         //RDT test type
         public const string PR_RDT_GET_MATERIAL_WITH_TESTS = "PR_RDT_GetMaterialWithTests";
+        public const string PR_SAVE_TEST_MATERIAL_DETERMINATION_ForRDT = "PR_SaveTestMaterialDetermination_ForRDT";
 
 
         //MASTER DATA
