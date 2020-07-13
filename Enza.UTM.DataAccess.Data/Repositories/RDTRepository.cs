@@ -80,6 +80,19 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return data.FirstOrDefault();
 
         }
+
+        public async Task<string> RequestSampleTestAsync(TestRequestArgs args)
+        {
+            return await ImplementRequestSampleTest();
+        }
+
+        private async Task<string> ImplementRequestSampleTest()
+        {
+            await Task.Delay(1);
+
+            var client = new LimsServiceRestClient();
+            return client.RequestSampleTestAsync();
+        }
     }
     
 }

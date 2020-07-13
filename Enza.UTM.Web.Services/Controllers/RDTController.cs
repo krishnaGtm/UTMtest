@@ -79,5 +79,13 @@ namespace Enza.UTM.Web.Services.Controllers
             };
             return Ok(rs);
         }
+
+        [Route("requestSampleTest")]
+        [HttpPost]
+        public async Task<IHttpActionResult> RequestSampleTest([FromBody] TestRequestArgs args)
+        {
+            var rs = await _rdtService.RequestSampleTestAsync(args);
+            return Ok(rs);
+        }
     }
 }
