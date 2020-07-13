@@ -251,7 +251,10 @@
     <EmbeddedResource Include="Scripts\000347.12046.AlterTable.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\000348.12046.SP_Added.sql" />
+    <EmbeddedResource Include="Scripts\000348.12046.TVP_Added.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000349.12046.SP_Added.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
