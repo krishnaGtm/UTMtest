@@ -62,13 +62,8 @@ namespace Enza.UTM.Web.Services.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Getmaterialwithtests([FromBody] MaterialsWithMarkerRequestArgs args)
         {
-            var ds = await _rdtService.GetMaterialWithTestsAsync(args);
-            var rs = new
-            {
-                Data = ds,
-                args.TotalRows
-            };
-            return Ok(rs);
+            var ds = await _rdtService.GetMaterialWithTestsAsync(args);            
+            return Ok(ds);
         }
 
 
