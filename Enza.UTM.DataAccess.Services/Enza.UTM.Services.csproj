@@ -99,6 +99,7 @@
     <Compile Include="Abstract\RestClient.cs" />
     <Compile Include="Abstract\SoapClient.cs" />
     <Compile Include="EmailTemplates\EmailTemplate.cs" />
+    <Compile Include="Proxies\LimsServiceRestClient.cs" />
     <Compile Include="Proxies\PhenomeSSOClient.cs" />
     <Compile Include="Proxies\ThreeGBSoapClient.cs" />
     <Compile Include="Proxies\S2SSoapClient.cs" />
