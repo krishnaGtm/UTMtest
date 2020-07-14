@@ -35,8 +35,8 @@ namespace Enza.UTM.Web.Services.Controllers
             if (string.IsNullOrWhiteSpace(args.FolderID))
                 return InvalidRequest("Please provide folder ID.");
 
-            var data = await _phenomeServices.GetPhenomeDataAsync(Request, args);
-            var data1 = await _rdtService.ImportDataFromPhenomeAsync(Request, args);
+            //var data = await _phenomeServices.GetPhenomeDataAsync(Request, args);
+            var data = await _rdtService.ImportDataFromPhenomeAsync(Request, args);
 
             
             var fileInfo = await _fileService.GetFileAsync(args.TestID);
