@@ -11,9 +11,10 @@ namespace Enza.UTM.BusinessAccess.Interfaces
 {
     public interface IRDTService
     {
+        Task<ExcelDataResult> ImportDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
         Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs);
         Task<MaterialsWithMarkerResult> GetMaterialWithTestsAsync(MaterialsWithMarkerRequestArgs args);
         Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args);
-        Task<string> RequestSampleTestAsync(TestRequestArgs args);
+        Task<string> RequestSampleTestAsync(TestRequestArgs args);        
     }
 }

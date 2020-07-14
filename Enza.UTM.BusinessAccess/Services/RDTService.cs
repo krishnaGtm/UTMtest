@@ -45,6 +45,12 @@ namespace Enza.UTM.BusinessAccess.Services
             _emailConfigService = emailConfigService;
         }
 
+
+        public async Task<ExcelDataResult> ImportDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args)
+        {
+            var data =  await rdtRepository.ImportDataFromPhenomeAsync(request, args);
+            return await GetDataAsync(args);
+        }
         public async Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs)
         {
             return await excelDataRepository.GetDataAsync(requestArgs);
@@ -65,6 +71,8 @@ namespace Enza.UTM.BusinessAccess.Services
         {
             return await rdtRepository.RequestSampleTestAsync(args);
         }
+
+        
     }
 
     
