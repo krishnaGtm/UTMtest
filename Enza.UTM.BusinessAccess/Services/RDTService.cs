@@ -48,7 +48,15 @@ namespace Enza.UTM.BusinessAccess.Services
 
         public async Task<ExcelDataResult> ImportDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args)
         {
-            var data =  await rdtRepository.ImportDataFromPhenomeAsync(request, args);
+            var result =  await rdtRepository.ImportDataFromPhenomeAsync(request, args);
+            if (result.Errors.Any() || result.Warnings.Any())
+            {
+                return new ExcelDataResult
+                {
+                    Errors = result.Errors,
+                    Warnings = result.Warnings
+                };
+            }
             return await GetDataAsync(args);
         }
         public async Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs)
