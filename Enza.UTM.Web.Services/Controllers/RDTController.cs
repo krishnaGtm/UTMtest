@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
@@ -38,8 +39,11 @@ namespace Enza.UTM.Web.Services.Controllers
             //var data = await _phenomeServices.GetPhenomeDataAsync(Request, args);
             var data = await _rdtService.ImportDataFromPhenomeAsync(Request, args);
 
-            
-            var fileInfo = await _fileService.GetFileAsync(args.TestID);
+            var fileInfo = new ExcelFile();
+            if(!(data.Errors.Any() || data.Warnings.Any()))
+            {
+                fileInfo = fileInfo = await _fileService.GetFileAsync(args.TestID);
+            }
             var result = new
             {
                 data.Success,
