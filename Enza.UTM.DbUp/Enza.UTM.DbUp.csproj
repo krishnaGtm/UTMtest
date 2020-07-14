@@ -247,6 +247,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000346.13045.Add_RDT_TestType.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000347.12045.Update_RDT_TestType.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
