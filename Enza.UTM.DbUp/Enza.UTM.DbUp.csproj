@@ -247,7 +247,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000346.13045.Add_RDT_TestType.sql" />
   </ItemGroup>
-  <ItemGroup>
+<ItemGroup>
+    <EmbeddedResource Include="Scripts\000347.12045.Update_RDT_TestType.sql" />
+  </ItemGroup><ItemGroup>
     <EmbeddedResource Include="Scripts\000347.12046.AlterTable.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -255,8 +257,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000349.12046.SP_Added.sql" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  </ItemGroup>  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
