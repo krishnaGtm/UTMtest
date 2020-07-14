@@ -11,13 +11,13 @@ namespace Enza.UTM.Entities.Args
         public AssignDeterminationForRDTRequestArgs()
         {
             MaterialWithMarkerAndExpectedDate = new List<DeterminationWithExpectedDate>();
-            //DonerInfo = new List<S2SDonorInfo>();
+            PropertyValue = new List<RDTProperty>();
             Determinations = new List<int>();
         }        
         public int TestTypeID { get; set; }
         public int TestID { get; set; }
         public List<DeterminationWithExpectedDate> MaterialWithMarkerAndExpectedDate { get; set; }
-        //public List<S2SDonorInfo> DonerInfo { get; set; }
+        public List<RDTProperty> PropertyValue { get; set; }
         public List<int> Determinations { get; set; }
         public DataTable ToTVPTestMaterialDetermation()
         {
@@ -49,6 +49,22 @@ namespace Enza.UTM.Entities.Args
             }
             return dt;
         }
+        public DataTable ToTVPPropertyValue()
+        {
+            var dt = new DataTable("TVP_RDTPropertyValue");
+            dt.Columns.Add("MaterialID");
+            dt.Columns.Add("key");
+            dt.Columns.Add("Value");
+            foreach(var _item in PropertyValue)
+            {
+                var dr = dt.NewRow();
+                dr["MaterialID"] = _item.MaterialID;
+                dr["Key"] = _item.Key;
+                dr["Value"] = _item.Value;
+                dt.Rows.Add(dr);
+            }
+            return dt;
+        }
 
         public string ToColumnsString()
         {
@@ -62,5 +78,11 @@ namespace Enza.UTM.Entities.Args
         public int DeterminationID { get; set; }
         public bool? Selected { get; set; }
         public DateTime? ExpectedDate { get; set; }
+    }
+    public class RDTProperty
+    {
+        public int MaterialID { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

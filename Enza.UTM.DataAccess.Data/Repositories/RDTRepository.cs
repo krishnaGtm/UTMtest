@@ -385,6 +385,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 args.Add("@Filter", request.ToFilterString());
                 args.Add("@TVPTestWithExpDate", request.ToTVPTestMaterialDetermation());
                 args.Add("@Determinations", request.ToTVPDeterminations());
+                args.Add("@TVPPropertyValue", request.ToTVPPropertyValue());
             },
             reader => new Test
             {
