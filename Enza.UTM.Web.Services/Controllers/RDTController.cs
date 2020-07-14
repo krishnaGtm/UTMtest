@@ -94,5 +94,14 @@ namespace Enza.UTM.Web.Services.Controllers
             var rs = await _rdtService.RequestSampleTestAsync(args);
             return Ok(rs);
         }
+
+        [Route("getmaterialState")]
+        [HttpGet]
+        public async Task<IHttpActionResult> getmaterialState()
+        {
+            var rs = await _rdtService.GetmaterialStateAsync();
+            return Ok(rs);
+        }
+
     }
 }

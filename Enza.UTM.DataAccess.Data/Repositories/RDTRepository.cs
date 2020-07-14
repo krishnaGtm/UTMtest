@@ -454,6 +454,18 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
             return new Dictionary<string, string>();
         }
+
+        public async Task<List<MaterialState>> GetmaterialStateAsync()
+        {
+            var list = new List<MaterialState>()
+            {
+                new MaterialState{Code ="DH",Name = "DH"},
+                new MaterialState{Code ="Breeding Line",Name = "Breeding Line"},
+                new MaterialState{Code ="Parent",Name = "Parent"},
+                new MaterialState{Code ="Variety",Name = "Variety"},
+            };
+            return list;
+        }
     }
     
 }

@@ -211,6 +211,7 @@
     <Compile Include="S2SDonorMaterial.cs" />
     <Compile Include="TraitDeterminationValue.cs" />
     <Compile Include="MissingConversion.cs" />
+    <Compile Include="MaterialState.cs" />
     <Compile Include="Well.cs" />
   </ItemGroup>
   <ItemGroup>

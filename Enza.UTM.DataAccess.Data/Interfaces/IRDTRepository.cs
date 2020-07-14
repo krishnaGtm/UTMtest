@@ -15,5 +15,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<MaterialsWithMarkerResult> GetMaterialWithtTestsAsync(MaterialsWithMarkerRequestArgs args);
         Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args);
         Task<string> RequestSampleTestAsync(TestRequestArgs args);
+        Task<List<MaterialState>> GetmaterialStateAsync();
     }
 }

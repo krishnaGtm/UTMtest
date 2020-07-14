@@ -80,7 +80,10 @@ namespace Enza.UTM.BusinessAccess.Services
             return await rdtRepository.RequestSampleTestAsync(args);
         }
 
-        
+        public async Task<List<MaterialState>> GetmaterialStateAsync()
+        {
+            return await rdtRepository.GetmaterialStateAsync();
+        }
     }
 
     

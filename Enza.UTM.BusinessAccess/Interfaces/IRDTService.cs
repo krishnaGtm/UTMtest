@@ -15,6 +15,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<ExcelDataResult> GetDataAsync(ExcelDataRequestArgs requestArgs);
         Task<MaterialsWithMarkerResult> GetMaterialWithTestsAsync(MaterialsWithMarkerRequestArgs args);
         Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args);
-        Task<string> RequestSampleTestAsync(TestRequestArgs args);        
+        Task<string> RequestSampleTestAsync(TestRequestArgs args);
+        Task<List<MaterialState>> GetmaterialStateAsync();
     }
 }
