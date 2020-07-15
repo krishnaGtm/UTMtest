@@ -235,6 +235,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000342.14023.PR_GetExternalTestDataForExport.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000343.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000344.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000345.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
