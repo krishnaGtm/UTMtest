@@ -84,6 +84,11 @@ namespace Enza.UTM.BusinessAccess.Services
         {
             return await rdtRepository.GetmaterialStateAsync();
         }
+
+        public async Task<PlatePlanResult> GetRDTtestsOverviewAsync(PlatePlanRequestArgs args)
+        {
+            return await rdtRepository.GetRDTtestsOverviewAsync(args);
+        }
     }
 
     

@@ -97,11 +97,21 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("getmaterialState")]
         [HttpGet]
-        public async Task<IHttpActionResult> getmaterialState()
+        public async Task<IHttpActionResult> GetmaterialState()
         {
             var rs = await _rdtService.GetmaterialStateAsync();
             return Ok(rs);
         }
 
+        [OverrideAuthorization]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
+        [HttpPost]
+        [Route("getRDTtestOverview")]
+        public async Task<IHttpActionResult> GetRDTtestsOverview([FromBody] PlatePlanRequestArgs args)
+        {
+            args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
+            var rs = await _rdtService.GetRDTtestsOverviewAsync(args);
+            return Ok(rs);
+        }
     }
 }

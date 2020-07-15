@@ -467,6 +467,31 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             };
             return list;
         }
+
+        public async Task<PlatePlanResult> GetRDTtestsOverviewAsync(PlatePlanRequestArgs requestArgs)
+        {
+            var ds = await DbContext.ExecuteDataSetAsync(DataConstants.PR_RDT_GET_TEST_OVERVIEW,
+                CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@Active", requestArgs.Active);
+                    args.Add("@Crops", requestArgs.Crops);
+                    args.Add("@Filter", requestArgs.ToFilterString());
+                    args.Add("@Sort", "");
+                    args.Add("@Page", requestArgs.PageNumber);
+                    args.Add("@PageSize", requestArgs.PageSize);
+                });
+
+            var dt = ds.Tables[0];
+            var result = new PlatePlanResult();
+            if (dt.Rows.Count > 0)
+            {
+                result.Total = dt.Rows[0]["TotalRows"].ToInt32();
+                dt.Columns.Remove("TotalRows");
+            }
+            result.Data = dt;
+            return result;
+        }
     }
     
 }
