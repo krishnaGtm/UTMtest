@@ -16,5 +16,7 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args);
         Task<RequestSampleTestResult> RequestSampleTestAsync(TestRequestArgs args);
         Task<List<MaterialState>> GetmaterialStateAsync();
+        Task<PlatePlanResult> GetRDTtestsOverviewAsync(PlatePlanRequestArgs args);
+        Task<RequestSampleTestCallbackResult> RequestSampleTestCallbackAsync(RequestSampleTestCallBackRequestArgs args);
     }
 }

@@ -77,6 +77,7 @@
     <Compile Include="AppRoles.cs" />
     <Compile Include="Args\Abstract\RequestArgs.cs" />
     <Compile Include="Args\AssignDeterminationForRDTRequestArgs.cs" />
+    <Compile Include="Args\RequestSampleTestCallBackRequestArgs.cs" />
     <Compile Include="Args\TestRequestArgs.cs" />
     <Compile Include="Args\CNTManageInfoRequestArgs.cs" />
     <Compile Include="Args\CNTManageMarkersRequestArgs.cs" />
