@@ -75,7 +75,7 @@ namespace Enza.UTM.BusinessAccess.Services
             return await rdtRepository.AssignTestAsync(args);
         }
 
-        public async Task<string> RequestSampleTestAsync(TestRequestArgs args)
+        public async Task<RequestSampleTestResult> RequestSampleTestAsync(TestRequestArgs args)
         {
             return await rdtRepository.RequestSampleTestAsync(args);
         }

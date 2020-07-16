@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Enza.UTM.Entities.Results;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
@@ -17,48 +19,13 @@ namespace Enza.UTM.Services.Proxies
 
         public LimsServiceRestClient()
         {
-            AccessKey = "BA85DB323D894D8BA9BFC4C1031C112A";
-            SecretKey = "0EDD24F2B2CD407F9219E1ECC79D5F27";
-            Url = "https://starlimstest.intra.local/starlims11.test/rest.web.api/v1/UTM/request";
+            AccessKey = ConfigurationManager.AppSettings["AccessKey"];
+            SecretKey = ConfigurationManager.AppSettings["SecretKey"];
+            Url = ConfigurationManager.AppSettings["RestLimsServiceUrl"]; ;
         }
 
-        public string RequestSampleTestAsync()
+        public RequestSampleTestResult RequestSampleTestAsync(RequestSampleTestRequest request)
         {
-            var materialList = new List<Material> 
-            {
-                new Material
-                {
-                    MaterialID = 11001,
-                    Name = "MT0000012",
-                    ExpectedResultDate = DateTime.UtcNow,
-                    MaterialStatus = "ACT"
-                }
-            };
-
-            var determinationList = new List<Determination>
-            {
-                new Determination
-                {
-                    DeterminationID = 2300232,
-                    Materials = materialList
-                }
-            };
-
-            // prepare payload object         
-            var payload = new RequestSampleTestRequest
-            {
-                Crop = "LT",
-                BrStation = "NLEN",
-                Country = "NL",
-                Level = "PLT",
-                RequestID = 3332,
-                RequestingName = "Binodg",
-                RequestingSystem = "UTM",
-                RequestingUser = "BinodG",
-                TestType = "RDT",
-                Determinations = determinationList
-            };
-
             // serialize to JSON, taking extra care for date-times 
             // unless invariant such as DOBs, date-times must be converted to UTC, and serialized with this format: 
             // yyyy-MM-ddTHH:mm:ss.fffZ 
@@ -66,7 +33,7 @@ namespace Enza.UTM.Services.Proxies
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings();
             jsonSettings.DateFormatString = "yyyy-MM-ddTHH:mm:ss.fffZ";
 
-            var json = JsonConvert.SerializeObject(payload, jsonSettings);
+            var json = JsonConvert.SerializeObject(request, jsonSettings);
 
             HttpWebRequest req = WebRequest.CreateHttp(Url);
 
@@ -84,15 +51,21 @@ namespace Enza.UTM.Services.Proxies
 
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
-            // extract response JSON payload         
-            string respJson = ExtractResponseBody(resp);
+            if (resp.StatusCode == HttpStatusCode.OK)
+            {
+                // extract response JSON payload         
+                //string respJson = ExtractResponseBody(resp);
 
-            return respJson;
+                //return respJson;
 
-            // deserialize into in-memory object         
-            //dynamic respObj = JsonConvert.DeserializeObject(respJson);
+                // deserialize into in-memory object         
+                //var respObj = JsonConvert.DeserializeObject(respJson) as RequestSampleTestResult;
 
-            // consume the response as needed...     
+                return new RequestSampleTestResult() { Success = "True" };
+            }
+            else
+                return new RequestSampleTestResult() { Success = "False", ErrorMsg = resp.StatusDescription };
+
         }
 
         // used with string payloads, such as JSON     
@@ -133,31 +106,4 @@ namespace Enza.UTM.Services.Proxies
         }
     }
 
-    public class Material
-    {
-        public int MaterialID { get; set; }
-        public string Name { get; set; }
-        public DateTime ExpectedResultDate { get; set; }
-        public string MaterialStatus { get; set; }
-    }
-
-    public class Determination
-    {
-        public int DeterminationID { get; set; }
-        public List<Material> Materials { get; set; }
-    }
-
-    public class RequestSampleTestRequest
-    {
-        public string Crop { get; set; }
-        public string BrStation { get; set; }
-        public string Country { get; set; }
-        public string Level { get; set; }
-        public string TestType { get; set; }
-        public int RequestID { get; set; }
-        public string RequestingUser { get; set; }
-        public string RequestingName { get; set; }
-        public string RequestingSystem { get; set; }
-        public List<Determination> Determinations { get; set; }
-    }
 }

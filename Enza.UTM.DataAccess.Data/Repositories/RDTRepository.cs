@@ -397,17 +397,65 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         }
 
-        public async Task<string> RequestSampleTestAsync(TestRequestArgs args)
+        public async Task<RequestSampleTestResult> RequestSampleTestAsync(TestRequestArgs request)
         {
-            return await ImplementRequestSampleTest();
+            //Prepare data
+            var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_GetRDTMaterialForUpload, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", request.TestID);
+            },
+            reader => new RequestSampleTest
+            {
+                Crop = reader.Get<string>(0),
+                BrStation = reader.Get<string>(1),
+                Country = reader.Get<string>(2),
+                Level = reader.Get<string>(3),
+                TestType = reader.Get<string>(4),
+                RequestID = reader.Get<int>(5),
+                RequestingSystem = reader.Get<string>(6),
+                DeterminationID = reader.Get<int>(7),
+                MaterialID = reader.Get<int>(8),
+                Name = reader.Get<string>(9),
+                ExpectedResultDate = reader.Get<DateTime>(10),
+                MaterialStatus = reader.Get<string>(11)
+
+            });
+
+            return await ExecuteRequestSampleTest(data.ToList());
         }
 
-        private async Task<string> ImplementRequestSampleTest()
+        private async Task<RequestSampleTestResult> ExecuteRequestSampleTest(List<RequestSampleTest> request)
         {
             await Task.Delay(1);
+            var limsServiceUser = ConfigurationManager.AppSettings["LimsServiceUser"];
+
+            var data = request.GroupBy(g => new { g.RequestID })
+                .Select(o => new RequestSampleTestRequest
+                {
+                    Crop = o.FirstOrDefault().Crop,
+                    BrStation = o.FirstOrDefault().BrStation,
+                    Country = o.FirstOrDefault().Country,
+                    Level = o.FirstOrDefault().Level,
+                    TestType = o.FirstOrDefault().TestType,
+                    RequestID = o.Key.RequestID,
+                    RequestingUser = limsServiceUser,
+                    RequestingName = limsServiceUser,
+                    RequestingSystem = o.FirstOrDefault().RequestingSystem,
+                    Determinations = o.Select(p => new Determination
+                    {
+                        DeterminationID = p.DeterminationID,
+                        Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Material
+                        {
+                            MaterialID = p.MaterialID,
+                            Name = p.Name,
+                            ExpectedResultDate = p.ExpectedResultDate,
+                            MaterialStatus = p.MaterialStatus
+                        }).ToList()
+                    }).ToList()
+                }).FirstOrDefault();
 
             var client = new LimsServiceRestClient();
-            return client.RequestSampleTestAsync();
+            return client.RequestSampleTestAsync(data);
         }
 
         private void PrepareTVPS(DataTable dtCellTVP, DataTable dtRowTVP, DataTable dtListTVP, DataTable dtColumnsTVP, DataTable TVPS2SCapacity)
