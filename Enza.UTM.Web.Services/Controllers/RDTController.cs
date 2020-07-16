@@ -113,5 +113,17 @@ namespace Enza.UTM.Web.Services.Controllers
             var rs = await _rdtService.GetRDTtestsOverviewAsync(args);
             return Ok(rs);
         }
+
+        [HttpPost]
+        [Route("RequestSampleTestCallBack")]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
+        public async Task<IHttpActionResult> RequestSampleTestCallBack([FromBody]RequestSampleTestCallBackRequestArgs requestArgs)
+        {
+            if (requestArgs == null)
+                return InvalidRequest("Please provide required parameters.");
+
+            var result = await _rdtService.RequestSampleTestCallbackAsync(requestArgs);
+            return Ok(result);
+        }
     }
 }

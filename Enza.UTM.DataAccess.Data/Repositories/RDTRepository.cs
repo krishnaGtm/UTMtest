@@ -400,7 +400,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
         public async Task<RequestSampleTestResult> RequestSampleTestAsync(TestRequestArgs request)
         {
             //Prepare data
-            var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_GetRDTMaterialForUpload, CommandType.StoredProcedure, args =>
+            var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GetMaterialForUpload, CommandType.StoredProcedure, args =>
             {
                 args.Add("@TestID", request.TestID);
             },
@@ -441,10 +441,10 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     RequestingUser = limsServiceUser,
                     RequestingName = limsServiceUser,
                     RequestingSystem = o.FirstOrDefault().RequestingSystem,
-                    Determinations = o.Select(p => new Determination
+                    Determinations = o.Select(p => new Entities.Results.Determination
                     {
                         DeterminationID = p.DeterminationID,
-                        Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Material
+                        Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Entities.Results.Material
                         {
                             MaterialID = p.MaterialID,
                             Name = p.Name,
@@ -539,6 +539,11 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
             result.Data = dt;
             return result;
+        }
+
+        public async Task<RequestSampleTestCallbackResult> RequestSampleTestCallbackAsync(RequestSampleTestCallBackRequestArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
     
