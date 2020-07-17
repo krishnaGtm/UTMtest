@@ -19,7 +19,7 @@ namespace Enza.UTM.Entities.Results
         public string MaterialStatus { get; set; }
     }
 
-    public class Material
+    public class MaterialDT
     {
         public int MaterialID { get; set; }
         public string Name { get; set; }
@@ -29,10 +29,10 @@ namespace Enza.UTM.Entities.Results
         public int InterfaceRefID { get; set; }
     }
 
-    public class Determination
+    public class DeterminationDT
     {
         public int DeterminationID { get; set; }
-        public List<Material> Materials { get; set; }
+        public List<MaterialDT> Materials { get; set; }
     }
 
     public class RequestSampleTestRequest
@@ -46,7 +46,7 @@ namespace Enza.UTM.Entities.Results
         public string RequestingUser { get; set; }
         public string RequestingName { get; set; }
         public string RequestingSystem { get; set; }
-        public List<Determination> Determinations { get; set; }
+        public List<DeterminationDT> Determinations { get; set; }
     }
 
     public class RequestSampleTestResult

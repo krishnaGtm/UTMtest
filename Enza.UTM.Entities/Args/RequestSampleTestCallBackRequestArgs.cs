@@ -17,7 +17,7 @@ namespace Enza.UTM.Entities.Args
         //public string RequestingUser { get; set; }
         //public string RequestingName { get; set; }
         //public string RequestingSystem { get; set; }
-        public List<Determination> Determinations { get; set; }
+        public List<DeterminationDT> Determinations { get; set; }
 
         public DataTable ToTVPDeterminationMaterial()
         {

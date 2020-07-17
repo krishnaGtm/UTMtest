@@ -477,10 +477,10 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     RequestingUser = limsServiceUser,
                     RequestingName = limsServiceUser,
                     RequestingSystem = o.FirstOrDefault().RequestingSystem,
-                    Determinations = o.Select(p => new Entities.Results.Determination
+                    Determinations = o.Select(p => new Entities.Results.DeterminationDT
                     {
                         DeterminationID = p.DeterminationID,
-                        Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Entities.Results.Material
+                        Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Entities.Results.MaterialDT
                         {
                             MaterialID = p.MaterialID,
                             Name = p.Name,
