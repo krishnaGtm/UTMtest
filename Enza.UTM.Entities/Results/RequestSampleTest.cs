@@ -25,8 +25,6 @@ namespace Enza.UTM.Entities.Results
         public string Name { get; set; }
         public DateTime ExpectedResultDate { get; set; }
         public string MaterialStatus { get; set; }
-        public int NrPlants { get; set; }
-        public int InterfaceRefID { get; set; }
     }
 
     public class DeterminationDT

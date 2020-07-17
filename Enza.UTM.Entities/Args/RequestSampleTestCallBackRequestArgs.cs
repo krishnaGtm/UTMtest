@@ -17,7 +17,7 @@ namespace Enza.UTM.Entities.Args
         //public string RequestingUser { get; set; }
         //public string RequestingName { get; set; }
         //public string RequestingSystem { get; set; }
-        public List<DeterminationDT> Determinations { get; set; }
+        public List<DeterminationCallback> Determinations { get; set; }
 
         public DataTable ToTVPDeterminationMaterial()
         {
@@ -43,28 +43,18 @@ namespace Enza.UTM.Entities.Args
         }
     }
 
-    //public class Determination
-    //{
-    //    public int DeterminationID { get; set; }
-    //    //public CreatedPlants CreatedPlants { get; set; }
-    //    public List<Material> Materials { get; set; }
-    //}
+    public class DeterminationCallback
+    {
+        public int DeterminationID { get; set; }
+        public List<MaterialCallback> Materials { get; set; }
+    }
 
-    //public class CreatedPlants
-    //{
-    //    public int NrPlants { get; set; }
-    //}
-
-    //public class Material
-    //{
-    //    public int MaterialID { get; set; }
-    //    public int NrPlants { get; set; }
-    //    public int InterfaceRefID { get; set; }
-    //    //public int NL_INTERFACE_REFID { get; set; }
-    //    //public string Name { get; set; }
-    //    //public DateTime ExpectedResultDate { get; set; }
-    //    //public string MaterialStatus { get; set; }
-    //}
+    public class MaterialCallback
+    {
+        public int MaterialID { get; set; }
+        public int NrPlants { get; set; }
+        public int InterfaceRefID { get; set; }
+    }
 
     public class RequestSampleTestCallbackResult
     {
