@@ -32,7 +32,7 @@ CREATE PROCEDURE [dbo].[PR_RDT_GetMaterialForUpload]
 		M.MaterialID,
 		M.MaterialKey,
 		CONVERT(varchar(50), TMD.ExpectedDate, 120) AS 'ExpectedResultDate',
-		M.MaterialState AS 'MaterialStatus'
+		M.MaterialStatus
 	FROM Test T
 	JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
 	JOIN [File] F ON F.FileID = T.FileID
