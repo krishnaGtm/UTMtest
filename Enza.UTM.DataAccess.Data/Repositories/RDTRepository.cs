@@ -275,7 +275,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 {
                     missedMendatoryColumns.Add("LotNr");
                 }
-                if (args.ImportLevel.EqualsIgnoreCase("list") && !foundPlantName)
+                if (!args.ImportLevel.EqualsIgnoreCase("list") && !foundPlantName)
                 {
                     missedMendatoryColumns.Add("Plant name");
                 }
