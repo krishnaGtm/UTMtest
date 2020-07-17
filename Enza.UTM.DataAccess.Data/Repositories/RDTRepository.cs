@@ -99,6 +99,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 }
 
                 #endregion
+
+
                 if (args.ImportLevel.EqualsIgnoreCase("list"))
                     URI = "/api/v1/simplegrid/grid/create/FieldNursery";
                 else
@@ -221,6 +223,9 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
                 var foundGIDColumn = false;
                 var foundLotNrColumn = false;
+                var foundEntryCode = false;
+                var foundPlantName = false;
+                var foundMasterNr = false;
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var col = columns[i];
@@ -233,6 +238,18 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     {
                         foundLotNrColumn = true;
                     }
+                    else if (col.ColLabel.EqualsIgnoreCase("MasterNr"))
+                    {
+                        foundMasterNr = true;
+                    }
+                    else if (col.ColLabel.EqualsIgnoreCase("Entry Code"))
+                    {
+                        foundEntryCode = true;
+                    }
+                    else if (col.ColLabel.EqualsIgnoreCase("plant name"))
+                    {
+                        foundPlantName = true;
+                    }
                     dr["ColumnNr"] = i;
                     dr["TraitID"] = col.TraitID;
                     dr["ColumnLabel"] = col.ColLabel;
@@ -240,14 +257,33 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     dtColumnsTVP.Rows.Add(dr);
                 }
 
+                var missedMendatoryColumns = new List<string>();
+
                 if (!foundGIDColumn)
                 {
-                    result.Errors.Add("GID column not found. Please add GID column on data grid.");
-                    return result;
+                    missedMendatoryColumns.Add("GID");
+                }
+                if (!foundEntryCode)
+                {
+                    missedMendatoryColumns.Add("Entry Code");
+                }
+                if (!foundMasterNr)
+                {
+                    missedMendatoryColumns.Add("MasterNr");
                 }
                 if (args.ImportLevel.EqualsIgnoreCase("list") && !foundLotNrColumn)
                 {
-                    result.Errors.Add("LotNr column not found. Please add LotNr column on data grid.");
+                    missedMendatoryColumns.Add("LotNr");
+                }
+                if (args.ImportLevel.EqualsIgnoreCase("list") && !foundPlantName)
+                {
+                    missedMendatoryColumns.Add("Plant name");
+                }
+                
+
+                if(missedMendatoryColumns.Any())
+                {
+                    result.Errors.Add("Please add following columns during import: "+ string.Join(",", missedMendatoryColumns));
                     return result;
                 }
                 var getColIndex = new Func<string, int>(name =>
