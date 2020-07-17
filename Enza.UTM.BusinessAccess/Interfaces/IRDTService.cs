@@ -16,7 +16,8 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<MaterialsWithMarkerResult> GetMaterialWithTestsAsync(MaterialsWithMarkerRequestArgs args);
         Task<Test> AssignTestAsync(AssignDeterminationForRDTRequestArgs args);
         Task<RequestSampleTestResult> RequestSampleTestAsync(TestRequestArgs args);
-        Task<List<MaterialState>> GetmaterialStateAsync();
+        Task<List<MaterialState>> GetmaterialStatusAsync();
+        Task<PlatePlanResult> GetRDTtestsOverviewAsync(PlatePlanRequestArgs args);
         Task<PlatePlanResult> GetRDTtestsOverviewAsync(PlatePlanRequestArgs args);
         Task<RequestSampleTestCallbackResult> RequestSampleTestCallbackAsync(RequestSampleTestCallBackRequestArgs args);
     }
