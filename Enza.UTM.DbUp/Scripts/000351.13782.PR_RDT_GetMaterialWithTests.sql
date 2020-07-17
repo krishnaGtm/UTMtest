@@ -1,4 +1,7 @@
 
+DROP PROCEDURE IF EXISTS [dbo].[PR_RDT_GetMaterialWithTests]
+GO
+
 /*
 
 Author					Date				Description
@@ -8,7 +11,7 @@ KRISHNA GAUTAM			2020-July-10			Get Material and with assigned test data.
 EXEC PR_RDT_GetMaterialWithTests 10621,1, 150, ''
 
 */
-ALTER PROCEDURE [dbo].[PR_RDT_GetMaterialWithTests]
+CREATE PROCEDURE [dbo].[PR_RDT_GetMaterialWithTests]
 (
 	@TestID INT,
 	@Page INT,
