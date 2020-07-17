@@ -1,13 +1,3 @@
-ALTER TABLE Material 
-DROP COLUMN MaterialState
-GO
-
-ALTER TABLE Material
-ADD MaterialStatus NVARCHAR(100)
-GO
-
-
-
 
 ALTER PROCEDURE [dbo].[PR_SaveTestMaterialDeterminationWithTVP_ForRDT]
 (	

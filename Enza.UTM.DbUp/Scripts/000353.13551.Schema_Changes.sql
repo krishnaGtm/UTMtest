@@ -20,6 +20,15 @@ CREATE TYPE [dbo].[TVP_DeterminationMaterial] AS TABLE(
 
 GO
 
+ALTER TABLE Material 
+DROP COLUMN MaterialState
+GO
+
+ALTER TABLE Material
+ADD MaterialStatus NVARCHAR(100)
+GO
+
+
 DROP PROCEDURE IF EXISTS [dbo].[PR_RDT_GetMaterialForUpload]
 GO
 
