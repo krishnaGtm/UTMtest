@@ -27,12 +27,14 @@ namespace Enza.UTM.Entities.Args
             dt.Columns.Add("Selected");
             dt.Columns.Add("ExpectedDate", typeof(DateTime));
             foreach (var item in MaterialWithMarkerAndExpectedDate)
-            {
+            { 
+
                 var dr = dt.NewRow();
                 dr["MaterialID"] = item.MaterialID;
                 dr["DeterminationID"] = item.DeterminationID;
                 dr["Selected"] = item.Selected;
-                dr["ExpectedDate"] = item.ExpectedDate;
+                if (item.ExpectedDate.HasValue && item.Selected == true)
+                    dr["ExpectedDate"] = item.ExpectedDate;
                 dt.Rows.Add(dr);
             }
             return dt;

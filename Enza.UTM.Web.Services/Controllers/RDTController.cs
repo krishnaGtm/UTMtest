@@ -95,11 +95,11 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(rs);
         }
 
-        [Route("getmaterialState")]
+        [Route("getmaterialstatus")]
         [HttpGet]
-        public async Task<IHttpActionResult> getmaterialState()
+        public async Task<IHttpActionResult> getmaterialSatus()
         {
-            var rs = await _rdtService.GetmaterialStateAsync();
+            var rs = await _rdtService.GetmaterialStatusAsync();
             return Ok(rs);
         }
 

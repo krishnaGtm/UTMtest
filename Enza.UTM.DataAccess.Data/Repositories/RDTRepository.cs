@@ -456,7 +456,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return new Dictionary<string, string>();
         }
 
-        public async Task<List<MaterialState>> GetmaterialStateAsync()
+        public async Task<List<MaterialState>> GetmaterialStatusAsync()
         {
             var list = new List<MaterialState>()
             {
