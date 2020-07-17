@@ -541,9 +541,16 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return result;
         }
 
-        public async Task<RequestSampleTestCallbackResult> RequestSampleTestCallbackAsync(RequestSampleTestCallBackRequestArgs args)
+        public async Task<RequestSampleTestCallbackResult> RequestSampleTestCallbackAsync(RequestSampleTestCallBackRequestArgs request)
         {
-            throw new NotImplementedException();
+            await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_REQUEST_SAMPLE_TEST_CALLBACK, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", request.RequestID);
+                args.Add("@FolderName", request.FolderName);
+                args.Add("@TVPDeterminationMaterial", request.ToTVPDeterminationMaterial());
+            });
+
+            return new RequestSampleTestCallbackResult() { Success = "True" };
         }
     }
     

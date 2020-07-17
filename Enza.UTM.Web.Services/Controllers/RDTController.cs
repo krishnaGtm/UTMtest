@@ -17,12 +17,14 @@ namespace Enza.UTM.Web.Services.Controllers
         private readonly IRDTService _rdtService;
         private readonly IPhenomeServices _phenomeServices;
         private readonly IFileService _fileService;
+        private readonly ITestService _testService;
 
-        public RDTController(IRDTService rdtService, IPhenomeServices phenomeServices, IFileService fileService)
+        public RDTController(IRDTService rdtService, IPhenomeServices phenomeServices, IFileService fileService, ITestService testService)
         {
             this._rdtService = rdtService;
             _phenomeServices = phenomeServices;
             _fileService = fileService;
+            _testService = testService;
         }
        
         [HttpPost]
@@ -92,6 +94,13 @@ namespace Enza.UTM.Web.Services.Controllers
         public async Task<IHttpActionResult> RequestSampleTest([FromBody] TestRequestArgs args)
         {
             var rs = await _rdtService.RequestSampleTestAsync(args);
+
+            await _testService.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+            {
+                StatusCode = 200,
+                TestId = args.TestID
+            });
+
             return Ok(rs);
         }
 
@@ -116,7 +125,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [HttpPost]
         [Route("RequestSampleTestCallBack")]
-        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
+        //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
         public async Task<IHttpActionResult> RequestSampleTestCallBack([FromBody]RequestSampleTestCallBackRequestArgs requestArgs)
         {
             if (requestArgs == null)
