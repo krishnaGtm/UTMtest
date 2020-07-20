@@ -97,6 +97,17 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     result.Errors.Add("SyncCode can not be null or empty.");
                     return result;
                 }
+                //countrycode
+                if (!breedingStationDetail.TryGetValue("Country", out countryCode))
+                {
+                    result.Errors.Add("Country not found. Please add Country first.");
+                    return result;
+                }
+                if (string.IsNullOrWhiteSpace(countryCode))
+                {
+                    result.Errors.Add("Country can not be null or empty.");
+                    return result;
+                }
 
                 #endregion
 
