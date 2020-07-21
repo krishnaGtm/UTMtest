@@ -235,9 +235,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000342.14023.PR_GetExternalTestDataForExport.sql" />
   </ItemGroup>
-<ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Scripts\000343.14943.SP_Changes.sql" />
-  </ItemGroup><ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Scripts\000343.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -278,7 +279,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000353.13782.Changes.sql" />
-  </ItemGroup>  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000354.13782.PR_RDT_GetMaterialWithTests.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
