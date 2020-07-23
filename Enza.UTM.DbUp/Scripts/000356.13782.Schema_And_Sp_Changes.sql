@@ -1,5 +1,19 @@
 EXEC sp_rename 'TestMaterialStatus', 'TestMaterial';
 GO
+
+EXEC sp_rename 'TestMaterial.TestMaterialStatusID', 'TestMaterialID', 'COLUMN';  
+GO
+
+DROP INDEX IF EXISTS IDX_TestMaterialStatus_TestMaterialID ON TestMaterial
+GO
+
+CREATE INDEX IDX_TestMaterialID ON TestMaterial
+(
+	TestID DESC,
+	MaterialID
+)
+GO
+
 /*
 
 Author					Date				Description
