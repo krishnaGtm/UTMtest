@@ -256,3 +256,94 @@ AS BEGIN
 		
 END
 GO
+
+
+
+
+
+ALTER PROCEDURE [dbo].[PR_SaveTestMaterialDeterminationWithTVP_ForRDT]
+(	
+	@CropCode							NVARCHAR(15),
+	@TestID								INT,	
+	@TVP_TMD_WithDate TVP_TMD_WithDate	READONLY,
+	@TVPProperty TVP_PropertyValue		READONLY
+) AS BEGIN
+	SET NOCOUNT ON;	
+	
+	--insert or delete statement for merge
+	MERGE INTO TestMaterialDetermination T 
+	USING @TVP_TMD_WithDate S	
+	ON T.MaterialID = S.MaterialID  AND T.DeterminationID = S.DeterminationID AND T.TestID = @TestID
+	--This is done because front end may send null for selected value if no change is done on checkbox for determination 
+	WHEN MATCHED AND ISNULL(S.Selected,1) = 1 AND ISNULL(T.ExpectedDate,'') != ISNULL(S.ExpectedDate,'')
+		THEN UPDATE SET T.ExpectedDate = S.ExpectedDate		
+	WHEN MATCHED AND ISNULL(S.Selected,1) = 0 
+	THEN DELETE
+	WHEN NOT MATCHED AND ISNULL(S.Selected,0) = 1 THEN 
+	INSERT(TestID,MaterialID,DeterminationID,ExpectedDate) VALUES (@TestID,S.MaterialID,s.DeterminationID,S.ExpectedDate);
+
+
+	MERGE INTO TestMaterialStatus T 
+	USING @TVPProperty S ON T.MaterialID = S.MaterialID  AND T.TestID = @TestID AND S.[Key] = 'MaterialStatus'
+	WHEN MATCHED AND ISNULL(T.MaterialStatus,'') <> ISNULL(S.[Value],'') THEN UPDATE
+		SET T.MaterialStatus = S.[Value]
+	WHEN NOT MATCHED THEN
+		INSERT(TestID, MaterialID, MaterialStatus)
+		VALUES(@TestID, S.MaterialID, S.[Value]);
+
+			
+END
+
+GO
+
+
+--EXEC PR_RDT_GetMaterialForUpload 2064;
+ALTER PROCEDURE [dbo].[PR_RDT_GetMaterialForUpload]
+(
+	@TestID		INT
+) AS BEGIN
+	SET NOCOUNT ON;
+	
+	IF NOT EXISTS(SELECT TestID FROM Test WHERE TestID = @TestID)
+	BEGIN
+		EXEC PR_ThrowError N'Invalid test.';
+		RETURN;
+	END
+
+	IF NOT EXISTS(SELECT TestID FROM Test WHERE TestID = @TestID AND StatusCode = 100)
+	BEGIN
+		EXEC PR_ThrowError N'Invalid test status.';
+		RETURN;
+	END
+
+	IF EXISTS(SELECT TestID FROM TestMaterialDetermination WHERE TestID = @TestID AND ISNULL(ExpectedDate,'') = '')
+	BEGIN
+		EXEC PR_ThrowError N'Expected result date is not filled for all materials.';
+		RETURN;
+	END
+
+	SELECT
+		F.CropCode AS 'Crop',
+		T.BreedingStationCode AS 'BrStation',
+		T.CountryCode AS 'Country',
+		T.ImportLevel AS 'Level',
+		TT.TestTypeCode AS 'TestType',
+		T.TestID AS 'RequestID',
+		'UTM' AS 'RequestingSystem',
+		D.DeterminationID,
+		M.MaterialID,
+		M.MaterialKey,
+		CONVERT(varchar(50), TMD.ExpectedDate, 120) AS 'ExpectedResultDate',
+		TMS.MaterialStatus
+	FROM Test T
+	JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
+	JOIN [File] F ON F.FileID = T.FileID
+	JOIN [Row] R ON R.FileID = F.FileID
+	JOIN Material M ON M.MaterialKey = R.MaterialKey
+	JOIN TestMaterialDetermination TMD ON TMD.MaterialID = M.MaterialID
+	JOIN Determination D ON D.DeterminationID = TMD.DeterminationID	
+	LEFT JOIN TestMaterialStatus TMS ON TMS.TestID = T.TestID AND TMS.MaterialID = M.MaterialID
+	WHERE T.TestID = @TestID
+
+END
+GO
