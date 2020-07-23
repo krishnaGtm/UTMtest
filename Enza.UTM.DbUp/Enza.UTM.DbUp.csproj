@@ -286,6 +286,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000344.15142.PR_GetDataWithMarkers.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000354.13782.SchemaChanges.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000355.13782.PR_RDT_GetMaterialWithTests.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
