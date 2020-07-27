@@ -15,7 +15,7 @@ namespace Enza.UTM.Entities.Results
         public int DeterminationID { get; set; }
         public int MaterialID { get; set; }
         public string Name { get; set; }
-        public DateTime ExpectedResultDate { get; set; }
+        public string ExpectedResultDate { get; set; }
         public string MaterialStatus { get; set; }
     }
 
@@ -23,7 +23,7 @@ namespace Enza.UTM.Entities.Results
     {
         public int MaterialID { get; set; }
         public string Name { get; set; }
-        public DateTime ExpectedResultDate { get; set; }
+        public string ExpectedResultDate { get; set; }
         public string MaterialStatus { get; set; }
     }
 

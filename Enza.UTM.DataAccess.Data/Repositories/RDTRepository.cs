@@ -463,7 +463,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 DeterminationID = reader.Get<int>(7),
                 MaterialID = reader.Get<int>(8),
                 Name = reader.Get<string>(9),
-                ExpectedResultDate = reader.Get<DateTime>(10),
+                ExpectedResultDate = reader.Get<string>(10),
                 MaterialStatus = reader.Get<string>(11)
 
             });
