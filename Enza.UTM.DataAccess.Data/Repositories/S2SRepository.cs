@@ -686,31 +686,33 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
             //upload donors
             var donorResult = await UploadDonorlistAsync(data);
-
-            //update donornumber for all donors and update Test status 
-            var TVPDonorInfo = new DataTable();
-            TVPDonorInfo.Columns.Add("MaterialID", typeof(int));
-            TVPDonorInfo.Columns.Add("DH0net");
-            TVPDonorInfo.Columns.Add("Requested");
-            TVPDonorInfo.Columns.Add("ToBeSown");
-            TVPDonorInfo.Columns.Add("Transplant");
-            TVPDonorInfo.Columns.Add("DonorNumber");
-            TVPDonorInfo.Columns.Add("ProjectCode");
-            foreach (var item in donorResult)
+            if(donorResult.Any())
             {
-                var dr = TVPDonorInfo.NewRow();
-                dr["MaterialID"] = item.BreezysPKReference;
-                dr["DonorNumber"] = item.DonorNumber;
-                TVPDonorInfo.Rows.Add(dr);
-            }            
-            var donor = await DbContext.ExecuteNonQueryAsync(DataConstants.PR_S2S_UPDATE_DONORNUMBER, CommandType.StoredProcedure, args => { args.Add("@TVP_DonerInfo", TVPDonorInfo); args.Add("@TestID", testID); });
+                //update donornumber for all donors and update Test status 
+                var TVPDonorInfo = new DataTable();
+                TVPDonorInfo.Columns.Add("MaterialID", typeof(int));
+                TVPDonorInfo.Columns.Add("DH0net");
+                TVPDonorInfo.Columns.Add("Requested");
+                TVPDonorInfo.Columns.Add("ToBeSown");
+                TVPDonorInfo.Columns.Add("Transplant");
+                TVPDonorInfo.Columns.Add("DonorNumber");
+                TVPDonorInfo.Columns.Add("ProjectCode");
+                foreach (var item in donorResult)
+                {
+                    var dr = TVPDonorInfo.NewRow();
+                    dr["MaterialID"] = item.BreezysPKReference;
+                    dr["DonorNumber"] = item.DonorNumber;
+                    TVPDonorInfo.Rows.Add(dr);
+                }
+                var donor = await DbContext.ExecuteNonQueryAsync(DataConstants.PR_S2S_UPDATE_DONORNUMBER, CommandType.StoredProcedure, args => { args.Add("@TVP_DonerInfo", TVPDonorInfo); args.Add("@TestID", testID); });
 
-            //again update s2s capcity slot property with changed available after success             
-            dr1["AvailPlants"] = s2sCapacity.AvailableNrPlants - totalTransplanted < 0 ? 0 : s2sCapacity.AvailableNrPlants - totalTransplanted;
-            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_S2S_CREATE_CAPACITYSLOT, CommandType.StoredProcedure, args =>
-            {
-                args.Add("@TVPCapacityS2S", TVPS2SCapacity);
-            });
+                //again update s2s capcity slot property with changed available after success             
+                dr1["AvailPlants"] = s2sCapacity.AvailableNrPlants - totalTransplanted < 0 ? 0 : s2sCapacity.AvailableNrPlants - totalTransplanted;
+                await DbContext.ExecuteNonQueryAsync(DataConstants.PR_S2S_CREATE_CAPACITYSLOT, CommandType.StoredProcedure, args =>
+                {
+                    args.Add("@TVPCapacityS2S", TVPS2SCapacity);
+                });
+            }
         }
 
         public async Task<IEnumerable<S2SCreateSowingListResult>> UploadDonorlistAsync(IEnumerable<S2SCreateSowingListData> args)
