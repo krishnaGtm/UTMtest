@@ -2,7 +2,7 @@
 =========Changes====================
 Changed By			DATE				Description
 
-Krishna Gautam		2020-07-15			#11251: Calculation of total plates used for DNA marker issue fixed.	
+Krishna Gautam		2020-07-15			#13344:Stored procedure created.	
 
 ========Example=============
 EXEC PR_RDT_GetTestOverview null, 'ON,TO','','',1,211
