@@ -304,6 +304,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000358.13344.PR_RDT_GetTestOverview.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000359.12048.PR_RDT_GetMaterialToPrint.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

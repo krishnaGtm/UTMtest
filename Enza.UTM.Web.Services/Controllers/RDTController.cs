@@ -136,5 +136,16 @@ namespace Enza.UTM.Web.Services.Controllers
             var result = await _rdtService.RequestSampleTestCallbackAsync(requestArgs);
             return Ok(result);
         }
+
+        [Route("print")]
+        [HttpPost]
+        public async Task<IHttpActionResult> PrintLabel([FromBody]PrintLabelForRDTRequestArgs reqArgs)
+        {
+            if (reqArgs == null)
+                return InvalidRequest("Please provide required parameters.");
+           
+            var history = await _rdtService.PrintLabelAsync(reqArgs);
+            return Ok(history);
+        }
     }
 }

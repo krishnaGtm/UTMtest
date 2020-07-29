@@ -114,6 +114,7 @@ namespace Enza.UTM.DataAccess.Data
         public const string PR_RDT_GetMaterialForUpload = "PR_RDT_GetMaterialForUpload"; 
         public const string PR_RDT_GET_TEST_OVERVIEW = "PR_RDT_GetTestOverview";
         public const string PR_RDT_REQUEST_SAMPLE_TEST_CALLBACK = "PR_RDT_RequestSampleTestCallback";
+        public const string PR_RDT_GET_MATERIAL_TO_PRINT = "PR_RDT_GetMaterialToPrint";
 
 
         //MASTER DATA

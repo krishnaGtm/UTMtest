@@ -599,6 +599,122 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
             return new RequestSampleTestCallbackResult() { Success = "True" };
         }
+
+        public async Task<PrintLabelResult> PrintLabelAsync(PrintLabelForRDTRequestArgs reqArgs)
+        {
+            var printlabelResult = new List<PrintLabelResult>();
+            //var result = await DbContext.ExecuteReaderAsync()
+            //key of dictionary should contain following 
+            //REFID,Testname, LimsID, MaterNr, GID, NrOfPlants (Flow 1)
+            //REFID, TestName, LimsID, E-Number,LotNr, NrOfPlants (flow 2)
+            //REFID, PlantName, LimsID, PlantID, 
+            var resultdata = await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_MATERIAL_TO_PRINT, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", reqArgs.TestID);
+                args.Add("@TVPMaterialStatus", string.Join(",", reqArgs.MaterialStatus));
+                args.Add("@TVP_TMD", reqArgs.ToTMDTable());
+            }, reader => new RDTPrintData
+            {
+                LimsID = reader.Get<int>(0),
+                MaterialStatus = reader.Get<string>(1),
+                NrOfPlants = reader.Get<int>(2),
+                DeterminationName = reader.Get<string>(3),
+                MaterialKey = reader.Get<string>(4),
+                GID = reader.Get<string>(5),
+                PlantName = reader.Get<string>(6),
+                LotNr = reader.Get<string>(7),
+                ENumber = reader.Get<string>(8),
+                MasterNr = reader.Get<string>(9),
+                ImportLevel = reader.Get<string>(10)
+
+            });
+            foreach (var _data in resultdata)
+            {
+                var dict = new Dictionary<string, string>();
+                if (_data.ImportLevel.EqualsIgnoreCase("Plant"))
+                {
+                    dict["QRCODE"] = _data.LimsID.ToText();
+                    dict["PLANTNAME"] = _data.PlantName;
+                    dict["PLANTID"] = _data.MaterialKey;
+                }
+                else if (_data.MaterialStatus.EqualsIgnoreCase("variety") || _data.MaterialStatus.EqualsIgnoreCase("parent"))
+                {
+
+                    dict["QRCODE"] = _data.LimsID.ToText();
+                    dict["TESTNAME"] = _data.DeterminationName;
+                    dict["ENumber"] = _data.ENumber;
+                    dict["LOTNR"] = _data.LotNr;
+                    dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
+                }
+                else
+                {
+                    dict["QRCODE"] = _data.LimsID.ToText();
+                    dict["TESTNAME"] = _data.DeterminationName;
+                    dict["LIMSID"] = _data.LimsID.ToText();
+                    dict["MaterNr"] = _data.MasterNr;
+                    dict["GID"] = _data.GID;
+                    dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
+                }
+                printlabelResult.Add(await PrintToBartenderAsync(dict));
+            }
+            var error =  printlabelResult.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Error));
+            if(error != null)
+            {
+                return new PrintLabelResult
+                {
+                    Error = "Some of the print request is not completed successfully",
+                    Success = false,
+                    PrinterName = error.PrinterName
+                };
+            }
+            else
+            {
+                return printlabelResult.FirstOrDefault();
+            }
+        }
+
+        private async Task<PrintLabelResult> PrintToBartenderAsync(Dictionary<string,string> data)
+        {
+            var labelType = ConfigurationManager.AppSettings["RDTPrinterLabelType"];
+            if (string.IsNullOrWhiteSpace(labelType))
+                throw new Exception("Please specify LabelType in settings.");
+
+            var loggedInUser = userContext.GetContext().Name;
+            var credentials = Credentials.GetCredentials();
+            using (var svc = new BartenderSoapClient
+            {
+                Url = ConfigurationManager.AppSettings["BartenderServiceUrl"],
+                Credentials = new NetworkCredential(credentials.UserName, credentials.Password)
+            })
+            {
+                svc.Model = new
+                {
+                    User = loggedInUser,
+                    LabelType = labelType,
+                    Copies = 1,
+                    LabelData = data
+                    //LabelData = new Dictionary<string, string>
+                    //{
+                    //    { "QRCODE", data.LotID.ToString()},
+                    //    { "STCK", data.GID.ToString()},
+                    //    { "MSTR", data.MasterNrText },
+                    //    { "PLNTNR", data.PlantNrText},
+                    //    { "WGHT", data.Weight.ToString()},
+                    //    { "NAME", "Comment"},
+                    //    { "VALUE", data.TraitValue}
+                    //}
+
+                };
+                var result = await svc.PrintToBarTenderAsync();
+                return new PrintLabelResult
+                {
+                    Success = result.Success,
+                    Error = result.Error,
+                    PrinterName = labelType
+                };
+            }
+
+        }
     }
     
 }
