@@ -87,11 +87,13 @@ namespace Enza.UTM.Services.Proxies
         public async Task<IEnumerable<S2SCreateSowingListResult>> UploadDonorlistAsync()
         {
             var body = GetRequestBodyForUploadDonorlist();
-            var response = await ExecuteAsync("", body);
+            var response1 = await ExecuteAsync("", body);
+
+            var response = "";
 
             var doc = XDocument.Parse(response);
             XNamespace ns = "http://contract.enzazaden.com/seed2seed";
-            var successFailure = doc.Element(ns + "Result")?.Value;
+            var successFailure = doc.Descendants(ns + "Result").FirstOrDefault()?.Value;
             if(!string.IsNullOrWhiteSpace(successFailure))
             {
                 var error = doc.Element(ns + "Errors")?.Value;
