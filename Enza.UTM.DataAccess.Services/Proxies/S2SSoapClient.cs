@@ -91,14 +91,13 @@ namespace Enza.UTM.Services.Proxies
 
             var doc = XDocument.Parse(response);
             XNamespace ns = "http://contract.enzazaden.com/seed2seed";
-            var resp = doc.Descendants("createSowingListResponse").FirstOrDefault();
-            if (resp != null)
+            var successFailure = doc.Element(ns + "Result")?.Value;
+            if(!string.IsNullOrWhiteSpace(successFailure))
             {
-                var result = resp.Element(ns + "Result")?.Value;
-                var error = resp.Element(ns + "Errors")?.Value;
-                if (!result.EqualsIgnoreCase("Success"))
+                var error = doc.Element(ns + "Errors")?.Value;
+                if (!successFailure.EqualsIgnoreCase("Success"))
                 {
-                    throw new BusinessException("Failure: "+error);
+                    throw new BusinessException("Failure: " + error);
                 }
                 else
                 {
@@ -116,9 +115,8 @@ namespace Enza.UTM.Services.Proxies
             else
             {
                 throw new BusinessException("Failure: Invalid response");
+
             }
-            
-            
         }
 
         private string GetRequestBodyForUploadDonorlist()
