@@ -91,7 +91,7 @@ namespace Enza.UTM.Services.Proxies
 
             var doc = XDocument.Parse(response);
             XNamespace ns = "http://contract.enzazaden.com/seed2seed";
-            var resp = doc.Descendants(ns + "createSowingListResponse").FirstOrDefault();
+            var resp = doc.Descendants("createSowingListResponse").FirstOrDefault();
             if (resp != null)
             {
                 var result = resp.Element(ns + "Result")?.Value;
