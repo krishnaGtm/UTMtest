@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Enza.UTM.Common;
+using Enza.UTM.Common.Exceptions;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities.Results;
 using Enza.UTM.Services.Abstract;
@@ -90,15 +91,34 @@ namespace Enza.UTM.Services.Proxies
 
             var doc = XDocument.Parse(response);
             XNamespace ns = "http://contract.enzazaden.com/seed2seed";
-            var dt = doc.Descendants(ns + "CreatedDonor")
-                .Select(o => new S2SCreateSowingListResult
+            var resp = doc.Descendants(ns + "createSowingListResponse").FirstOrDefault();
+            if (resp != null)
+            {
+                var result = resp.Element(ns + "Result")?.Value;
+                var error = resp.Element(ns + "Errors")?.Value;
+                if (!result.EqualsIgnoreCase("Success"))
                 {
-                    BreezysPKReference = o.Element(ns + "BreEZysPKReference")?.Value,
-                    BreezysID = o.Element(ns + "BreEZysId")?.Value.ToInt32() ?? 0,
-                    DonorNumber = o.Element(ns + "DonorNumber")?.Value,
-                }).ToList();
+                    throw new BusinessException("Failure: "+error);
+                }
+                else
+                {
+                    var dt = doc.Descendants(ns + "CreatedDonor")
+                           .Select(o => new S2SCreateSowingListResult
+                           {
+                               BreezysPKReference = o.Element(ns + "BreEZysPKReference")?.Value,
+                               BreezysID = o.Element(ns + "BreEZysId")?.Value.ToInt32() ?? 0,
+                               DonorNumber = o.Element(ns + "DonorNumber")?.Value,
+                           }).ToList();
 
-            return dt;
+                    return dt;
+                }
+            }
+            else
+            {
+                throw new BusinessException("Failure: Invalid response");
+            }
+            
+            
         }
 
         private string GetRequestBodyForUploadDonorlist()
