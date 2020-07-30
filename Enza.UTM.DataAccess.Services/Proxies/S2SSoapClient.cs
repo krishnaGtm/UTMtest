@@ -93,10 +93,11 @@ namespace Enza.UTM.Services.Proxies
 
             var doc = XDocument.Parse(response);
             XNamespace ns = "http://contract.enzazaden.com/seed2seed";
+
             var successFailure = doc.Descendants(ns + "Result").FirstOrDefault()?.Value;
             if(!string.IsNullOrWhiteSpace(successFailure))
             {
-                var error = doc.Element(ns + "Errors")?.Value;
+                var error = doc.Descendants(ns + "Errors").FirstOrDefault()?.Value;
                 if (!successFailure.EqualsIgnoreCase("Success"))
                 {
                     throw new BusinessException("Failure: " + error);
