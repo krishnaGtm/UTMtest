@@ -476,6 +476,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             await Task.Delay(1);
             var limsServiceUser = ConfigurationManager.AppSettings["LimsServiceUser"];
 
+
             var data = request.GroupBy(g => new { g.RequestID })
                 .Select(o => new RequestSampleTestRequest
                 {
@@ -488,18 +489,43 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     RequestingUser = limsServiceUser,
                     RequestingName = limsServiceUser,
                     RequestingSystem = o.FirstOrDefault().RequestingSystem,
-                    Determinations = o.Select(p => new Entities.Results.DeterminationDT
+                    Determinations = o.GroupBy(y => y.DeterminationID).Select(p => new Entities.Results.DeterminationDT
                     {
-                        DeterminationID = p.DeterminationID,
-                        Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Entities.Results.MaterialDT
+                        DeterminationID = p.Key,
+                        Materials = p.Select(q=>new Entities.Results.MaterialDT
                         {
-                            MaterialID = p.MaterialID,
-                            Name = p.Name,
-                            ExpectedResultDate = p.ExpectedResultDate,
-                            MaterialStatus = p.MaterialStatus
+                            MaterialID = q.MaterialID,
+                            Name = q.Name,
+                            ExpectedResultDate = q.ExpectedResultDate,
+                            MaterialStatus = q.MaterialStatus
                         }).ToList()
                     }).ToList()
                 }).FirstOrDefault();
+
+            //var data1 = request.GroupBy(g => new { g.RequestID })
+            //    .Select(o => new RequestSampleTestRequest
+            //    {
+            //        Crop = o.FirstOrDefault().Crop,
+            //        BrStation = o.FirstOrDefault().BrStation,
+            //        Country = o.FirstOrDefault().Country,
+            //        Level = o.FirstOrDefault().Level,
+            //        TestType = o.FirstOrDefault().TestType,
+            //        RequestID = o.Key.RequestID,
+            //        RequestingUser = limsServiceUser,
+            //        RequestingName = limsServiceUser,
+            //        RequestingSystem = o.FirstOrDefault().RequestingSystem,
+            //        Determinations = o.Select(p => new Entities.Results.DeterminationDT
+            //        {
+            //            DeterminationID = p.DeterminationID,
+            //            Materials = o.Where(q => q.DeterminationID == p.DeterminationID).Select(q => new Entities.Results.MaterialDT
+            //            {
+            //                MaterialID = p.MaterialID,
+            //                Name = p.Name,
+            //                ExpectedResultDate = p.ExpectedResultDate,
+            //                MaterialStatus = p.MaterialStatus
+            //            }).ToList()
+            //        }).ToList()
+            //    }).FirstOrDefault();
 
             var client = new LimsServiceRestClient();
             return client.RequestSampleTestAsync(data);
