@@ -87,9 +87,7 @@ namespace Enza.UTM.Services.Proxies
         public async Task<IEnumerable<S2SCreateSowingListResult>> UploadDonorlistAsync()
         {
             var body = GetRequestBodyForUploadDonorlist();
-            var response1 = await ExecuteAsync("", body);
-
-            var response = "";
+            var response = await ExecuteAsync("", body);
 
             var doc = XDocument.Parse(response);
             XNamespace ns = "http://contract.enzazaden.com/seed2seed";
