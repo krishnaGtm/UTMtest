@@ -637,7 +637,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             var resultdata = await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_MATERIAL_TO_PRINT, CommandType.StoredProcedure, args =>
             {
                 args.Add("@TestID", reqArgs.TestID);
-                args.Add("@TVPMaterialStatus", string.Join(",", reqArgs.MaterialStatus));
+                args.Add("@MaterialStatus", string.Join(",", reqArgs.MaterialStatus));
                 args.Add("@TVP_TMD", reqArgs.ToTMDTable());
             }, reader => new RDTPrintData
             {
