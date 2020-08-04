@@ -11,7 +11,7 @@ using Enza.UTM.Web.Services.Core.Controllers;
 namespace Enza.UTM.Web.Services.Controllers
 {
     [RoutePrefix("api/v1/rdt")]
-    [Authorize(Roles = AppRoles.PUBLIC)]
+    //[Authorize(Roles = AppRoles.PUBLIC)]
     public class RDTController : BaseApiController
     {
         private readonly IRDTService _rdtService;
