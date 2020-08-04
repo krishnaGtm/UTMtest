@@ -656,16 +656,18 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             });
             foreach (var _data in resultdata)
             {
+                var labelType = "";
                 var dict = new Dictionary<string, string>();
                 if (_data.ImportLevel.EqualsIgnoreCase("Plant"))
                 {
+                    labelType = ConfigurationManager.AppSettings["RDTPlantMaterialLabelType"];
                     dict["QRCODE"] = _data.LimsID.ToText();
                     dict["PLANTNAME"] = _data.PlantName;
                     dict["PLANTID"] = _data.MaterialKey;
                 }
                 else if (_data.MaterialStatus.EqualsIgnoreCase("variety") || _data.MaterialStatus.EqualsIgnoreCase("parent"))
                 {
-
+                    labelType = ConfigurationManager.AppSettings["RDTVarietyMaterialLabelType"];
                     dict["QRCODE"] = _data.LimsID.ToText();
                     dict["TESTNAME"] = _data.DeterminationName;
                     dict["ENumber"] = _data.ENumber;
@@ -674,14 +676,15 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 }
                 else
                 {
+                    labelType = ConfigurationManager.AppSettings["RDTBreedingMaterialLabelType"];
                     dict["QRCODE"] = _data.LimsID.ToText();
                     dict["TESTNAME"] = _data.DeterminationName;
-                    dict["LIMSID"] = _data.LimsID.ToText();
-                    dict["MaterNr"] = _data.MasterNr;
+                    dict["MASTERNR"] = _data.MasterNr;
                     dict["GID"] = _data.GID;
                     dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
                 }
-                printlabelResult.Add(await PrintToBartenderAsync(dict));
+                //print label
+                printlabelResult.Add(await PrintToBartenderAsync(dict, labelType));
             }
             var error =  printlabelResult.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Error));
             if(error != null)
@@ -699,9 +702,9 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
         }
 
-        private async Task<PrintLabelResult> PrintToBartenderAsync(Dictionary<string,string> data)
+        private async Task<PrintLabelResult> PrintToBartenderAsync(Dictionary<string,string> data,string labelType)
         {
-            var labelType = ConfigurationManager.AppSettings["RDTPrinterLabelType"];
+            //var labelType = ConfigurationManager.AppSettings["RDTPrinterLabelType"];
             if (string.IsNullOrWhiteSpace(labelType))
                 throw new Exception("Please specify LabelType in settings.");
 
@@ -719,17 +722,6 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     LabelType = labelType,
                     Copies = 1,
                     LabelData = data
-                    //LabelData = new Dictionary<string, string>
-                    //{
-                    //    { "QRCODE", data.LotID.ToString()},
-                    //    { "STCK", data.GID.ToString()},
-                    //    { "MSTR", data.MasterNrText },
-                    //    { "PLNTNR", data.PlantNrText},
-                    //    { "WGHT", data.Weight.ToString()},
-                    //    { "NAME", "Comment"},
-                    //    { "VALUE", data.TraitValue}
-                    //}
-
                 };
                 var result = await svc.PrintToBarTenderAsync();
                 return new PrintLabelResult
