@@ -1304,7 +1304,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 return await svc.FillPlatesInLimsAsync();
             }
         }
-        private async Task<HttpResponseMessage> SignInAsync(RestClient client)
+        public async Task<HttpResponseMessage> SignInAsync(RestClient client)
         {
             var ssoEnabled = ConfigurationManager.AppSettings["SSO:Enabled"].ToBoolean();
             if (!ssoEnabled)

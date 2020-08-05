@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
 using Enza.UTM.Services;
+using Enza.UTM.Services.Abstract;
 
 namespace Enza.UTM.BusinessAccess.Interfaces
 {
@@ -34,5 +36,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<byte[]> TestToExcelAsync(int testID);
         Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName, string testName, int testID);
         Task<int> GetTotalMarkerAsync(int testID);
+        Task<HttpResponseMessage> SignInAsync(RestClient client);
     }
 }

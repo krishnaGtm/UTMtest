@@ -745,6 +745,34 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
 
         }
+        public async Task<IEnumerable<Test>> GetTests()
+        {
+            return await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_TEST_TO_SEND_SCORE, CommandType.StoredProcedure, reader => new Test
+            {
+                TestID = reader.Get<int>(0)
+            });
+            
+        }
+
+        public async Task<IEnumerable<RDTScore>> GetRDTScores(int testID)
+        {
+            return await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_SCORE,
+                CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                },
+                reader => new RDTScore
+                {
+                    TestID = reader.Get<int>(0),
+                    MaterialKey = reader.Get<string>(1),
+                    FieldID = reader.Get<string>(2),
+                    ColumnLabel = reader.Get<string>(3),
+                    Score = reader.Get<string>(4),
+                    ObservationID = reader.Get<int>(5),
+                    ImportLevel = reader.Get<string>(6)
+                });
+        }
     }
     
 }

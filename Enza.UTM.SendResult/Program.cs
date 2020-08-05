@@ -30,22 +30,32 @@ namespace Enza.UTM.SendResult
                     var success = AsyncHelper.RunSync(async () =>
                     {
                         var service = scope.Resolve<ITestService>();
+                        var rdtService = scope.Resolve<IRDTService>();
                         var emalConfigService = scope.Resolve<IEmailConfigService>();
                         var emailService = scope.Resolve<IEmailService>();
                         //exception has already been handled inside this method.
-                        var ok = await service.ValidateAndSendTraitDeterminationResultAsync("Phenome")
+                        var sendResult2GB = await service.ValidateAndSendTraitDeterminationResultAsync("Phenome")
                         .ExecuteSafe(err =>
                         {
                             ErrorLog(err);
                         });
-                        if (!ok)
+
+                        var sendResultRDT = await rdtService.SendResult().ExecuteSafe(err =>
+                        {
+                            ErrorLog(err);
+                        });
+
+                        if (!sendResult2GB || !sendResultRDT)
                         {
                             //send email to specified recipients
                             var root = Path.Combine(Environment.CurrentDirectory, "Logs");
                             var logFile = _logger.GetLogCurrentFile(root);
                             await SendErrorEmailAsync(emalConfigService, emailService, logFile);
                         }
-                        return ok;
+                        if (sendResultRDT && sendResult2GB)
+                            return true;
+                        else
+                            return false;
                     });
                     return success ? 0 : 1;
                 }

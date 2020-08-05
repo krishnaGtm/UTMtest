@@ -216,6 +216,7 @@
     <Compile Include="TraitDeterminationValue.cs" />
     <Compile Include="MissingConversion.cs" />
     <Compile Include="MaterialState.cs" />
+    <Compile Include="RDTScore.cs" />
     <Compile Include="Well.cs" />
   </ItemGroup>
   <ItemGroup>
