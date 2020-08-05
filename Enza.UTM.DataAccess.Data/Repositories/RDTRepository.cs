@@ -654,7 +654,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 ImportLevel = reader.Get<string>(10)
 
             });
-            if(resultdata.Any())
+            if (resultdata.Any())
             {
                 foreach (var _data in resultdata)
                 {
@@ -686,32 +686,63 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                         dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
                     }
                     //print label
-                    printlabelResult.Add(await PrintToBartenderAsync(dict, labelType));
+                    var result = await PrintToBartenderAsync(dict, labelType);
+                    if (result == null)
+                    {
+                        var item = printlabelResult.FirstOrDefault(x => x.Error == "Some of the print is not completed");
+                        if (item == null)
+                        {
+                            printlabelResult.Add(new PrintLabelResult
+                            {
+                                Error = "Some of the print is not completed",
+                                Success = false
+                            });
+                        }
+
+                    }
+                    else if (!result.Success)
+                    {
+                        var item = printlabelResult.FirstOrDefault(x => x.Error.ToText().Trim() == result.Error.ToText().Trim());
+                        if (item == null)
+                        {
+                            printlabelResult.Add(new PrintLabelResult
+                            {
+                                Error = result.Error,
+                                Success = false
+                            });
+                        }
+
+                    }
                 }
                 var error = printlabelResult.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Error));
                 if (error != null)
                 {
+                    var errorMessage = string.Join("," + Environment.NewLine, printlabelResult.Select(x => x.Error));
+
                     return new PrintLabelResult
                     {
-                        Error = "Some of the print request is not completed successfully",
-                        Success = false,
-                        PrinterName = error.PrinterName
+                        Error = errorMessage,
+                        Success = false
                     };
                 }
                 else
                 {
-                    return printlabelResult.FirstOrDefault();
+                    return new PrintLabelResult
+                    {
+                        Error = "Successfully request sent for printing sticker",
+                        Success = true
+                    };
                 }
             }
             else
             {
                 return new PrintLabelResult
                 {
-                    Error = "Data not sent to print",
+                    Error = "Data not found.",
                     Success = false
                 };
             }
-            
+
         }
 
         private async Task<PrintLabelResult> PrintToBartenderAsync(Dictionary<string,string> data,string labelType)
