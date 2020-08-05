@@ -654,52 +654,64 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 ImportLevel = reader.Get<string>(10)
 
             });
-            foreach (var _data in resultdata)
+            if(resultdata.Any())
             {
-                var labelType = "";
-                var dict = new Dictionary<string, string>();
-                if (_data.ImportLevel.EqualsIgnoreCase("Plant"))
+                foreach (var _data in resultdata)
                 {
-                    labelType = ConfigurationManager.AppSettings["RDTPlantMaterialLabelType"];
-                    dict["QRCODE"] = _data.LimsID.ToText();
-                    dict["PLANTNAME"] = _data.PlantName;
-                    dict["PLANTID"] = _data.MaterialKey;
+                    var labelType = "";
+                    var dict = new Dictionary<string, string>();
+                    if (_data.ImportLevel.EqualsIgnoreCase("Plant"))
+                    {
+                        labelType = ConfigurationManager.AppSettings["RDTPlantMaterialLabelType"];
+                        dict["QRCODE"] = _data.LimsID.ToText();
+                        dict["PLANTNAME"] = _data.PlantName;
+                        dict["PLANTID"] = _data.MaterialKey;
+                    }
+                    else if (_data.MaterialStatus.EqualsIgnoreCase("variety") || _data.MaterialStatus.EqualsIgnoreCase("parent"))
+                    {
+                        labelType = ConfigurationManager.AppSettings["RDTVarietyMaterialLabelType"];
+                        dict["QRCODE"] = _data.LimsID.ToText();
+                        dict["TESTNAME"] = _data.DeterminationName;
+                        dict["ENumber"] = _data.ENumber;
+                        dict["LOTNR"] = _data.LotNr;
+                        dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
+                    }
+                    else
+                    {
+                        labelType = ConfigurationManager.AppSettings["RDTBreedingMaterialLabelType"];
+                        dict["QRCODE"] = _data.LimsID.ToText();
+                        dict["TESTNAME"] = _data.DeterminationName;
+                        dict["MASTERNR"] = _data.MasterNr;
+                        dict["GID"] = _data.GID;
+                        dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
+                    }
+                    //print label
+                    printlabelResult.Add(await PrintToBartenderAsync(dict, labelType));
                 }
-                else if (_data.MaterialStatus.EqualsIgnoreCase("variety") || _data.MaterialStatus.EqualsIgnoreCase("parent"))
+                var error = printlabelResult.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Error));
+                if (error != null)
                 {
-                    labelType = ConfigurationManager.AppSettings["RDTVarietyMaterialLabelType"];
-                    dict["QRCODE"] = _data.LimsID.ToText();
-                    dict["TESTNAME"] = _data.DeterminationName;
-                    dict["ENumber"] = _data.ENumber;
-                    dict["LOTNR"] = _data.LotNr;
-                    dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
+                    return new PrintLabelResult
+                    {
+                        Error = "Some of the print request is not completed successfully",
+                        Success = false,
+                        PrinterName = error.PrinterName
+                    };
                 }
                 else
                 {
-                    labelType = ConfigurationManager.AppSettings["RDTBreedingMaterialLabelType"];
-                    dict["QRCODE"] = _data.LimsID.ToText();
-                    dict["TESTNAME"] = _data.DeterminationName;
-                    dict["MASTERNR"] = _data.MasterNr;
-                    dict["GID"] = _data.GID;
-                    dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
+                    return printlabelResult.FirstOrDefault();
                 }
-                //print label
-                printlabelResult.Add(await PrintToBartenderAsync(dict, labelType));
-            }
-            var error =  printlabelResult.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Error));
-            if(error != null)
-            {
-                return new PrintLabelResult
-                {
-                    Error = "Some of the print request is not completed successfully",
-                    Success = false,
-                    PrinterName = error.PrinterName
-                };
             }
             else
             {
-                return printlabelResult.FirstOrDefault();
+                return new PrintLabelResult
+                {
+                    Error = "Data not sent to print",
+                    Success = false
+                };
             }
+            
         }
 
         private async Task<PrintLabelResult> PrintToBartenderAsync(Dictionary<string,string> data,string labelType)
