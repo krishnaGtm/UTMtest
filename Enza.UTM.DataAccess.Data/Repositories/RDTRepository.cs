@@ -764,7 +764,10 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     User = loggedInUser,
                     LabelType = labelType,
                     Copies = 1,
-                    LabelData = data
+                    Labels = new 
+                    {
+                        LabelData = data
+                    }
                 };
                 var result = await svc.PrintToBarTenderAsync();
                 return new PrintLabelResult
