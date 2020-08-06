@@ -99,6 +99,11 @@ namespace Enza.UTM.BusinessAccess.Services
         {
             return await rdtRepository.PrintLabelAsync(reqArgs);
         }
+
+        public async Task<ReceiveRDTResultsReceiveResult> ReceiveRDTResultsAsync(ReceiveRDTResultsRequestArgs args)
+        {
+            return await rdtRepository.ReceiveRDTResultsAsync(args);
+        }
     }
 
     

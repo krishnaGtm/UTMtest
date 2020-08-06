@@ -78,6 +78,7 @@
     <Compile Include="Args\Abstract\RequestArgs.cs" />
     <Compile Include="Args\AssignDeterminationForRDTRequestArgs.cs" />
     <Compile Include="Args\PrintLabelForRDTRequestArgs.cs" />
+    <Compile Include="Args\ReceiveRDTResultsRequestArgs.cs" />
     <Compile Include="Args\RequestSampleTestCallBackRequestArgs.cs" />
     <Compile Include="Args\TestRequestArgs.cs" />
     <Compile Include="Args\CNTManageInfoRequestArgs.cs" />
