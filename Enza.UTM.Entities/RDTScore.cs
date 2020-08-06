@@ -4,6 +4,7 @@
     {
         public int TestID { get; set; }
         public int? ObservationID { get; set; }
+        public int MaterialID { get; set; }
         public string MaterialKey { get; set; }
         public string ColumnLabel { get; set; }
         public string Score { get; set; }

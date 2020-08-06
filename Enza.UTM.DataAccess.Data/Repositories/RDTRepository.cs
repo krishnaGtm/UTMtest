@@ -801,7 +801,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     ColumnLabel = reader.Get<string>(3),
                     Score = reader.Get<string>(4),
                     ObservationID = reader.Get<int>(5),
-                    ImportLevel = reader.Get<string>(6)
+                    ImportLevel = reader.Get<string>(6),
+                    MaterialID = reader.Get<int>(7)
                 });
         }
     }

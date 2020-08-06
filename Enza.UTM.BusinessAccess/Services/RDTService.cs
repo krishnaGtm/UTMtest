@@ -128,7 +128,7 @@ namespace Enza.UTM.BusinessAccess.Services
                         if (data.Any())
                         {
                             var groupedData = data.GroupBy(x => x.FieldID);
-                            foreach(var _groupedData in groupedData)
+                            foreach (var _groupedData in groupedData)
                             {
                                 var dataToCreate = _groupedData.ToList();
 
@@ -138,67 +138,150 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                 //create observation column when required
                                 var createColumn = await CreateObservationColumns(client, traits, fieldID, level);
-                                if(!createColumn)
+                                if (!createColumn)
                                 {
                                     //failed to create column send email portion need to be implelemted
                                     continue;
                                 }
 
-                                var MaterialKey = dataToCreate.Where(x=>x.ObservationID <=0).OrderBy(x => x.MaterialKey).Select(x => x.MaterialKey);
-                                //create observation record for FEID
-                                var createObservationURL = "/api/v2/fieldentity/observations/create";
-                                var FEIDS = "[\"" + string.Join("\",\"", MaterialKey) + "\"]";
-                                var creationDate = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000;
-                                var respCreateObservation = await client.PostAsync(createObservationURL, values =>
+                                var MaterialKey = dataToCreate.Where(x => x.ObservationID <= 0).OrderBy(x => x.MaterialKey).Select(x => x.MaterialKey);
+
+                                if (MaterialKey.Any())
                                 {
-                                    values.Add("fieldId", fieldID);
-                                    values.Add("fieldEntityIds", FEIDS);
-                                    values.Add("nrOfObservations", "1");
-                                    values.Add("date", creationDate.ToString());
-                                }, 600);//10 minutes
+                                    //create observation record for FEID
+                                    var createObservationURL = "/api/v2/fieldentity/observations/create";
+                                    var FEIDS = "[\"" + string.Join("\",\"", MaterialKey) + "\"]";
+                                    var creationDate = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000;
+                                    var respCreateObservation = await client.PostAsync(createObservationURL, values =>
+                                    {
+                                        values.Add("fieldId", fieldID);
+                                        values.Add("fieldEntityIds", FEIDS);
+                                        values.Add("nrOfObservations", "1");
+                                        values.Add("date", creationDate.ToString());
+                                    }, 600);//10 minutes
 
-                                await respCreateObservation.EnsureSuccessStatusCodeAsync();
-                                var respCreateObs = await respCreateObservation.Content.ReadAsStringAsync();
-                                //we have to take observation id when success is sent 
-                                LogInfo("Deserializing create observation response from Phenome.");
+                                    await respCreateObservation.EnsureSuccessStatusCodeAsync();
+                                    var respCreateObs = await respCreateObservation.Content.ReadAsStringAsync();
+                                    //we have to take observation id when success is sent 
+                                    LogInfo("Deserializing create observation response from Phenome.");
 
-                                var jsonresp = (JObject)JsonConvert.DeserializeObject(respCreateObs);
+                                    var jsonresp1 = (JObject)JsonConvert.DeserializeObject(respCreateObs);
+                                    var status1 = jsonresp1["status"];
+                                    //string[] row_ids;
+                                    Dictionary<string, List<string>> row_ids = new Dictionary<string, List<string>>();
+                                    if (status1.ToText() == "1")
+                                    {
+                                        LogInfo("Create observation successful.");
+                                        row_ids = jsonresp1["rows_ids"].ToObject<Dictionary<string, List<string>>>();
+                                        var obsrvationAndMaterialkey = row_ids.SelectMany(x => x.Value.Select(y => new UTMResult
+                                        {
+                                            Materialkey = x.Key,
+                                            Observationkey = y
+                                        })).ToList();
+
+                                        foreach (var _observation in obsrvationAndMaterialkey)
+                                        {
+                                            dataToCreate.First(x => x.MaterialKey == _observation.Materialkey).ObservationID = _observation.Observationkey.ToInt32();
+                                        }
+                                        //maintain list to update observationID on UTM
+                                        var observationAndMaterialID = (from x in obsrvationAndMaterialkey
+                                                                        join y in dataToCreate on x.Materialkey equals y.MaterialKey
+                                                                        select new
+                                                                        {
+                                                                            y.MaterialID,
+                                                                            x.Observationkey
+                                                                        }).ToList();
+                                        ////update observationID on table 
+                                        //await rdtRepository.UpdateObsrvationID(_test.TestID, observationAndMaterialID);
+                                    }
+                                    else
+                                    {
+                                        //error break
+                                        continue;
+                                    }
+                                }
+                                //create CSV data
+                                var csvData = CreateCSVForUploadObservationRecord(dataToCreate);
+
+                                //call upload observation service                                   
+                                var uploadURL = "/api/v1/upload/upload/upload_file";
+                                var streamcontent =
+                                    new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes(csvData.ToString())));
+
+                                var respData = await client.PostAsync(uploadURL, new MultipartFormDataContent
+                                        {
+                                            { new StringContent(_groupedData.Key), "uploadFileEntityId" },
+                                            { new StringContent("1"), "uploadType" },
+                                            { new StringContent("1"), "fileFormat" },
+                                            { new StringContent("Update"), "uploadMethod" },
+                                            { new StringContent("23"), "objectType" },
+                                            { new StringContent(_groupedData.Key), "objectId" },
+                                            { new StringContent("UTF-8"), "fileEncoding" },
+                                            { streamcontent, "uploadFileInputName", $"{_groupedData.Key}_RDTobservation.csv" }
+                                        }, 600);
+
+                                await respData.EnsureSuccessStatusCodeAsync();
+                                var respUploadCsv = await respData.Content.ReadAsStringAsync();
+
+                                respUploadCsv = respUploadCsv.Replace("<html>", "").Replace("</html>", "").Replace("<body>", "")
+                                    .Replace("</body>", "").Replace("<textarea>", "")
+                                    .Replace("</textarea>", "");
+
+                                var jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
                                 var status = jsonresp["status"];
-                                //string[] row_ids;
-                                Dictionary<string, List<string>> row_ids = new Dictionary<string, List<string>>();
+                                string upload_row_id = "";
+                                var message = jsonresp["message"];
+
+                                //if status is 1 then success otherwise failure
+                                //if status is 0 check whether entiry have running job error.
+                                int count = 0;
+                                while (status.ToText() != "1" && count <= 20 && message.ToText().Contains("Entity has running job"))
+                                {
+                                    LogError($"Upload file to create observation failed. {message.ToText() }.");
+                                    LogInfo($"Re call service started.");
+                                    count++;
+                                    streamcontent = new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes(csvData.ToString())));
+                                    respData = await client.PostAsync(uploadURL, new MultipartFormDataContent
+                                        {
+                                            { new StringContent(_groupedData.Key), "uploadFileEntityId" },
+                                            { new StringContent("1"), "uploadType" },
+                                            { new StringContent("1"), "fileFormat" },
+                                            { new StringContent("Update"), "uploadMethod" },
+                                            { new StringContent("23"), "objectType" },
+                                            { new StringContent(_groupedData.Key), "objectId" },
+                                            { new StringContent("UTF-8"), "fileEncoding" },
+                                            { streamcontent, "uploadFileInputName", $"{_groupedData.Key}_RDTobservation.csv" }
+                                        }, 600);
+
+                                    await respData.EnsureSuccessStatusCodeAsync();
+                                    respUploadCsv = await respData.Content.ReadAsStringAsync();
+
+                                    respUploadCsv = respUploadCsv.Replace("<html>", "").Replace("</html>", "").Replace("<body>", "")
+                                        .Replace("</body>", "").Replace("<textarea>", "")
+                                        .Replace("</textarea>", "");
+
+                                    jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
+                                    status = jsonresp["status"];
+
+                                    await Task.Delay(1000);
+                                }
                                 if (status.ToText() == "1")
                                 {
-                                    LogInfo("Create observation successful.");
-                                    row_ids = jsonresp["rows_ids"].ToObject<Dictionary<string, List<string>>>();
-                                    var obsrvationAndMaterialkey = row_ids.SelectMany(x => x.Value.Select(y => new UTMResult
-                                    {
-                                        Materialkey = x.Key,
-                                        Observationkey = y
-                                    })).ToList();
-                                }
-                                
-                                
+                                    LogInfo("Upload file successful.");
 
+
+
+
+
+                                }
                             }
-                            
+
                         }
                     }
                 }
             }
             
             return true;
-        }
-
-        private void LogInfo(string msg)
-        {
-            Console.WriteLine(msg);
-            _logger.Info(msg);
-        }
-
-        private void LogError(string msg)
-        {
-            Console.WriteLine(msg);
-            _logger.Error(msg);
         }
 
         private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID, string level)
@@ -275,6 +358,50 @@ namespace Enza.UTM.BusinessAccess.Services
                 }
             }
             return true;
+        }
+
+        private StringBuilder CreateCSVForUploadObservationRecord(List<RDTScore> dataToCreate)
+        {
+            var sb = new StringBuilder();
+            var columnsList = dataToCreate.GroupBy(x => x.ColumnLabel).OrderBy(x => x.Key).Select(x => x.Key).ToList();
+
+            //add FEID (this is treated as observationID column in Phenome which is used to update data)
+            columnsList.Insert(0, "FEID");
+
+            //add Columns in CSV file first row as header
+            sb.AppendLine(string.Join(",", columnsList));
+
+            //now prepare data
+            var groupedItem = dataToCreate.GroupBy(x => x.ObservationID);
+            var valueList = new List<string>();
+            foreach (var _groupedItem in groupedItem)
+            {
+                var groupeditemList = _groupedItem.ToList();
+                valueList.Clear();
+                foreach(var _columnList in columnsList)
+                {
+                    var data = groupeditemList.FirstOrDefault(x => x.ColumnLabel == _columnList);
+                    if (data != null)
+                        valueList.Add(data.Score);
+                    else
+                        valueList.Add("");
+                }
+                //insert FEID value here in first index
+                valueList.Insert(0, _groupedItem.Key.ToText());
+                sb.AppendLine(string.Join(",", valueList));
+            }
+            return sb;
+        }
+        private void LogInfo(string msg)
+        {
+            Console.WriteLine(msg);
+            _logger.Info(msg);
+        }
+
+        private void LogError(string msg)
+        {
+            Console.WriteLine(msg);
+            _logger.Error(msg);
         }
     }
 

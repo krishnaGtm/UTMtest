@@ -22,5 +22,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<PrintLabelResult> PrintLabelAsync(PrintLabelForRDTRequestArgs reqArgs);
         Task<IEnumerable<RDTScore>> GetRDTScores(int testID);
         Task<IEnumerable<Test>> GetTests();
+        //Task<bool> UpdateObsrvationID(int testID, IEnumerable<object> observationAndMaterialID);
     }
 }
