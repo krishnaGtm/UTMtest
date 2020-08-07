@@ -1,17 +1,13 @@
-﻿using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
-using Enza.UTM.Common.Extensions;
-using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
 
 namespace Enza.UTM.Web.Services.RDT.Controllers
 {
     [RoutePrefix("api/v1/rdt")]
-    //[Authorize(Roles = AppRoles.PUBLIC)]
+    [Authorize]
     public class RDTServiceController : BaseApiController
     {
         private readonly IRDTService _rdtService;
