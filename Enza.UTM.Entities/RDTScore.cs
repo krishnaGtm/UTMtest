@@ -10,5 +10,6 @@
         public string Score { get; set; }
         public string FieldID { get; set; }
         public string ImportLevel { get; set; }
+        public int TestResultID { get; set; }
     }
 }

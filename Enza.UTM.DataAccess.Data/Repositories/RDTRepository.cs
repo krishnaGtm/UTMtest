@@ -802,8 +802,32 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     Score = reader.Get<string>(4),
                     ObservationID = reader.Get<int>(5),
                     ImportLevel = reader.Get<string>(6),
-                    MaterialID = reader.Get<int>(7)
+                    MaterialID = reader.Get<int>(7),
+                    TestResultID = reader.Get<int>(8)
                 });
+        }
+
+        public async Task UpdateObsrvationIDAsync(int testID, DataTable dt)
+        {
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_UPDATE_OBSERVATIONID, CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                    args.Add("@TVP_PropertyValue", dt);
+                });
+        }
+
+        public async Task<int> MarkSentResultAsync(int testID, string testResultIDs)
+        {
+            var p1 = DbContext.CreateOutputParameter("@TestID", DbType.Int32);
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_MARK_SENT_RESULT, CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                    args.Add("@TestResultIDs", testResultIDs);
+                    args.Add("@TestStatus", p1);
+                });
+            return p1.Value.ToInt32();
         }
     }
     

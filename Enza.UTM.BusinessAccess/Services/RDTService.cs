@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using log4net;
+using System.Web.UI.WebControls;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -144,13 +145,17 @@ namespace Enza.UTM.BusinessAccess.Services
                                     continue;
                                 }
 
-                                var MaterialKey = dataToCreate.Where(x => x.ObservationID <= 0).OrderBy(x => x.MaterialKey).Select(x => x.MaterialKey);
+                                var MaterialKey = dataToCreate.Where(x => x.ObservationID <= 0).GroupBy(x=>x.MaterialKey).OrderBy(x => x.Key).Select(x => new
+                                {
+                                    x.Key,
+                                    x.FirstOrDefault().MaterialID
+                                }).ToList();
 
                                 if (MaterialKey.Any())
                                 {
                                     //create observation record for FEID
                                     var createObservationURL = "/api/v2/fieldentity/observations/create";
-                                    var FEIDS = "[\"" + string.Join("\",\"", MaterialKey) + "\"]";
+                                    var FEIDS = "[\"" + string.Join("\",\"", MaterialKey.OrderBy(x=>x.Key).Select(x=>x.Key)) + "\"]";
                                     var creationDate = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000;
                                     var respCreateObservation = await client.PostAsync(createObservationURL, values =>
                                     {
@@ -181,22 +186,44 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                         foreach (var _observation in obsrvationAndMaterialkey)
                                         {
-                                            dataToCreate.First(x => x.MaterialKey == _observation.Materialkey).ObservationID = _observation.Observationkey.ToInt32();
+
+                                            var updateObservation = dataToCreate.Where(x => x.MaterialKey == _observation.Materialkey);
+                                            foreach(var _updateObservationID in updateObservation)
+                                            {
+                                                _updateObservationID.ObservationID = _observation.Observationkey.ToInt32();
+                                            }
                                         }
-                                        //maintain list to update observationID on UTM
-                                        var observationAndMaterialID = (from x in obsrvationAndMaterialkey
-                                                                        join y in dataToCreate on x.Materialkey equals y.MaterialKey
-                                                                        select new
-                                                                        {
-                                                                            y.MaterialID,
-                                                                            x.Observationkey
-                                                                        }).ToList();
-                                        ////update observationID on table 
+                                        var list = MaterialKey.Select(x => new { x.MaterialID, x.Key }).ToList();
+
+                                        var observationIDwithMaterialID = (from x in list
+                                                                           join y in obsrvationAndMaterialkey on x.Key equals y.Materialkey
+                                                                           select new
+                                                                           {
+                                                                               x.MaterialID,
+                                                                               y.Observationkey
+                                                                           }).ToList();
+                                        ////update observationID on UTM table so that if new observation score is available then we can update create or update score on same row for same material 
                                         //await rdtRepository.UpdateObsrvationID(_test.TestID, observationAndMaterialID);
+                                        //upldaing observato
+                                        LogInfo("Updating created observationIDs to UTM");
+                                        DataTable dt = new DataTable();
+                                        dt.Columns.Add("MaterialID",typeof(int));
+                                        dt.Columns.Add("Key");
+                                        dt.Columns.Add("Value");
+                                        foreach(var obs in observationIDwithMaterialID)
+                                        {
+                                            var dr = dt.NewRow();
+                                            dr["Key"] = "PhenomeObsID";
+                                            dr["MaterialID"] = obs.MaterialID;
+                                            dr["Value"] = obs.Observationkey;
+                                            dt.Rows.Add(dr);
+                                        }
+                                        await rdtRepository.UpdateObsrvationIDAsync(_test.TestID, dt);
                                     }
                                     else
                                     {
                                         //error break
+                                        LogError("Unable to crete observation.");
                                         continue;
                                     }
                                 }
@@ -227,17 +254,21 @@ namespace Enza.UTM.BusinessAccess.Services
                                     .Replace("</body>", "").Replace("<textarea>", "")
                                     .Replace("</textarea>", "");
 
-                                var jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
-                                var status = jsonresp["status"];
-                                string upload_row_id = "";
-                                var message = jsonresp["message"];
+                                //var jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
+                                //var status = jsonresp["status"];
+                                //string upload_row_id = "";
+                                //var message = jsonresp["message"];
+
+                                var uploadResp = new UploadObservationResponse();
+
+                                uploadResp = JsonConvert.DeserializeObject<UploadObservationResponse>(respUploadCsv);
 
                                 //if status is 1 then success otherwise failure
                                 //if status is 0 check whether entiry have running job error.
                                 int count = 0;
-                                while (status.ToText() != "1" && count <= 20 && message.ToText().Contains("Entity has running job"))
+                                while (uploadResp.Status != "1" && count <= 20 && uploadResp.Message.Contains("Entity has running job"))
                                 {
-                                    LogError($"Upload file to create observation failed. {message.ToText() }.");
+                                    LogError($"Upload file to create observation failed. {uploadResp.Message }.");
                                     LogInfo($"Re call service started.");
                                     count++;
                                     streamcontent = new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes(csvData.ToString())));
@@ -260,18 +291,71 @@ namespace Enza.UTM.BusinessAccess.Services
                                         .Replace("</body>", "").Replace("<textarea>", "")
                                         .Replace("</textarea>", "");
 
-                                    jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
-                                    status = jsonresp["status"];
+                                    //jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
+                                    //status = jsonresp["status"];
+
+                                    uploadResp =  JsonConvert.DeserializeObject<UploadObservationResponse>(respUploadCsv);
 
                                     await Task.Delay(1000);
                                 }
-                                if (status.ToText() == "1")
+                                if (uploadResp.Status == "1")
                                 {
                                     LogInfo("Upload file successful.");
+                                   
 
+                                    //this is required because we need to change category of columns for runJob which is not same as returned on previous call
+                                    //without changing category it didnot worked (may need to ask service provider).
+                                    foreach(var _header in uploadResp.headers_json.headers)
+                                    {
+                                        if (_header.header_name.EqualsIgnoreCase("FEID"))
+                                            _header.category = "17";
+                                        else
+                                            _header.category = "4";
+                                    }
+                                    var uploadData = new
+                                    {
+                                        fileFormat = uploadResp.headers_json.fileFormat,
+                                        baseObjectId = new string[] { _groupedData.Key },
+                                        parentRemoval = 0,
+                                        baseObjectType = 23,
+                                        useAbbreviationNames = 0,
+                                        uploadMethod = uploadResp.headers_json.uploadMethod,
+                                        headers = uploadResp.headers_json.headers
+                                    };
+                                    var mainjsonHeader = JsonConvert.SerializeObject(uploadData);
 
+                                    var URL = "/api/v1/upload/upload/register_job";
+                                    var content1 = new MultipartFormDataContent();
+                                    content1.Add(new StringContent(_groupedData.Key), "objectId");
+                                    content1.Add(new StringContent("1"), "jobType");
+                                    content1.Add(new StringContent(uploadResp.upload_row_id), "uploadId");
+                                    content1.Add(new StringContent(mainjsonHeader), "uploadData");
 
+                                    var responseToUpload = await client.PostAsync(URL, content1);
+                                    await responseToUpload.EnsureSuccessStatusCodeAsync();
 
+                                    var runJobRespContent = await responseToUpload.Content.ReadAsStringAsync();
+                                    //check response of runJob 
+                                    var runJobResp = new PhenomeResponse();
+                                    runJobResp = JsonConvert.DeserializeObject<PhenomeResponse>(runJobRespContent);
+                                    if(runJobResp.Status != "1")
+                                    {
+                                        //run job failed
+                                        LogInfo("Run job failed. Unable to create observation");
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        LogInfo("Job successfully queued on phenome");
+                                        //update sent result to true.
+                                        LogInfo("Marking result as sent");
+                                        var testStatus = await rdtRepository.MarkSentResultAsync(_test.TestID, string.Join(",",dataToCreate.Select(x => x.TestResultID)));
+                                        //check status if it is 700 then send test completed email
+                                        if(testStatus == 700)
+                                        {
+
+                                        }
+                                    }
 
                                 }
                             }
@@ -290,7 +374,7 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldPlants";
                 LogInfo($"Set observation columns on field {fieldID} if required");
-                if (level == "List")
+                if (level.EqualsIgnoreCase("List"))
                     Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
 
                 var response = await client.PostAsync(Url, new MultipartFormDataContent
@@ -378,8 +462,13 @@ namespace Enza.UTM.BusinessAccess.Services
             {
                 var groupeditemList = _groupedItem.ToList();
                 valueList.Clear();
-                foreach(var _columnList in columnsList)
+                
+
+
+                foreach (var _columnList in columnsList)
                 {
+                    if (_columnList == "FEID")
+                        continue;
                     var data = groupeditemList.FirstOrDefault(x => x.ColumnLabel == _columnList);
                     if (data != null)
                         valueList.Add(data.Score);
