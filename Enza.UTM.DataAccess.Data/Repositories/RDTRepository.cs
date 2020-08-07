@@ -764,7 +764,10 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     User = loggedInUser,
                     LabelType = labelType,
                     Copies = 1,
-                    LabelData = data
+                    Labels = new 
+                    {
+                        LabelData = data
+                    }
                 };
                 var result = await svc.PrintToBarTenderAsync();
                 return new PrintLabelResult
@@ -775,6 +778,17 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 };
             }
 
+        }
+
+        public async Task<ReceiveRDTResultsReceiveResult> ReceiveRDTResultsAsync(ReceiveRDTResultsRequestArgs request)
+        {
+            await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_RECEIVE_RESULTS, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", request.RequestID);
+                args.Add("@TVP_RDTScore", request.ToTVPRDTScore());
+            });
+
+            return new ReceiveRDTResultsReceiveResult() { Success = "True" };
         }
     }
     

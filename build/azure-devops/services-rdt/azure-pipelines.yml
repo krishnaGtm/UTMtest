@@ -1,0 +1,70 @@
+name: 1.0.$(Rev:r)
+
+trigger: 
+  branches:
+    include:
+      - 'development'
+      - 'release'
+  paths:
+    include: 
+      - Enza.UTM.Web.Services.RDT/*
+      - Enza.UTM.BusinessAccess/*
+      - Enza.UTM.Common/*
+      - Enza.UTM.Entities/*      
+      - Enza.UTM.BusinessAccess.Planning/*
+      - Enza.UTM.Web.Services.Core/*
+      - Enza.UTM.DataAccess/*
+      - Enza.UTM.DataAccess.Data.Planning/*
+
+variables: 
+  Buildconfiguration: Release 
+  platform: "AnyCPU"
+
+
+stages:
+  - stage: Build 
+    displayName: Build stage
+    jobs:
+    - job: Build
+      displayName: Build
+      pool:
+        vmImage: 'windows-2019'
+      steps:
+      - task: NuGetCommand@2
+        inputs:
+          command: restore
+          restoreSolution: '**/*.sln' 
+        displayName: 'Restore NuGet packages'
+
+      - task: MSBuild@1
+        inputs: 
+          solution: '**\Enza.UTM.Web.Services.RDT.csproj'
+          msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\\"'
+          configuration: $(BuildConfiguration)
+          platform: $(Platform)
+          msbuildArchitecture: x64
+          logFileVerbosity: diagnostic
+        displayName: 'Build webservice project'
+
+      - task: WhiteSource Bolt@19
+        inputs:
+          advance: true
+        displayName: 'WhiteSource Bolt'
+    
+      - task: CopyFiles@2
+        inputs:
+          Contents: |
+            Enza.UTM.Web.Services.RDT\bin\*
+            Enza.UTM.Web.Services.RDT\*.config
+            Enza.UTM.Web.Services.RDT\Global.asax
+            Enza.UTM.Web.Services.RDT\bin\roslyn\*
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        displayName: 'Copy bin content and web.config'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'utm-service-rdt'
+          publishLocation: 'Container'
+        displayName: 'Publish artifacts'    
+    
