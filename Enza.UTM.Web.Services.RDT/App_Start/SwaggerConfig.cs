@@ -1,24 +1,19 @@
 using Enza.UTM.Common.Attributes;
-using Enza.UTM.Web.Services.RDT;
 using Swashbuckle.Application;
-using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Web.Http;
-using WebActivatorEx;
 
-[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
+//[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
 namespace Enza.UTM.Web.Services.RDT
 {
     public class SwaggerConfig
     {
-        public static void Register()
+        public static void Register(HttpConfiguration config)
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;
-
-            GlobalConfiguration.Configuration
-                .EnableSwagger(c =>
+            config.EnableSwagger(c =>
                     {
                         // By default, the service root url is inferred from the request used to access the docs.
                         // However, there may be situations (e.g. proxy and load-balanced environments) where this does not
@@ -66,7 +61,7 @@ namespace Enza.UTM.Web.Services.RDT
                         //    .Description("Basic HTTP Authentication");
                         //
                         // NOTE: You must also configure 'EnableApiKeySupport' below in the SwaggerUI section
-                        c.ApiKey("enzauth")
+                        c.ApiKey("Authorization")
                             .Description("API Key Authentication")
                             .In("header");
 
@@ -252,7 +247,7 @@ namespace Enza.UTM.Web.Services.RDT
                         // If your API supports ApiKey, you can override the default values.
                         // "apiKeyIn" can either be "query" or "header"
                         //
-                        c.EnableApiKeySupport("enzauth", "header");
+                        c.EnableApiKeySupport("Authorization", "header");
                     });
         }
 

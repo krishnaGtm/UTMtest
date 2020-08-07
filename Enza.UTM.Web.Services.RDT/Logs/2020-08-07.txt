@@ -1,0 +1,95 @@
+2020-08-07 11:28:58,920 ERROR  Enza.UTM.Web.Services.Core.Handlers.GlobalErrorLogger /RDTServices/api/v1/rdt/RequestSampleTestCallBack System.ComponentModel.Win32Exception (0x80004005): The network path was not found
+2020-08-07 11:30:46,469 ERROR dibyamani.suvedi@javra.com Enza.UTM.Web.Services.Core.Handlers.GlobalErrorLogger /RDTServices/api/v1/rdt/RequestSampleTestCallBack System.Data.SqlClient.SqlException (0x80131904): Invalid test.
+   at System.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__180_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.DataAccess.Abstract.Database.<ExecuteReaderAsync>d__46.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.DataAccess\Abstract\Database.cs:line 545
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.DataAccess.Abstract.Database.<ExecuteReaderAsync>d__47.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.DataAccess\Abstract\Database.cs:line 553
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.DataAccess.Data.Repositories.RDTRepository.<RequestSampleTestCallbackAsync>d__13.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.DataAccess.Data\Repositories\RDTRepository.cs:line 619
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.BusinessAccess.Services.RDTService.<RequestSampleTestCallbackAsync>d__14.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.BusinessAccess\Services\RDTService.cs:line 95
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.Web.Services.RDT.Controllers.RDTServiceController.<RequestSampleTestCallBack>d__2.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.Web.Services.RDT\Controllers\RDTServiceController.cs:line 32
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Threading.Tasks.TaskHelpersExtensions.<CastToObject>d__1`1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Http.Controllers.ApiControllerActionInvoker.<InvokeActionAsyncCore>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Http.Controllers.ActionFilterResult.<ExecuteAsync>d__5.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Http.Dispatcher.HttpControllerDispatcher.<SendAsync>d__15.MoveNext()
+ClientConnectionId:dc63fe0d-259a-43a3-a90c-430f175f1248
+Error Number:60000,State:1,Class:16
+2020-08-07 11:31:15,671 ERROR dibyamani.suvedi@javra.com Enza.UTM.Web.Services.Core.Handlers.GlobalErrorLogger /RDTServices/api/v1/rdt/RequestSampleTestCallBack System.Data.SqlClient.SqlException (0x80131904): Invalid test.
+   at System.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__180_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.DataAccess.Abstract.Database.<ExecuteReaderAsync>d__46.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.DataAccess\Abstract\Database.cs:line 545
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.DataAccess.Abstract.Database.<ExecuteReaderAsync>d__47.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.DataAccess\Abstract\Database.cs:line 553
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.DataAccess.Data.Repositories.RDTRepository.<RequestSampleTestCallbackAsync>d__13.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.DataAccess.Data\Repositories\RDTRepository.cs:line 619
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.BusinessAccess.Services.RDTService.<RequestSampleTestCallbackAsync>d__14.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.BusinessAccess\Services\RDTService.cs:line 95
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Enza.UTM.Web.Services.RDT.Controllers.RDTServiceController.<RequestSampleTestCallBack>d__2.MoveNext() in D:\Development\Enza\UTM_GIT\utm-service\Enza.UTM.Web.Services.RDT\Controllers\RDTServiceController.cs:line 32
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Threading.Tasks.TaskHelpersExtensions.<CastToObject>d__1`1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Http.Controllers.ApiControllerActionInvoker.<InvokeActionAsyncCore>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Http.Controllers.ActionFilterResult.<ExecuteAsync>d__5.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Http.Dispatcher.HttpControllerDispatcher.<SendAsync>d__15.MoveNext()
+ClientConnectionId:dc63fe0d-259a-43a3-a90c-430f175f1248
+Error Number:60000,State:1,Class:16
