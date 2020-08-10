@@ -53,7 +53,7 @@ BEGIN
 	WHERE T.TestID = @TestID;
 
 
-	SELECT T.TestID, M.MaterialKey, M.RefExternal, T1.ColumnLabel, TR.Score, TM.PhenomeObsID,T.ImportLevel, M.MaterialID,TR.TestID FROM Test T
+	SELECT T.TestID, M.MaterialKey, M.RefExternal, T1.ColumnLabel, TR.Score, TM.PhenomeObsID,T.ImportLevel, M.MaterialID,TR.RDTTestResultID FROM Test T
 	JOIN TestMaterial TM ON TM.TestID = T.TestID
 	JOIN Material M ON M.MaterialID = TM.MaterialID
 	JOIN RDTTestResult TR ON TR.TestID = T.TestID AND M.MaterialID = TR.MaterialID
