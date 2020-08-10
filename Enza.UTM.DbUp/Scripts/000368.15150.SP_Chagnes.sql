@@ -142,7 +142,7 @@ BEGIN
 	IF EXISTS 
 			(
 				SELECT TOP 1 * FROM TestMaterialDetermination TMD
-				LEFT JOIN RDTTestResult TR ON TMD.TestID = TR.TestID AND TMD.DeterminationID = TMD.DeterminationID AND TMD.MaterialID = TMD.MaterialID
+				LEFT JOIN RDTTestResult TR ON TMD.TestID = TR.TestID AND TMD.DeterminationID = TR.DeterminationID AND TMD.MaterialID = TR.MaterialID
 				WHERE TR.TestID IS NULL AND TMD.TestID = @TestID
 			)
 	BEGIN
