@@ -819,7 +819,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         public async Task<int> MarkSentResultAsync(int testID, string testResultIDs)
         {
-            var p1 = DbContext.CreateOutputParameter("@TestID", DbType.Int32);
+            var p1 = DbContext.CreateOutputParameter("@TestStatus", DbType.Int32);
             await DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_MARK_SENT_RESULT, CommandType.StoredProcedure,
                 args =>
                 {
