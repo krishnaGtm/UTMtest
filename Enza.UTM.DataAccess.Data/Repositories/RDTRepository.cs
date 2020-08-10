@@ -626,6 +626,17 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return new RequestSampleTestCallbackResult() { Success = "True" };
         }
 
+        public async Task<ReceiveRDTResultsReceiveResult> ReceiveRDTResultsAsync(ReceiveRDTResultsRequestArgs request)
+        {
+            await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_RECEIVE_RESULTS, CommandType.StoredProcedure, args =>
+            {
+                args.Add("@TestID", request.RequestID);
+                args.Add("@TVP_RDTScore", request.ToTVPRDTScore());
+            });
+
+            return new ReceiveRDTResultsReceiveResult() { Success = "True" };
+        }
+
         public async Task<PrintLabelResult> PrintLabelAsync(PrintLabelForRDTRequestArgs reqArgs)
         {
             var printlabelResult = new List<PrintLabelResult>();
