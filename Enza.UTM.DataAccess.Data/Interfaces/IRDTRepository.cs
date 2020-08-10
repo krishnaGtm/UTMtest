@@ -21,5 +21,9 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<RequestSampleTestCallbackResult> RequestSampleTestCallbackAsync(RequestSampleTestCallBackRequestArgs args);
         Task<ReceiveRDTResultsReceiveResult> ReceiveRDTResultsAsync(ReceiveRDTResultsRequestArgs args);
         Task<PrintLabelResult> PrintLabelAsync(PrintLabelForRDTRequestArgs reqArgs);
+        Task<IEnumerable<RDTScore>> GetRDTScores(int testID);
+        Task<IEnumerable<TestLookup>> GetTests();
+        Task UpdateObsrvationIDAsync(int testID, DataTable dt);
+        Task<int> MarkSentResultAsync(int testID, string testResultIDs);
     }
 }

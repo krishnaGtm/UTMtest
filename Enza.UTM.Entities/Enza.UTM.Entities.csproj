@@ -201,6 +201,7 @@
     <Compile Include="Results\DHSyncConfig.cs" />
     <Compile Include="Results\MissingConversionResult.cs" />
     <Compile Include="Results\GetMethodResult.cs" />
+    <Compile Include="Results\UploadObservationResponse.cs" />
     <Compile Include="Results\WellTypeResult.cs" />
     <Compile Include="Slot.cs" />
     <Compile Include="Status.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="TraitDeterminationValue.cs" />
     <Compile Include="MissingConversion.cs" />
     <Compile Include="MaterialState.cs" />
+    <Compile Include="RDTScore.cs" />
     <Compile Include="Well.cs" />
   </ItemGroup>
   <ItemGroup>

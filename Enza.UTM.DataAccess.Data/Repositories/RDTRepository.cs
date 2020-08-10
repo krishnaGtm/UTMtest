@@ -779,16 +779,62 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
 
         }
-
-        public async Task<ReceiveRDTResultsReceiveResult> ReceiveRDTResultsAsync(ReceiveRDTResultsRequestArgs request)
+        public async Task<IEnumerable<TestLookup>> GetTests()
         {
-            await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_RECEIVE_RESULTS, CommandType.StoredProcedure, args =>
+            return await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_TEST_TO_SEND_SCORE, CommandType.StoredProcedure, reader => new TestLookup
             {
-                args.Add("@TestID", request.RequestID);
-                args.Add("@TVP_RDTScore", request.ToTVPRDTScore());
+                TestID = reader.Get<int>(0),
+                CropCode = reader.Get<string>(1),
+                BreedingStationCode = reader.Get<string>(2),
+                PlatePlanName = reader.Get<string>(3),
+                TestName = reader.Get<string>(4)
             });
+            
+        }
 
-            return new ReceiveRDTResultsReceiveResult() { Success = "True" };
+        public async Task<IEnumerable<RDTScore>> GetRDTScores(int testID)
+        {
+            return await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_SCORE,
+                CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                },
+                reader => new RDTScore
+                {
+                    TestID = reader.Get<int>(0),
+                    MaterialKey = reader.Get<string>(1),
+                    FieldID = reader.Get<string>(2),
+                    ColumnLabel = reader.Get<string>(3),
+                    Score = reader.Get<string>(4),
+                    ObservationID = reader.Get<int>(5),
+                    ImportLevel = reader.Get<string>(6),
+                    MaterialID = reader.Get<int>(7),
+                    TestResultID = reader.Get<int>(8)
+                });
+        }
+
+        public async Task UpdateObsrvationIDAsync(int testID, DataTable dt)
+        {
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_UPDATE_OBSERVATIONID, CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                    args.Add("@TVP_PropertyValue", dt);
+                });
+        }
+
+        public async Task<int> MarkSentResultAsync(int testID, string testResultIDs)
+        {
+            var p1 = DbContext.CreateOutputParameter("@TestStatus", DbType.Int32);
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_MARK_SENT_RESULT, CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                    args.Add("@TestResultIDs", testResultIDs);
+                    args.Add("@TestStatus", p1);
+                });
+            return p1.Value.ToInt32();
         }
     }
     
