@@ -776,11 +776,15 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             }
 
         }
-        public async Task<IEnumerable<Test>> GetTests()
+        public async Task<IEnumerable<TestLookup>> GetTests()
         {
-            return await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_TEST_TO_SEND_SCORE, CommandType.StoredProcedure, reader => new Test
+            return await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_GET_TEST_TO_SEND_SCORE, CommandType.StoredProcedure, reader => new TestLookup
             {
-                TestID = reader.Get<int>(0)
+                TestID = reader.Get<int>(0),
+                CropCode = reader.Get<string>(1),
+                BreedingStationCode = reader.Get<string>(2),
+                PlatePlanName = reader.Get<string>(3),
+                TestName = reader.Get<string>(4)
             });
             
         }

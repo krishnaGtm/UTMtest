@@ -356,6 +356,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //check status if it is 700 then send test completed email
                                             if (testStatus == 700)
                                             {
+                                                await _testService.SendTestCompletionEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName, _test.TestName, _test.TestID);
 
                                             }
                                         }

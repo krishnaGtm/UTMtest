@@ -17,7 +17,9 @@ CREATE PROCEDURE [dbo].[PR_RDT_GetTestToSendScore]
 AS
 BEGIN
 
-	SELECT TestID FROM Test WHERE StatusCode = 550 AND TestTypeID = 8;
+	SELECT T.TestID,F.CropCode, T.BreedingStationCode,T.LabPlatePlanName, T.TestName FROM Test T 
+	JOIN [File] F ON F.FileID = T.FileID 
+	WHERE T.StatusCode = 550 AND T.TestTypeID = 8;
 END
 GO
 
