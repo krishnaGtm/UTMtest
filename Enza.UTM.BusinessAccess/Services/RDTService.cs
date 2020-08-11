@@ -141,7 +141,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     var dataToCreate = _groupedData.ToList();
 
                                     var traits = dataToCreate.GroupBy(x => x.ColumnLabel).Select(y => y.Key).ToList();
-                                    var fieldID = dataToCreate.FirstOrDefault().FieldID;
+                                    var fieldID = _groupedData.Key;
                                     var level = dataToCreate.FirstOrDefault().ImportLevel;
 
                                     //create observation column when required
@@ -149,6 +149,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     if (!createColumn)
                                     {
                                         //failed to create column send email portion need to be implelemted
+                                        await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName);
                                         continue;
                                     }
 
@@ -244,14 +245,14 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                     var respData = await client.PostAsync(uploadURL, new MultipartFormDataContent
                                         {
-                                            { new StringContent(_groupedData.Key), "uploadFileEntityId" },
+                                            { new StringContent(fieldID), "uploadFileEntityId" },
                                             { new StringContent("1"), "uploadType" },
                                             { new StringContent("1"), "fileFormat" },
                                             { new StringContent("Update"), "uploadMethod" },
                                             { new StringContent("23"), "objectType" },
-                                            { new StringContent(_groupedData.Key), "objectId" },
+                                            { new StringContent(fieldID), "objectId" },
                                             { new StringContent("UTF-8"), "fileEncoding" },
-                                            { streamcontent, "uploadFileInputName", $"{_groupedData.Key}_RDTobservation.csv" }
+                                            { streamcontent, "uploadFileInputName", $"{fieldID}_RDTobservation.csv" }
                                         }, 600);
 
                                     await respData.EnsureSuccessStatusCodeAsync();
@@ -281,14 +282,14 @@ namespace Enza.UTM.BusinessAccess.Services
                                         streamcontent = new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes(csvData.ToString())));
                                         respData = await client.PostAsync(uploadURL, new MultipartFormDataContent
                                         {
-                                            { new StringContent(_groupedData.Key), "uploadFileEntityId" },
+                                            { new StringContent(fieldID), "uploadFileEntityId" },
                                             { new StringContent("1"), "uploadType" },
                                             { new StringContent("1"), "fileFormat" },
                                             { new StringContent("Update"), "uploadMethod" },
                                             { new StringContent("23"), "objectType" },
-                                            { new StringContent(_groupedData.Key), "objectId" },
+                                            { new StringContent(fieldID), "objectId" },
                                             { new StringContent("UTF-8"), "fileEncoding" },
-                                            { streamcontent, "uploadFileInputName", $"{_groupedData.Key}_RDTobservation.csv" }
+                                            { streamcontent, "uploadFileInputName", $"{fieldID}_RDTobservation.csv" }
                                         }, 600);
 
                                         await respData.EnsureSuccessStatusCodeAsync();
@@ -322,7 +323,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                         var uploadData = new
                                         {
                                             fileFormat = uploadResp.headers_json.fileFormat,
-                                            baseObjectId = new string[] { _groupedData.Key },
+                                            baseObjectId = new string[] { fieldID },
                                             parentRemoval = 0,
                                             baseObjectType = 23,
                                             useAbbreviationNames = 0,
@@ -333,7 +334,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                         var URL = "/api/v1/upload/upload/register_job";
                                         var content1 = new MultipartFormDataContent();
-                                        content1.Add(new StringContent(_groupedData.Key), "objectId");
+                                        content1.Add(new StringContent(fieldID), "objectId");
                                         content1.Add(new StringContent("1"), "jobType");
                                         content1.Add(new StringContent(uploadResp.upload_row_id), "uploadId");
                                         content1.Add(new StringContent(mainjsonHeader), "uploadData");

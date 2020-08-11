@@ -600,7 +600,7 @@ namespace Enza.UTM.BusinessAccess.Services
             return success;
         }
 
-        private async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName)
+        public async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName)
         {
             //get test complete email body template
             var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate();
