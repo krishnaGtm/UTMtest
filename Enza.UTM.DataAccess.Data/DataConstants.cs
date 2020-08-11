@@ -120,7 +120,7 @@ namespace Enza.UTM.DataAccess.Data
         public const string PR_RDT_GET_SCORE = "PR_RDT_GetScore";
         public const string PR_RDT_UPDATE_OBSERVATIONID = "PR_RDT_UpdateObservationID";
         public const string PR_RDT_MARK_SENT_RESULT = "PR_RDT_MarkSentResult";
-
+        public const string PR_RDT_MARK_RESULT_ERROR = "PR_RDT_MarkResultError";
 
         //MASTER DATA
         public const string PR_CNT_GET_PROCESSES = "PR_CNT_GetProcesses";

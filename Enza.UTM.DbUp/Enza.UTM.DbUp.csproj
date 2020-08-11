@@ -355,6 +355,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000373.13344.Alter_PR_RDT_GetTestOverview.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000374.13344.Schema_Changes_and_SP_Changes.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

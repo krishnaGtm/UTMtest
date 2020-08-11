@@ -821,7 +821,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     ObservationID = reader.Get<int>(5),
                     ImportLevel = reader.Get<string>(6),
                     MaterialID = reader.Get<int>(7),
-                    TestResultID = reader.Get<int>(8)
+                    TestResultID = reader.Get<int>(8),
+                    ResultStatus = reader.Get<int>(9)
                 });
         }
 
@@ -846,6 +847,16 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args.Add("@TestStatus", p1);
                 });
             return p1.Value.ToInt32();
+        }
+
+        public async Task ErrorSentResultAsync(int testID, string testResultIDs)
+        {
+            await DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_MARK_RESULT_ERROR, CommandType.StoredProcedure,
+                args =>
+                {
+                    args.Add("@TestID", testID);
+                    args.Add("@TestResultIDs", testResultIDs);
+                });
         }
     }
     

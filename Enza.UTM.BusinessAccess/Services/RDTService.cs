@@ -149,7 +149,14 @@ namespace Enza.UTM.BusinessAccess.Services
                                     if (!createColumn)
                                     {
                                         //failed to create column send email portion need to be implelemted
-                                        await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName);
+                                        var list = dataToCreate.GroupBy(o => o.ColumnLabel).Select(x => new { x.Key, x.FirstOrDefault(y => y.ColumnLabel == x.Key).ResultStatus });
+                                        if (list.Any(o => o.ResultStatus != 200))
+                                        {
+                                            var resultIds = string.Join(",", dataToCreate.Select(o => o.TestResultID));
+                                            await rdtRepository.ErrorSentResultAsync(_test.TestID, resultIds);
+                                            await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName);
+                                        }
+                                        
                                         continue;
                                     }
 

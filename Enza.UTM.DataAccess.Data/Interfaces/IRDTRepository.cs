@@ -25,5 +25,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<IEnumerable<TestLookup>> GetTests();
         Task UpdateObsrvationIDAsync(int testID, DataTable dt);
         Task<int> MarkSentResultAsync(int testID, string testResultIDs);
+        Task ErrorSentResultAsync(int testID, string testResultIDs);
     }
 }

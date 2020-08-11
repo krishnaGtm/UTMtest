@@ -11,5 +11,6 @@
         public string FieldID { get; set; }
         public string ImportLevel { get; set; }
         public int TestResultID { get; set; }
+        public int ResultStatus { get; set; }
     }
 }
