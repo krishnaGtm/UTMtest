@@ -678,7 +678,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                         dict["PLANTNAME"] = _data.PlantName;
                         dict["PLANTID"] = _data.MaterialKey;
                     }
-                    else if (_data.MaterialStatus.EqualsIgnoreCase("variety") || _data.MaterialStatus.EqualsIgnoreCase("parent"))
+                    else if (_data.MaterialStatus.EqualsIgnoreCase("variety")) //|| _data.MaterialStatus.EqualsIgnoreCase("parent")
                     {
                         labelType = ConfigurationManager.AppSettings["RDTVarietyMaterialLabelType"];
                         dict["QRCODE"] = _data.LimsID.ToText();
@@ -687,7 +687,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                         dict["LOTNR"] = _data.LotNr;
                         dict["NROFPLANTS"] = _data.NrOfPlants.ToText();
                     }
-                    else
+                    else //parent, breeding line, dh
                     {
                         labelType = ConfigurationManager.AppSettings["RDTBreedingMaterialLabelType"];
                         dict["QRCODE"] = _data.LimsID.ToText();
