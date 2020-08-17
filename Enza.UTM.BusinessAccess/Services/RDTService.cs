@@ -409,7 +409,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                         }, 600);
                 await response.EnsureSuccessStatusCodeAsync();
                 var respAllColumns = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
-                
+
                 //get defined columns
                 Url = "/api/v1/simplegrid/grid/get_columns_list/FieldObservations";
                 response = await client.PostAsync(Url, new MultipartFormDataContent
@@ -458,7 +458,7 @@ namespace Enza.UTM.BusinessAccess.Services
                     await setColResp.EnsureSuccessStatusCodeAsync();
                     var setColRespDesc = await setColResp.Content.DeserializeAsync<PhenomeResponse>();
 
-                    if (!setColRespDesc.Success)
+                    if (!setColRespDesc.Success || setColRespDesc.Message.Contains("limit exceeded"))
                     {
                         LogError($"Error on adding observation column. Error: {setColRespDesc?.Message}");
                         return false;
