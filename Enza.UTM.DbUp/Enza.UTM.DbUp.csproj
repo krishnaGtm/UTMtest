@@ -244,6 +244,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000345.15188.PR_S2S_UpdateDonorNumber.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000346.15159.Alter_PR_Save_Score.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
