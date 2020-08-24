@@ -22,7 +22,7 @@ namespace Enza.UTM.Entities.Args
         public DataTable ToTVPDeterminationMaterial()
         {
             var dt = new DataTable("TVP_DeterminationMaterial");
-            dt.Columns.Add("DeterminationID", typeof(int));
+            dt.Columns.Add("OriginID", typeof(int));
             dt.Columns.Add("MaterialID", typeof(int));
             dt.Columns.Add("NrPlants", typeof(int));
             dt.Columns.Add("LimsRefID", typeof(int));
@@ -32,7 +32,7 @@ namespace Enza.UTM.Entities.Args
                 {
 
                     var dr = dt.NewRow();
-                    dr["DeterminationID"] = item.DeterminationID;
+                    dr["OriginID"] = item.DeterminationID;
                     dr["MaterialID"] = data.MaterialID;
                     dr["NrPlants"] = data.NrPlants;
                     dr["LimsRefID"] = data.InterfaceRefID;

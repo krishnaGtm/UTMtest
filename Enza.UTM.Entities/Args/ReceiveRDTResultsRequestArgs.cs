@@ -13,7 +13,7 @@ namespace Enza.UTM.Entities.Args
         public DataTable ToTVPRDTScore()
         {
             var dt = new DataTable("TVP_RDTScore");
-            dt.Columns.Add("DeterminationID", typeof(int));
+            dt.Columns.Add("OriginID", typeof(int));
             dt.Columns.Add("MaterialID", typeof(int));
             dt.Columns.Add("Score", typeof(string));
             foreach (var item in Determinations)
@@ -21,7 +21,7 @@ namespace Enza.UTM.Entities.Args
                 foreach (var data in item.Materials)
                 {
                     var dr = dt.NewRow();
-                    dr["DeterminationID"] = item.DeterminationID;
+                    dr["OriginID"] = item.DeterminationID;
                     dr["MaterialID"] = data.MaterialID;
                     dr["Score"] = data.Score;
                     dt.Rows.Add(dr);
