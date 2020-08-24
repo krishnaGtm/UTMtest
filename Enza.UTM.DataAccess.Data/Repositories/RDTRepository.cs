@@ -460,7 +460,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 TestType = reader.Get<string>(4),
                 RequestID = reader.Get<int>(5),
                 RequestingSystem = reader.Get<string>(6),
-                DeterminationID = reader.Get<int>(7),
+                DeterminationID = reader.Get<int>(7), //Lims determination id
                 MaterialID = reader.Get<int>(8),
                 Name = reader.Get<string>(9),
                 ExpectedResultDate = reader.Get<DateTime>(10).ToString("yyyy-MM-dd"),
