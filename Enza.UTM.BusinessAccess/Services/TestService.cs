@@ -267,7 +267,8 @@ namespace Enza.UTM.BusinessAccess.Services
                                 {
                                     excludeList.Clear();
                                     //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank. but this list will have wellID value 0
-                                    excludeList = result.Where(x => x.DeterminationValue == "9999" || (string.IsNullOrWhiteSpace(x.TraitValue) && x.WellID <= 0)).ToList();
+                                    //excludeList = result.Where(x => x.DeterminationValue == "9999" || (string.IsNullOrWhiteSpace(x.TraitValue) && x.WellID <= 0)).ToList();
+                                    excludeList = result.Where(x => x.DeterminationValue == "9999").ToList();
                                     result = result.Except(excludeList).ToList();
                                 }
                                 //send email for missing conversion and break current loop
@@ -748,7 +749,7 @@ namespace Enza.UTM.BusinessAccess.Services
                     await setColResp.EnsureSuccessStatusCodeAsync();
                     var setColRespDesc = await setColResp.Content.DeserializeAsync<PhenomeResponse>();
 
-                    if (!setColRespDesc.Success)
+                    if (!setColRespDesc.Success || setColRespDesc.Message.Contains("limit exceeded"))
                     {
                         LogError($"Error on adding observation column. Error: {setColRespDesc?.Message}");
                         return false;
