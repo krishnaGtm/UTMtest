@@ -49,7 +49,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                             T.BreedingStationCode,
                             T.LabPlatePlanName,
                             T.StatusCode,
-                            T.TestName
+                            T.TestName,
+                            T.RequestingSystem,
                         FROM Test T 
                         JOIN [File] F ON F.FileID = T.FileID
                         JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
@@ -65,7 +66,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                   BreedingStationCode = reader.Get<string>(1),
                   LabPlatePlanName = reader.Get<string>(2),
                   StatusCode = reader.Get<int>(3),
-                  TestName = reader.Get<string>(4)
+                  TestName = reader.Get<string>(4),
+                  Source = reader.Get<string>(5)
               });
             return result.FirstOrDefault();
         }
