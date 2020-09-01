@@ -41,6 +41,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
 
         private readonly ITestRepository repository;
+        private readonly IExternalTestRepository externalTestRepository;
         private readonly IUserContext userContext;
         readonly IDataValidationService validationService; 
 
@@ -49,11 +50,13 @@ namespace Enza.UTM.BusinessAccess.Services
 
         public TestService(IUserContext userContext,
             ITestRepository repository,
+            IExternalTestRepository externalTestRepository,
             IDataValidationService validationService,
             IEmailConfigService emailConfigService,
             IEmailService emailService)
         {
             this.repository = repository;
+            this.externalTestRepository = externalTestRepository;
             this.userContext = userContext;
             this.validationService = validationService;
             this.emailConfigService = emailConfigService;
@@ -114,7 +117,27 @@ namespace Enza.UTM.BusinessAccess.Services
 
         public async Task<bool> ReserveScoreResult(ReceiveScoreArgs receiveScoreArgs)
         {
-            return await repository.ReserveScoreResult(receiveScoreArgs);
+            var success = await repository.ReserveScoreResult(receiveScoreArgs);
+            if(success)
+            {
+                //Set status to completed and send email only for external import type
+                //This logic before was inside export to excel
+
+                var testDetail = await externalTestRepository.GetExternalTestDetail(receiveScoreArgs.RequestID);
+
+                if (testDetail != null && testDetail.Source.EqualsIgnoreCase("External"))
+                {
+                    await SendTestCompletionEmailAsync(testDetail.CropCode, testDetail.BreedingStationCode, testDetail.LabPlatePlanName, testDetail.TestName, receiveScoreArgs.RequestID);
+                    //update test status to 700 (completed)
+                    var result = await UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
+                    {
+                        TestId = receiveScoreArgs.RequestID,
+                        StatusCode = 700
+                    });
+                }
+            }
+
+            return success;
         }
 
         public async Task<bool> UpdateTest(UpdateTestArgs args)
