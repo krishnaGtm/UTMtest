@@ -50,7 +50,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                             T.LabPlatePlanName,
                             T.StatusCode,
                             T.TestName,
-                            T.RequestingSystem,
+                            T.RequestingSystem
                         FROM Test T 
                         JOIN [File] F ON F.FileID = T.FileID
                         JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
