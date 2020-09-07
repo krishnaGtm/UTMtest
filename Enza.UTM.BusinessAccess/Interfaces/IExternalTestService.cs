@@ -9,6 +9,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
     {
         Task<ImportDataResult> ImportDataAsync(ExternalTestImportRequestArgs requestArgs);
         Task<byte[]> GetExcelFileForExternalTestAsync(int testID, bool markAsExported = false, bool traitScore = false);
-        Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll);
+        Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode);
     }
 }
