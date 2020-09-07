@@ -72,14 +72,13 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return result.FirstOrDefault();
         }
 
-        public async Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll)
+        public async Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode)
         {
             var ds = await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_EXTERNAL_TESTS_LOOKUP,
                 CommandType.StoredProcedure, args =>
                 {
                     args.Add("@CropCode", cropCode);
                     args.Add("@BrStationCode", brStationCode);
-                    args.Add("@ShowAll", showAll);
                 });
             return ds.Tables[0];
         }

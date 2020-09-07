@@ -27,9 +27,9 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("getExternalTests")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetExternalTests(string cropCode, string brStationCode, bool showAll)
+        public async Task<IHttpActionResult> GetExternalTests(string cropCode, string brStationCode)
         {
-            var data = await _externalTestService.GetExternalTestsLookupAsync(cropCode, brStationCode, showAll);
+            var data = await _externalTestService.GetExternalTestsLookupAsync(cropCode, brStationCode);
             return Ok(data);
         }
 
