@@ -249,9 +249,9 @@ namespace Enza.UTM.BusinessAccess.Services
             }
         }
 
-        public Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll)
+        public Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode)
         {
-            return _externalTestRepository.GetExternalTestsLookupAsync(cropCode, brStationCode, showAll);
+            return _externalTestRepository.GetExternalTestsLookupAsync(cropCode, brStationCode);
         }
     }
 }

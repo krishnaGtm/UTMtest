@@ -49,7 +49,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                             T.BreedingStationCode,
                             T.LabPlatePlanName,
                             T.StatusCode,
-                            T.TestName
+                            T.TestName,
+                            T.RequestingSystem
                         FROM Test T 
                         JOIN [File] F ON F.FileID = T.FileID
                         JOIN TestType TT ON TT.TestTypeID = T.TestTypeID
@@ -65,19 +66,19 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                   BreedingStationCode = reader.Get<string>(1),
                   LabPlatePlanName = reader.Get<string>(2),
                   StatusCode = reader.Get<int>(3),
-                  TestName = reader.Get<string>(4)
+                  TestName = reader.Get<string>(4),
+                  Source = reader.Get<string>(5)
               });
             return result.FirstOrDefault();
         }
 
-        public async Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode, bool showAll)
+        public async Task<DataTable> GetExternalTestsLookupAsync(string cropCode, string brStationCode)
         {
             var ds = await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_EXTERNAL_TESTS_LOOKUP,
                 CommandType.StoredProcedure, args =>
                 {
                     args.Add("@CropCode", cropCode);
                     args.Add("@BrStationCode", brStationCode);
-                    args.Add("@ShowAll", showAll);
                 });
             return ds.Tables[0];
         }
