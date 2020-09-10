@@ -464,7 +464,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 MaterialID = reader.Get<int>(8),
                 Name = reader.Get<string>(9),
                 ExpectedResultDate = reader.Get<DateTime>(10).ToString("yyyy-MM-dd"),
-                MaterialStatus = reader.Get<string>(11)
+                MaterialStatus = reader.Get<string>(11),
+                Site = reader.Get<string>(12)
 
             });
 
@@ -486,6 +487,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     Level = o.FirstOrDefault().Level,
                     TestType = o.FirstOrDefault().TestType,
                     RequestID = o.Key.RequestID,
+                    Site = o.FirstOrDefault().Site,
                     RequestingUser = limsServiceUser,
                     RequestingName = limsServiceUser,
                     RequestingSystem = o.FirstOrDefault().RequestingSystem,

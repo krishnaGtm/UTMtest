@@ -77,8 +77,14 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(items);
         }
 
-
-
+        [Route("getSites")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetSites()
+        {
+            var items = await masterService.GetSitesAsync();
+            return Ok(items);
+        }
+        
         [HttpGet]
         [Route("getCNTProcesses")]
         public async Task<IHttpActionResult> GetCNTProcesses()

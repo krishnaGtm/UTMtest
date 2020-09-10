@@ -17,6 +17,7 @@ namespace Enza.UTM.Entities.Results
         public string Name { get; set; }
         public string ExpectedResultDate { get; set; }
         public string MaterialStatus { get; set; }
+        public string Site { get; set; }
     }
 
     public class MaterialDT
@@ -41,6 +42,7 @@ namespace Enza.UTM.Entities.Results
         public string Level { get; set; }
         public string TestType { get; set; }
         public int RequestID { get; set; }
+        public string Site { get; set; }
         public string RequestingUser { get; set; }
         public string RequestingName { get; set; }
         public string RequestingSystem { get; set; }
