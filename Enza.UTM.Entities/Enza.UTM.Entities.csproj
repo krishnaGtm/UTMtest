@@ -80,6 +80,7 @@
     <Compile Include="Args\PrintLabelForRDTRequestArgs.cs" />
     <Compile Include="Args\ReceiveRDTResultsRequestArgs.cs" />
     <Compile Include="Args\RequestSampleTestCallBackRequestArgs.cs" />
+    <Compile Include="Args\RDTSaveTraitDeterminationResultRequestArgs.cs" />
     <Compile Include="Args\TestRequestArgs.cs" />
     <Compile Include="Args\CNTManageInfoRequestArgs.cs" />
     <Compile Include="Args\CNTManageMarkersRequestArgs.cs" />

@@ -71,5 +71,26 @@ namespace Enza.UTM.BusinessAccess.Services
             return data.Where(x => crops.Contains(x.CropCode,StringComparer.OrdinalIgnoreCase));
 
         }
+
+        public async Task<DataTable> SaveTraitDeterminationResultRDTAsync(RDTSaveTraitDeterminationResultRequestArgs requestArgs)
+        {
+            await repository.SaveTraitDeterminationResultRDTAsync(requestArgs);
+            var args = new TraitDeterminationResultRequestArgs
+            {
+                Crops = requestArgs.Crops,
+                Filter = requestArgs.Filter,
+                PageNumber = requestArgs.PageNumber,
+                PageSize = requestArgs.PageSize
+            };
+            var dt = await GetTraitDeterminationResultRDTAsync(args);
+            //return totalrows back to controller
+            requestArgs.TotalRows = args.TotalRows;
+            return dt;
+        }
+
+        public Task<DataTable> GetTraitDeterminationResultRDTAsync(TraitDeterminationResultRequestArgs args)
+        {
+            return repository.GetTraitDeterminationResultRDTAsync(args);
+        }
     }
 }
