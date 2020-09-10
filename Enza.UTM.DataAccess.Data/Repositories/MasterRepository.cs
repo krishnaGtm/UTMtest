@@ -121,5 +121,19 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 CommandType.StoredProcedure,
                 args => args.Add("@DataAsJson", items.ToJson()));
         }
+
+        public Task<IEnumerable<SiteLocation>> GetSitesAsync()
+        {
+            var query = @"SELECT 
+	                        SiteID, 
+                            SiteName
+                        FROM SiteLocation 
+                        WHERE StatusCode = 100";
+            return DbContext.ExecuteReaderAsync(query, args => { }, reader => new SiteLocation
+            {
+                SiteID = reader.Get<int>(0),
+                SiteName = reader.Get<string>(1)
+            });
+        }
     }
 }

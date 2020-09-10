@@ -217,6 +217,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args1.Add("@ImportLevel", requestArgs.ImportLevel);
                     args1.Add("@TVPList", dtListTVP);
                     args1.Add("@ExcludeControlPosition", requestArgs.ExcludeControlPosition);
+                    args1.Add("@SiteID", requestArgs.SiteID);
                     args1.Add("@FileID", requestArgs.FileID);
                 });
             requestArgs.TestID = p1.Value.ToInt32();

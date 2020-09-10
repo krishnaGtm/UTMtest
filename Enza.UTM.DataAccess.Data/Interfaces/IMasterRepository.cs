@@ -13,6 +13,7 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<IEnumerable<TraitValueLookup>> GetTraitValuesAsync(string cropCode, int traitId);
         Task<IEnumerable<BreedingStation>> GetBreedingStationAsync();
         Task<IEnumerable<TestProtocol>> GetTestProtocolsAsync();
+        Task<IEnumerable<SiteLocation>> GetSitesAsync();
         Task<DataTable> GetCNTProcessesAsync();
         Task SaveCNTProcessAsync(IEnumerable<CNTProcessRequestArgs> items);
 
