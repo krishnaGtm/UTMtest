@@ -18,6 +18,7 @@ namespace Enza.UTM.Web.Services.Soap.Models
 
             //Repositories            
             builder.RegisterType<TestRepository>().As<ITestRepository>().InstancePerRequest();
+            builder.RegisterType<ExternalTestRepository>().As<IExternalTestRepository>().InstancePerRequest();
             builder.RegisterType<DataValidationRepository>().As<IDataValidationRepository>().InstancePerRequest();
             builder.RegisterType<EmailConfigRepository>().As<IEmailConfigRepository>().InstancePerRequest();
 
