@@ -702,14 +702,14 @@ namespace Enza.UTM.BusinessAccess.Services
                 distinctTraits.Add("PlatID");
 
                 var definedColumns = (from x in respdefinedColumns?.All_Columns?.Where(x => !x.id.Contains("~"))
-                                      join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                      join y in distinctTraits on x?.desc?.ToText()?.ToLower().Trim() equals y?.ToText()?.ToLower().Trim()
                                       select y).ToList();
 
                 var tobeDefined = distinctTraits.Except(definedColumns).ToList();
 
 
                 var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
-                                            join y in tobeDefined on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                            join y in tobeDefined on x?.desc?.ToText()?.ToLower().Trim() equals y?.ToText()?.ToLower().Trim()
                                             select new
                                             {
                                                 x.variable_id
