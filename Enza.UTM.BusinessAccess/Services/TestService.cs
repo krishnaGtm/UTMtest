@@ -707,14 +707,14 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 var tobeDefined = distinctTraits.Except(definedColumns).ToList();
 
-
                 var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
                                             join y in tobeDefined on x?.desc?.ToText()?.ToLower().Trim() equals y?.ToText()?.ToLower().Trim()
                                             select new
                                             {
-                                                x.variable_id
-                                            }).GroupBy(x => x.variable_id).Select(x => x.Key).ToList();
-
+                                                x.variable_id,
+                                                x.desc
+                                            }).GroupBy(x => new { x.variable_id, x.desc }).Select(x => new { x.Key.variable_id, x.Key.desc }).ToList();
+                
                 if (tobeDefined.Any(x => x.EqualsIgnoreCase("WellID") || x.EqualsIgnoreCase("PlatID")))
                 {
                     //get wellID and PlatID variables IDS so that we can add those if they are missing
@@ -739,16 +739,24 @@ namespace Enza.UTM.BusinessAccess.Services
                         LogError($"platID column not found on response of ../api/v1/field/info/{fieldID}");
                         return false;
                     }
-                    if(!tobeDefinedVariables.Contains(wellID) && tobeDefined.Contains("WellID"))
+                    if (tobeDefinedVariables.FirstOrDefault(x=>x.variable_id == wellID) == null && tobeDefined.Contains("WellID"))
                     {
-                        tobeDefinedVariables.Add(wellID);
+                        tobeDefinedVariables.Add(new { variable_id = wellID, desc = "WellID" });
                     }
-                    if (!tobeDefinedVariables.Contains(platID) && tobeDefined.Contains("PlatID"))
+                    if (tobeDefinedVariables.FirstOrDefault(x => x.variable_id == platID) == null && tobeDefined.Contains("PlatID"))
                     {
-                        tobeDefinedVariables.Add(platID);
+                        tobeDefinedVariables.Add(new { variable_id = platID, desc = "PlatID" });
                     }
                 }
 
+                //var missing traits
+                var missing = tobeDefined.Except((from x in tobeDefined join y in tobeDefinedVariables on x.ToText().ToLower().Trim() equals y?.desc.ToText().ToLower().Trim() select x).ToList());
+                if(missing.Any())
+                {
+                    var missingColumns = string.Join(",", missing);
+                    LogError($"Unable to find following column(s) in phenome: {missingColumns}");
+                    return false;
+                }
                 if (tobeDefinedVariables.Any())
                 {
                     Url = "/api/v2/fieldentity/columns/set/Existing";
@@ -761,11 +769,12 @@ namespace Enza.UTM.BusinessAccess.Services
                     content1.Add(new StringContent(""), "variableName");
 
                     LogInfo($"Calling set observation parameter for {fieldID}");
-                    LogInfo($"Variables IDS {string.Join(",", tobeDefinedVariables)}");
+                    var variablesIDs = tobeDefinedVariables.Select(x => x.variable_id);
+                    LogInfo($"Variables IDS {string.Join(",", variablesIDs)}");
 
                     foreach (var _a in tobeDefinedVariables)
                     {
-                        content1.Add(new StringContent(_a), "selectedVariablesIds");
+                        content1.Add(new StringContent(_a.variable_id), "selectedVariablesIds");
                     }
 
                     var setColResp = await client.PostAsync(Url, content1, 600);
