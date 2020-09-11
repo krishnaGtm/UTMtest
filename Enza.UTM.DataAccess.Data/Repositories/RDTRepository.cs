@@ -633,6 +633,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             await DbContext.ExecuteReaderAsync(DataConstants.PR_RDT_RECEIVE_RESULTS, CommandType.StoredProcedure, args =>
             {
                 args.Add("@TestID", request.RequestID);
+                args.Add("@TestFlowType", request.TestFlowType);
                 args.Add("@TVP_RDTScore", request.ToTVPRDTScore());
             });
 
