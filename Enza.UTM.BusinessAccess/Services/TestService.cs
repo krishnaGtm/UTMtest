@@ -698,7 +698,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
 
                 //add two extra columns wellID and plateID
-                distinctTraits.Add("WellID");
+                distinctTraits.Add("WellID"); 
                 distinctTraits.Add("PlatID");
 
                 var definedColumns = (from x in respdefinedColumns?.All_Columns?.Where(x => !x.id.Contains("~"))
