@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -43,7 +43,7 @@ namespace Enza.UTM.BusinessAccess.Services
         private readonly ITestRepository repository;
         private readonly IExternalTestRepository externalTestRepository;
         private readonly IUserContext userContext;
-        readonly IDataValidationService validationService;
+        readonly IDataValidationService validationService; 
 
         private readonly IEmailConfigService emailConfigService;
         private readonly IEmailService emailService;
@@ -72,7 +72,7 @@ namespace Enza.UTM.BusinessAccess.Services
             return await repository.UpdateTestStatusAsync(request);
         }
 
-        public async Task<bool> SaveRemarkAsync(SaveRemarkRequestArgs request)
+        public async  Task<bool> SaveRemarkAsync(SaveRemarkRequestArgs request)
         {
             return await repository.SaveRemarkAsync(request);
         }
@@ -154,9 +154,9 @@ namespace Enza.UTM.BusinessAccess.Services
             return await repository.LinkSlotToTest(args);
         }
 
-        private async Task<bool> MarkSentResult(string wellIDS, int TestID)
+        private async Task<bool> MarkSentResult(string wellIDS,int TestID)
         {
-            return await repository.MarkSentResult(wellIDS, TestID);
+            return await repository.MarkSentResult(wellIDS,TestID);
 
         }
         public Task SaveNrOfSamplesAsync(SaveNrOfSamplesRequestArgs args)
@@ -199,7 +199,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
                 LogInfo("logged in to Phenome successful.");
 
-
+                
 
                 foreach (var test in tests)
                 {
@@ -265,15 +265,15 @@ namespace Enza.UTM.BusinessAccess.Services
                                     InvalidPer = x.InvalidPer,
                                     ColumnLabel = x.ColumnLabel,
                                     MaterialKey = x.Materialkey,
-
+                          
                                 }).ToList();
                                 if (data.Any())
                                 {
-
+                                    
                                     //cummulate and send cummulate result on response
                                     LogInfo("Cummulation process started for test " + test.TestID);
                                     var cummulatedData = await CumulateAsync(data, cropCode, testId, testName, missingConversionList, result);
-
+                                    
                                     if (data.FirstOrDefault().ListID == data.FirstOrDefault().MaterialKey)//this means material is list not plant
                                     {
                                         //remove all material which are list material and then after add cummulated result.
@@ -286,7 +286,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                 //get setting for selected test whether score 9999 is required or not
                                 var cropSettings = await repository.GetSettingToExcludeScoreAsync(testId);
                                 var excludeList = new List<MigrationDataResult>();
-                                if (cropSettings)
+                                if(cropSettings)
                                 {
                                     excludeList.Clear();
                                     //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank. but this list will have wellID value 0
@@ -295,7 +295,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     result = result.Except(excludeList).ToList();
                                 }
                                 //send email for missing conversion and break current loop
-                                var data1 = result.Where(x => !x.IsValid).Select(x => new MissingConversion
+                                var data1 = result.Where(x => !x.IsValid).Select(x=>new MissingConversion
                                 {
                                     ColumnLabel = x.ColumnLabel,
                                     CropCode = x.CropCode,
@@ -304,9 +304,9 @@ namespace Enza.UTM.BusinessAccess.Services
                                     TestID = testId,
                                     TestName = testName
                                 });
-
+                                
                                 missingConversionList.AddRange(data1);
-                                if (missingConversionList.Any())
+                                if(missingConversionList.Any())
                                 {
                                     invalidTests.Add(missingConversionList.FirstOrDefault().TestID);
                                     //if statusCode is 625 then do not send email and break loop
@@ -367,10 +367,10 @@ namespace Enza.UTM.BusinessAccess.Services
                                 });
 
                                 //set colummn before creating observation record
-                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID, level);
+                                var setColResp = await CreateObservationColumns(client, distinctTraits, dataPerTest.Key.FieldID,level);
                                 if (!setColResp)
                                 {
-                                    if (test.StatusCode < 650)
+                                    if(test.StatusCode < 650)
                                     {
                                         invalidTests.Add(dataPerTest.Key.TestID);
                                         await SendAddColumnErrorEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
@@ -548,10 +548,10 @@ namespace Enza.UTM.BusinessAccess.Services
                                             LogInfo("run job for upload file successful.");
 
                                             var wellIDS = (from x in dataPerTest.ToList()
-                                                           join y in MaterialKey on x.Materialkey.ToText() equals y
-                                                           select x.WellID).ToList();
+                                                          join y in MaterialKey on x.Materialkey.ToText() equals y
+                                                          select x.WellID).ToList();
 
-                                            if (excludeList.Any())
+                                            if(excludeList.Any())
                                             {
                                                 wellIDS.AddRange(excludeList.Where(x => x.WellID > 0).Select(x => x.WellID));
                                                 excludeList.Clear();
@@ -566,12 +566,12 @@ namespace Enza.UTM.BusinessAccess.Services
                                             var testDetail = await GetTestDetailAsync(new GetTestDetailRequestArgs
                                             {
                                                 TestID = test.TestID
-                                            });
-                                            if (testDetail.StatusCode == 700)
+                                            });                                            
+                                            if(testDetail.StatusCode == 700)
                                             {
-                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName, test.TestID);
+                                                await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName,test.TestID);
                                             }
-
+                                            
                                         }
                                     }
 
@@ -598,10 +598,10 @@ namespace Enza.UTM.BusinessAccess.Services
                                         await SendTestCompletionEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, test.TestName, test.TestID);
                                     }
                                 }
-
+                                
 
                             }
-                            catch (BusinessException ex)
+                            catch(BusinessException ex)
                             {
                                 LogError(ex.Message);
                                 success = false;
@@ -656,7 +656,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 .Select(o => o.Trim());
             if (tos.Any())
             {
-                var subject = $" Action needed for {platePlanName}";
+                var subject = $" Action needed for {platePlanName}";               
                 await emailService.SendEmailAsync(tos, subject, body);
             }
         }
@@ -695,26 +695,26 @@ namespace Enza.UTM.BusinessAccess.Services
                 await response.EnsureSuccessStatusCodeAsync();
                 var respdefinedColumns = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
 
-
+                
 
                 //add two extra columns wellID and plateID
-                distinctTraits.Add("WellID"); 
+                distinctTraits.Add("WellID");
                 distinctTraits.Add("PlatID");
 
                 var definedColumns = (from x in respdefinedColumns?.All_Columns?.Where(x => !x.id.Contains("~"))
-                                      join y in distinctTraits on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                      join y in distinctTraits on x?.desc?.ToText()?.ToLower().Trim() equals y?.ToText()?.ToLower().Trim()
                                       select y).ToList();
 
                 var tobeDefined = distinctTraits.Except(definedColumns).ToList();
 
-
                 var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
-                                            join y in tobeDefined on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                                            join y in tobeDefined on x?.desc?.ToText()?.ToLower().Trim() equals y?.ToText()?.ToLower().Trim()
                                             select new
                                             {
-                                                x.variable_id
-                                            }).GroupBy(x => x.variable_id).Select(x => x.Key).ToList();
-
+                                                x.variable_id,
+                                                x.desc
+                                            }).GroupBy(x => new { x.variable_id, x.desc }).Select(x => new { x.Key.variable_id, x.Key.desc }).ToList();
+                
                 if (tobeDefined.Any(x => x.EqualsIgnoreCase("WellID") || x.EqualsIgnoreCase("PlatID")))
                 {
                     //get wellID and PlatID variables IDS so that we can add those if they are missing
@@ -739,16 +739,25 @@ namespace Enza.UTM.BusinessAccess.Services
                         LogError($"platID column not found on response of ../api/v1/field/info/{fieldID}");
                         return false;
                     }
-                    if (!tobeDefinedVariables.Contains(wellID) && tobeDefined.Contains("WellID"))
+                    if (tobeDefinedVariables.FirstOrDefault(x=>x.variable_id == wellID) == null && tobeDefined.Contains("WellID"))
                     {
-                        tobeDefinedVariables.Add(wellID);
+                        tobeDefinedVariables.Add(new { variable_id = wellID, desc = "WellID" });
                     }
-                    if (!tobeDefinedVariables.Contains(platID) && tobeDefined.Contains("PlatID"))
+                    if (tobeDefinedVariables.FirstOrDefault(x => x.variable_id == platID) == null && tobeDefined.Contains("PlatID"))
                     {
-                        tobeDefinedVariables.Add(platID);
+                        tobeDefinedVariables.Add(new { variable_id = platID, desc = "PlatID" });
+
                     }
                 }
 
+                //var missing traits
+                var missing = tobeDefined.Except((from x in tobeDefined join y in tobeDefinedVariables on x.ToText().ToLower().Trim() equals y?.desc.ToText().ToLower().Trim() select x).ToList());
+                if(missing.Any())
+                {
+                    var missingColumns = string.Join(",", missing);
+                    LogError($"Unable to find following column(s) in phenome: {missingColumns}");
+                    return false;
+                }
                 if (tobeDefinedVariables.Any())
                 {
                     Url = "/api/v2/fieldentity/columns/set/Existing";
@@ -761,11 +770,12 @@ namespace Enza.UTM.BusinessAccess.Services
                     content1.Add(new StringContent(""), "variableName");
 
                     LogInfo($"Calling set observation parameter for {fieldID}");
-                    LogInfo($"Variables IDS {string.Join(",", tobeDefinedVariables)}");
+                    var variablesIDs = tobeDefinedVariables.Select(x => x.variable_id);
+                    LogInfo($"Variables IDS {string.Join(",", variablesIDs)}");
 
                     foreach (var _a in tobeDefinedVariables)
                     {
-                        content1.Add(new StringContent(_a), "selectedVariablesIds");
+                        content1.Add(new StringContent(_a.variable_id), "selectedVariablesIds");
                     }
 
                     var setColResp = await client.PostAsync(Url, content1, 600);
@@ -810,7 +820,7 @@ namespace Enza.UTM.BusinessAccess.Services
             //create excel
             var createExcel = CreateExcelFile(data);
             //apply formating 
-            CreateFormatting(createExcel, data.Tables[0].Columns.Count);
+            CreateFormatting(createExcel,data.Tables[0].Columns.Count);
 
             //return created excel
             byte[] result = null;
@@ -841,8 +851,8 @@ namespace Enza.UTM.BusinessAccess.Services
             return result;
         }
 
-        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName, string testName, int testID)
-        {
+        public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName,string testName,int testID)
+        {            
             //get test complete email body template
             var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
             var slotDetail = await repository.GetSlotDetailForTestAsync(testID);
@@ -921,7 +931,7 @@ namespace Enza.UTM.BusinessAccess.Services
             return wb;
         }
 
-        private void CreateFormatting(XSSFWorkbook wb, int columnCount)
+        private void CreateFormatting(XSSFWorkbook wb,int columnCount)
         {
             var sheet1 = wb.GetSheetAt(0);
 
@@ -929,10 +939,10 @@ namespace Enza.UTM.BusinessAccess.Services
             XSSFSheetConditionalFormatting sCF = (XSSFSheetConditionalFormatting)sheet1.SheetConditionalFormatting;
 
             var dict = ColorForValue();
-            foreach (var _dict in dict)
+            foreach(var _dict in dict)
             {
-                var a = "\"" + _dict.Key + "\"";
-                XSSFConditionalFormattingRule cf1 =
+                var a = "\""+_dict.Key + "\"";
+                XSSFConditionalFormattingRule  cf1=
                 (XSSFConditionalFormattingRule)sCF.CreateConditionalFormattingRule(ComparisonOperator.Equal, a);
 
                 XSSFPatternFormatting fill = (XSSFPatternFormatting)cf1.CreatePatternFormatting();
@@ -942,9 +952,9 @@ namespace Enza.UTM.BusinessAccess.Services
                 sCF.AddConditionalFormatting(cfRange1, cf1);
             }
         }
-        private Dictionary<string, short> ColorForValue()
+        private Dictionary<string,short> ColorForValue()
         {
-            var dict = new Dictionary<string, short>();
+            var dict = new Dictionary<string,short>();
             dict.Add("0202", IndexedColors.Grey50Percent.Index);
             dict.Add("0101", IndexedColors.Red.Index);
             dict.Add("0102", IndexedColors.LightBlue.Index);
@@ -983,7 +993,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
         private async Task SendEmailAsync(string body)
         {
-            var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.MOLECULAR_LAB_GROUP, "*");
+            var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.MOLECULAR_LAB_GROUP,"*");
             var recipients = config?.Recipients;
             if (string.IsNullOrWhiteSpace(recipients))
             {
@@ -1007,7 +1017,7 @@ namespace Enza.UTM.BusinessAccess.Services
             }
         }
 
-
+        
 
         private void LogInfo(string msg)
         {
@@ -1039,7 +1049,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
             var list1 = list.SelectMany(x => x.Value.Select(y => new UTMResult
             {
-                Materialkey = x.Key,
+                Materialkey= x.Key,
                 Observationkey = y
             })).ToList();
             //replace FEID material key with list value of observation id 
@@ -1056,7 +1066,7 @@ namespace Enza.UTM.BusinessAccess.Services
                     sb.AppendLine(string.Join(",", fields));
 
                 }
-            }
+            }            
             return sb;
 
         }
@@ -1090,7 +1100,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 material = distinctMaterial[i];
                 dr["FEID"] = material;
                 var materialData = result.Where(x => x.Materialkey == material && x.Added == false);
-                if (materialData.Any())
+                if(materialData.Any())
                 {
                     plateName = materialData.FirstOrDefault(x => x.Materialkey == material && x.Added == false && !string.IsNullOrWhiteSpace(x.PlateName) && !string.IsNullOrWhiteSpace(x.Position))?.PlateName;
                     position = materialData.FirstOrDefault(x => x.Materialkey == material && x.Added == false && !string.IsNullOrWhiteSpace(x.PlateName) && !string.IsNullOrWhiteSpace(x.Position))?.Position;
@@ -1127,7 +1137,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 {
                     ListID = y.Key.ListID,
                     ColumnLabel = y.FirstOrDefault().ColumnLabel,
-                    Materialkey = y.FirstOrDefault().MaterialKey,
+                    Materialkey = y.FirstOrDefault().MaterialKey,                    
                     Count = y.Count(),
                     Same = true,
                     UndefinedCount = 0,
@@ -1160,22 +1170,22 @@ namespace Enza.UTM.BusinessAccess.Services
                     //do calculation and assign it to percentage
                     Undefinedpercentage = ((decimal)_result.UndefinedCount / (decimal)_result.Count) * 100;
                 }
-                if (Undefinedpercentage > _result.AcceptablePercentage && _result.AcceptablePercentage >= 0)
+                if (Undefinedpercentage > _result.AcceptablePercentage && _result.AcceptablePercentage >=0)
                 {
                     _result.FinalScore = "9999";
                 }
-                else if (_result.Same == false)
+                else if( _result.Same == false)
                     _result.FinalScore = "5555";
 
                 _result.FinalDetScore = _result.FinalScore;
 
-                if (_result.FinalScore == "5555")
+                if(_result.FinalScore == "5555")
                 {
                     var convertedValue = traitValue.FirstOrDefault(x => x.CropCode == cropCode && x.ColumnLabel == _result.ColumnLabel && x.DeterminationValue == "5555");
-                    if (convertedValue == null)
+                    if(convertedValue == null)
                     {
                         var fetchFromDatabase = await repository.GetTraitValue(cropCode, _result.ColumnLabel);
-                        if (fetchFromDatabase == null)
+                        if(fetchFromDatabase == null)
                         {
                             LogInfo($"Conversion not found for Cumulation result of 5555 for Determination {_result.ColumnLabel}");
                             //send email based on templete for missing conversion
@@ -1188,18 +1198,18 @@ namespace Enza.UTM.BusinessAccess.Services
                                 statusCode = migrationResult.StatusCode;
                                 determinationName = migrationResult.DeterminationName;
                             }
-
+                            
                             missingConversions.Add(new MissingConversion
                             {
                                 TestID = testId,
                                 TestName = testName,
                                 ColumnLabel = _result.ColumnLabel,
                                 DeterminationName = determinationName,
-                                CropCode = cropCode,
+                                CropCode = cropCode,                                    
                                 DeterminationValue = "5555"
 
                             });
-
+                           
                         }
                         else
                         {
@@ -1237,7 +1247,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 TraitValue = x.FinalScore,
                 DeterminationValue = x.FinalDetScore,
                 ColumnLabel = x.ColumnLabel,
-                IsValid = string.IsNullOrWhiteSpace(x.FinalScore) ? false : true
+                IsValid = string.IsNullOrWhiteSpace(x.FinalScore)?false:true
             }).ToList();
 
             return await Task.FromResult(rs);
@@ -1272,7 +1282,7 @@ namespace Enza.UTM.BusinessAccess.Services
                         }
                     }).ToList()
                 };
-                var result = await svc.PrintToBarTenderAsync();
+                var result =  await svc.PrintToBarTenderAsync();
                 return new PrintLabelResult
                 {
                     Success = result.Success,
