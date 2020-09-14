@@ -34,8 +34,8 @@ namespace Enza.UTM.Entities.Args
                 var dr = dt.NewRow();
                 dr["RDTTraitDetResultID"] = item.ID;
                 dr["RelatioID"] = item.RelationID;
-                dr["DetResult"] = item.TraitValue;
-                dr["DetResChar"] = item.DeterminationValue;
+                dr["TraitResult"] = item.TraitValue;
+                dr["DetResult"] = item.DeterminationValue;
                 dr["MaterialStatus"] = item.MaterialStatus;
                 dr["MinPercent"] = item.MinPercent;
                 dr["MaxPercent"] = item.MaxPercent;
