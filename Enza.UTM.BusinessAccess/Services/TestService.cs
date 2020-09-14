@@ -746,6 +746,7 @@ namespace Enza.UTM.BusinessAccess.Services
                     if (tobeDefinedVariables.FirstOrDefault(x => x.variable_id == platID) == null && tobeDefined.Contains("PlatID"))
                     {
                         tobeDefinedVariables.Add(new { variable_id = platID, desc = "PlatID" });
+
                     }
                 }
 
