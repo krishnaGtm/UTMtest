@@ -109,6 +109,11 @@ namespace Enza.UTM.BusinessAccess.Services
             return await rdtRepository.PrintLabelAsync(reqArgs);
         }
 
+        public async Task<List<string>> GetMappingColumnsAsync()
+        {
+            return await rdtRepository.GetMappingColumnsAsync();
+        }
+
         public async Task<bool> SendResult()
         {
             var tests = await rdtRepository.GetTests();
@@ -156,7 +161,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                             await rdtRepository.ErrorSentResultAsync(_test.TestID, resultIds);
                                             await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName);
                                         }
-                                        
                                         continue;
                                     }
 
@@ -396,19 +400,15 @@ namespace Enza.UTM.BusinessAccess.Services
         {
             if (distinctTraits.Any())
             {
-                var Url = "/api/v1/simplegrid/grid/get_columns_list/FieldPlants";
-                LogInfo($"Set observation columns on field {fieldID} if required");
-                if (level.EqualsIgnoreCase("List"))
-                    Url = "/api/v1/simplegrid/grid/get_columns_list/FieldNursery";
-
-                var response = await client.PostAsync(Url, new MultipartFormDataContent
-                                        {
-                                            { new StringContent("24"), "object_type" },
-                                            { new StringContent(fieldID), "object_id" },
-                                            { new StringContent(fieldID), "base_entity_id" }
-                                        }, 600);
+                var Url = $"/api/v1/field/info/{fieldID}";
+                var response = await client.PostAsync(Url, new MultipartFormDataContent());
                 await response.EnsureSuccessStatusCodeAsync();
-                var respAllColumns = await response.Content.DeserializeAsync<GermplmasColumnsAll>();
+                var rgidVariables = await response.Content.DeserializeAsync<PhenomeFolderInfo>();
+                if (!rgidVariables.Status.EqualsIgnoreCase("1"))
+                {
+                    LogError($"Invalid response from phenome for call ../api/v1/field/info/{fieldID}");
+                    return false;
+                }
 
                 //get defined columns
                 Url = "/api/v1/simplegrid/grid/get_columns_list/FieldObservations";
@@ -428,12 +428,22 @@ namespace Enza.UTM.BusinessAccess.Services
                 var tobeDefined = distinctTraits.Except(definedColumns).ToList();
 
 
-                var tobeDefinedVariables = (from x in respAllColumns?.All_Columns
-                                            join y in tobeDefined on x?.desc?.ToText()?.ToLower() equals y?.ToText()?.ToLower()
+                var tobeDefinedVariables = (from x in rgidVariables.Info?.RG_Variables
+                                            join y in tobeDefined on x?.Name?.ToText()?.ToLower().Trim() equals y?.ToText()?.ToLower().Trim()
                                             select new
                                             {
-                                                x.variable_id
-                                            }).GroupBy(x => x.variable_id).Select(x => x.Key).ToList();
+                                                x.VID,
+                                                x.Name
+                                            }).GroupBy(x => new { x.VID, x.Name }).Select(x => new { x.Key.VID, x.Key.Name }).ToList();
+
+                //var missing traits
+                var missing = tobeDefined.Except((from x in tobeDefined join y in tobeDefinedVariables on x.ToText().ToLower().Trim() equals y?.Name.ToText().ToLower().Trim() select x).ToList());
+                if (missing.Any())
+                {
+                    var missingColumns = string.Join(",", missing);
+                    LogError($"Unable to find following column(s) in phenome: {missingColumns}");
+                    return false;
+                }
 
                 if (tobeDefinedVariables.Any())
                 {
@@ -447,11 +457,12 @@ namespace Enza.UTM.BusinessAccess.Services
                     content1.Add(new StringContent(""), "variableName");
 
                     LogInfo($"Calling set observation parameter for {fieldID}");
-                    LogInfo($"Variables IDS {string.Join(",", tobeDefinedVariables)}");
+                    var variablesIDs = tobeDefinedVariables.Select(x => x.VID);
+                    LogInfo($"Variables IDS {string.Join(",", variablesIDs)}");
 
                     foreach (var _a in tobeDefinedVariables)
                     {
-                        content1.Add(new StringContent(_a), "selectedVariablesIds");
+                        content1.Add(new StringContent(_a.VID), "selectedVariablesIds");
                     }
 
                     var setColResp = await client.PostAsync(Url, content1, 600);
@@ -495,7 +506,7 @@ namespace Enza.UTM.BusinessAccess.Services
                         continue;
                     var data = groupeditemList.FirstOrDefault(x => x.ColumnLabel == _columnList);
                     if (data != null)
-                        valueList.Add(data.Score);
+                        valueList.Add(data.DeterminationScore);
                     else
                         valueList.Add("");
                 }
@@ -516,6 +527,8 @@ namespace Enza.UTM.BusinessAccess.Services
             Console.WriteLine(msg);
             _logger.Error(msg);
         }
+
+        
     }
 
     

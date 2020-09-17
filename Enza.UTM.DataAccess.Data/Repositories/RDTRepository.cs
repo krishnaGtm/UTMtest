@@ -820,12 +820,15 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     MaterialKey = reader.Get<string>(1),
                     FieldID = reader.Get<string>(2),
                     ColumnLabel = reader.Get<string>(3),
-                    Score = reader.Get<string>(4),
+                    DeterminationScore = reader.Get<string>(4),
                     ObservationID = reader.Get<int>(5),
                     ImportLevel = reader.Get<string>(6),
                     MaterialID = reader.Get<int>(7),
                     TestResultID = reader.Get<int>(8),
-                    ResultStatus = reader.Get<int>(9)
+                    ResultStatus = reader.Get<int>(9),
+                    TratiDetResultID = reader.Get<int>(10),
+                    TraitScore = reader.Get<string>(11),
+                    FlowType = reader.Get<int>(12)
                 });
         }
 
@@ -860,6 +863,45 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args.Add("@TestID", testID);
                     args.Add("@TestResultIDs", testResultIDs);
                 });
+        }
+
+        public async Task<List<string>> GetMappingColumnsAsync()
+        {
+            //var list = new List<string>
+            //{
+            //    "Average",
+            //    "std av score",
+            //    "Weighted average",
+            //    "Av score weighted to RC and VC",
+            //    "C&Tid",
+            //    "#pl score1",
+            //    "#pl score2",
+            //    "#pl score3",
+            //    "#pl score4",
+            //    "#pl score5",
+            //    "#pl score6",
+            //    "#pl score7",
+            //    "#pl score8",
+            //    "#pl score9"
+            //};
+            var list = new List<string>
+            {
+                "Avg",
+                "std",
+                "Wavg",
+                "WavgQC",
+                "C&Tid",
+                "#plscore1",
+                "#plscore2",
+                "#plscore3",
+                "#plscore4",
+                "#plscore5",
+                "#plscore6",
+                "#plscore7",
+                "#plscore8",
+                "#plscore9"
+            };
+            return list;
         }
     }
     

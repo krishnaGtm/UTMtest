@@ -159,5 +159,13 @@ namespace Enza.UTM.Web.Services.Controllers
             var history = await _rdtService.PrintLabelAsync(reqArgs);
             return Ok(history);
         }
+
+        [Route("getmappingcolumns")]
+        [HttpPost]
+        public async Task<IHttpActionResult> GetMappingColumns()
+        {
+            var rs = await _rdtService.GetMappingColumnsAsync();
+            return Ok(rs);
+        }
     }
 }

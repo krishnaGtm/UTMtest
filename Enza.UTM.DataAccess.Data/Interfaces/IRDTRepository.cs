@@ -26,5 +26,6 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task UpdateObsrvationIDAsync(int testID, DataTable dt);
         Task<int> MarkSentResultAsync(int testID, string testResultIDs);
         Task ErrorSentResultAsync(int testID, string testResultIDs);
+        Task<List<string>> GetMappingColumnsAsync();
     }
 }

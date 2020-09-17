@@ -22,5 +22,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<ReceiveRDTResultsReceiveResult> ReceiveRDTResultsAsync(ReceiveRDTResultsRequestArgs args);
         Task<PrintLabelResult> PrintLabelAsync(PrintLabelForRDTRequestArgs reqArgs);
         Task<bool> SendResult();
+        Task<List<string>> GetMappingColumnsAsync();
     }
 }
