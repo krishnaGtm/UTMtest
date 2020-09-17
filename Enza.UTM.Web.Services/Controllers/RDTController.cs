@@ -161,7 +161,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
 
         [Route("getmappingcolumns")]
-        [HttpPost]
+        [HttpGet]
         public async Task<IHttpActionResult> GetMappingColumns()
         {
             var rs = await _rdtService.GetMappingColumnsAsync();
