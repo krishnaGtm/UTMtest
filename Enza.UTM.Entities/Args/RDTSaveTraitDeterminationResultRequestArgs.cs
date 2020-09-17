@@ -24,8 +24,8 @@ namespace Enza.UTM.Entities.Args
             dt.Columns.Add("TraitResult");
             dt.Columns.Add("DetResult");
             dt.Columns.Add("MaterialStatus");
-            dt.Columns.Add("MinPercent", typeof(decimal));
-            dt.Columns.Add("MaxPercent", typeof(decimal));
+            dt.Columns.Add("MinPercent");
+            dt.Columns.Add("MaxPercent");
             dt.Columns.Add("MappingCol");
             dt.Columns.Add("Action");
 
