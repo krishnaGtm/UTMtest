@@ -54,8 +54,8 @@ namespace Enza.UTM.Entities.Args
         public string TraitValue { get; set; }
         public string DeterminationValue { get; set; }
         public string MaterialStatus { get; set; }
-        public decimal MinPercent { get; set; }
-        public decimal MaxPercent { get; set; }
+        public decimal? MinPercent { get; set; }
+        public decimal? MaxPercent { get; set; }
         public string MappingCol { get; set; }
         public string Action { get; set; }
 
