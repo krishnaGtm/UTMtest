@@ -1,16 +1,18 @@
-CREATE TYPE TVP_RDTTraitDeterminationResult AS TABLE
-(
-	TraitDeterminationResultID INT,
-	RelatioID INT,
-	TraitResult NVARCHAR(1000),
-	DetResult NVARCHAR(1000),
-	MaterialStatus NVARCHAR(1000),
-	MinPercent decimal(18,3),
-	MaxPercent decimal(18,3),
-	MappingCol NVARCHAR(1000),
-	[Action] NVARCHAR(10)
-)
+DROP TYPE IF EXISTS [dbo].[TVP_RDTTraitDeterminationResult]
+GO
 
+
+CREATE TYPE [dbo].[TVP_RDTTraitDeterminationResult] AS TABLE(
+	[RDTTraitDetResultID] [int] NULL,
+	[RelationID] [int] NULL,
+	[TraitResult] [nvarchar](1000) NULL,
+	[DetResult] [nvarchar](1000) NULL,
+	[MaterialStatus] [nvarchar](1000) NULL,
+	[MinPercent] [decimal](18, 3) NULL,
+	[MaxPercent] [decimal](18, 3) NULL,
+	[MappingCol] [nvarchar](1000) NULL,
+	[Action] [nvarchar](10) NULL
+)
 GO
 
 
@@ -240,11 +242,11 @@ CREATE PROCEDURE [dbo].[PR_RDT_SaveTraitDeterminationResult]
 	USING @TVP S ON S.RDTTraitDetResultID = T.RDTTraitDetResultID
 	WHEN MATCHED AND S.[Action] = 'U' THEN
 	UPDATE SET 
-			T.TraitResult = S.TraitResult, 
-			T.MappingCol = (CASE WHEN ISNULL(S.MaterialStatus,'') = '' THEN S.MappingCol ELSE NULL END),
-			T.MinPercent = (CASE WHEN ISNULL(S.MaterialStatus,'') <> '' THEN S.MinPercent ELSE NULL END),
-			T.MaxPercent = (CASE WHEN ISNULL(S.MaterialStatus,'') <> '' THEN S.MaxPercent ELSE NULL END),
-			T.MaterialStatus = (CASE WHEN ISNULL(S.MaterialStatus,'') <> '' THEN S.MaterialStatus ELSE NULL END)
+			T.TraitResult = S.TraitResult,
+			T.MappingCol = (CASE WHEN ISNULL(S.MappingCol,'') <> '' THEN S.MappingCol ELSE NULL END),
+			T.MinPercent = (CASE WHEN ISNULL(S.MappingCol,'') = '' THEN S.MinPercent ELSE NULL END),
+			T.MaxPercent = (CASE WHEN ISNULL(S.MappingCol,'') = '' THEN S.MaxPercent ELSE NULL END),
+			T.MaterialStatus = (CASE WHEN ISNULL(S.MappingCol,'') = '' THEN S.MaterialStatus ELSE NULL END)
 	WHEN MATCHED AND S.[Action] = 'D' THEN
 	DELETE
 	WHEN NOT MATCHED AND S.[Action] = 'I'
@@ -253,10 +255,10 @@ CREATE PROCEDURE [dbo].[PR_RDT_SaveTraitDeterminationResult]
 	(RelationID, 
 	TraitResult, 
 	DetResult, 
-	(CASE WHEN ISNULL(S.MaterialStatus,'') = '' THEN S.MappingCol ELSE NULL END),
-	(CASE WHEN ISNULL(S.MaterialStatus,'') <> '' THEN S.MinPercent ELSE NULL END),
-	(CASE WHEN ISNULL(S.MaterialStatus,'') <> '' THEN S.MaxPercent ELSE NULL END),
-	(CASE WHEN ISNULL(S.MaterialStatus,'') <> '' THEN S.MaterialStatus ELSE NULL END)
+	(CASE WHEN ISNULL(S.MappingCol,'') <> '' THEN S.MappingCol ELSE NULL END),
+	(CASE WHEN ISNULL(S.MappingCol,'') = '' THEN S.MinPercent ELSE NULL END),
+	(CASE WHEN ISNULL(S.MappingCol,'') = '' THEN S.MaxPercent ELSE NULL END),
+	(CASE WHEN ISNULL(S.MappingCol,'') = '' THEN S.MaterialStatus ELSE NULL END)
 	);
 
 END
