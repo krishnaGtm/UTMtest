@@ -19,7 +19,7 @@
         <v1:TotalNrOfPlates>$Model.TotalPlates$</v1:TotalNrOfPlates>
         <v1:TotalNrOfTests>$Model.TotalTests$</v1:TotalNrOfTests>
         <v1:SynchronisationCode>$Model.SynCode$</v1:SynchronisationCode>
-        <v1:Remark>$Model.Remark$</v1:Remark>
+        <v1:Remark>$Model.Remark;format="xml"$</v1:Remark>
         <v1:Isolated>$Model.Isolated$</v1:Isolated>
         <v1:PlannedDate>$Model.PlannedDate$</v1:PlannedDate>
         <v1:ExpectedDate>$Model.ExpectedDate$</v1:ExpectedDate>
