@@ -193,7 +193,11 @@ namespace Enza.UTM.BusinessAccess.Services
                             }
                         }
                     }
-                    if(!breakLoop)
+
+                    if (drRow["MaterialKey"] == null || string.IsNullOrWhiteSpace(drRow["MaterialKey"].ToString()))
+                        breakLoop = true;
+
+                    if (!breakLoop)
                         dtRowTVP.Rows.Add(drRow);
                 }
             }
