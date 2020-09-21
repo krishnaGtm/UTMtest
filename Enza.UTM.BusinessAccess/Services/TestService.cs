@@ -289,10 +289,11 @@ namespace Enza.UTM.BusinessAccess.Services
                                 if(cropSettings)
                                 {
                                     excludeList.Clear();
-                                    //exclude list with value 9999 or blank (this means if 9999 is missing and conversion is not found then cumulative value trait is blank. but this list will have wellID value 0
-                                    //excludeList = result.Where(x => x.DeterminationValue == "9999" || (string.IsNullOrWhiteSpace(x.TraitValue) && x.WellID <= 0)).ToList();
-                                    excludeList = result.Where(x => x.DeterminationValue == "9999").ToList();
-                                    result = result.Except(excludeList).ToList();
+                                    //this is required from source not from result because result may not contain wellID when material is imported as list
+                                    excludeList = dataPerTest.ToList().Where(x => x.DeterminationValue == "9999").ToList();
+                                    
+                                    //We need to exclude the list which is undefined score for final result
+                                    result = result.Except(result.Where(x => x.DeterminationValue == "9999")).ToList();
                                 }
                                 //send email for missing conversion and break current loop
                                 var data1 = result.Where(x => !x.IsValid).Select(x=>new MissingConversion
@@ -579,7 +580,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                 //this is required when all result are successfully sent and only exclude list remain
                                 if (excludeList.Any())
-                                {
+                                {                                   
                                     var wellIDs = excludeList.Where(x => x.WellID > 0).Select(x => x.WellID).ToList();
                                     excludeList.Clear();
 
