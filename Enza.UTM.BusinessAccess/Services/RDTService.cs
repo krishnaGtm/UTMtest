@@ -143,7 +143,30 @@ namespace Enza.UTM.BusinessAccess.Services
                                 var groupedData = data.GroupBy(x => x.FieldID);
                                 foreach (var _groupedData in groupedData)
                                 {
-                                    var dataToCreate = _groupedData.ToList();
+                                    var scoreData = _groupedData.ToList();
+                                    var dataToCreate = new List<RDTScore>();
+
+                                    //var dataToCreate = _groupedData.ToList();
+
+                                    var flowType = scoreData.FirstOrDefault()?.FlowType;
+                                    //flow type = 1 and flow type = 2
+                                    if(flowType == 1 || flowType == 2)
+                                    {
+                                        dataToCreate = scoreData.Where(x => !string.IsNullOrWhiteSpace(x.ColumnLabel)).ToList();
+                                        
+                                    }
+                                    //flow type = 3
+                                    else
+                                    {
+                                        //exclude data which do not have relation mapping (send only those data which have relation with trait)
+                                        dataToCreate = scoreData.Where(x => x.TratiDetResultID > 0).ToList();
+                                    }
+                                    if(!dataToCreate.Any())
+                                    {
+                                        LogInfo($"No data to sent to Phenome for fieldID {_groupedData.Key}.");
+                                        continue;
+
+                                    }
 
                                     var traits = dataToCreate.GroupBy(x => x.ColumnLabel).Select(y => y.Key).ToList();
                                     var fieldID = _groupedData.Key;
@@ -368,7 +391,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             LogInfo("Job successfully queued on phenome");
                                             //update sent result to true.
                                             LogInfo("Marking result as sent");
-                                            var testStatus = await rdtRepository.MarkSentResultAsync(_test.TestID, string.Join(",", dataToCreate.Select(x => x.TestResultID)));
+                                            var testStatus = await rdtRepository.MarkSentResultAsync(_test.TestID, string.Join(",", scoreData.Select(x => x.TestResultID)));
                                             //check status if it is 700 then send test completed email
                                             if (testStatus == 700)
                                             {
