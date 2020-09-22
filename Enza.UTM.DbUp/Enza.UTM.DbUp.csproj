@@ -251,7 +251,7 @@
     <EmbeddedResource Include="Scripts\000347.15582_Alter_PR_GetExternalTestsLookup.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\000348.15024_Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+    <EmbeddedResource Include="Scripts\000348.16024_Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
