@@ -18,7 +18,7 @@ AS BEGIN
 
 	IF(ISNULL(@TestID,0) <> 0)
 	BEGIN
-		SELECT  @TraitIDS = COALESCE(@TraitIDS + ',', '') + C.TraitiD
+		SELECT  @TraitIDS = COALESCE(@TraitIDS + ',', '') + CAST(C.TraitiD AS NVARCHAR(MAX))
 		FROM [Column] C
 		JOIN [File] F ON F.FileID = C.FileId
 		JOIN Test T ON T.FileID = F.FileID
