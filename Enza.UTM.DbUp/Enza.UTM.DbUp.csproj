@@ -256,6 +256,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000343.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
     <EmbeddedResource Include="Scripts\000344.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000349.16024_Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
   </ItemGroup>
