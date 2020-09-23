@@ -260,7 +260,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000349.16024_Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
   </ItemGroup>
-<ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Scripts\000345.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
     <EmbeddedResource Include="Scripts\000346.13045.Add_RDT_TestType.sql" />
     <EmbeddedResource Include="Scripts\000347.12045.Update_RDT_TestType.sql" />
@@ -312,6 +312,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000386.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000387.15531.PR_RDT_SaveTraitDeterminationResult.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
