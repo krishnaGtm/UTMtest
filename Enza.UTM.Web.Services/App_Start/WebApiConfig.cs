@@ -12,13 +12,6 @@ namespace Enza.UTM.Web.Services
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-            var origins = ConfigurationManager.AppSettings["Cors:Origins"];
-            var cors = new EnableCorsAttribute(origins, "*", "*")
-            {
-                SupportsCredentials = true
-            };
-            config.EnableCors(cors);
-
             ConfigureServices(config);
 
             // Web API routes
@@ -45,7 +38,7 @@ namespace Enza.UTM.Web.Services
             //var dateFormat = ConfigurationManager.AppSettings["App:DateFormat"];
             ////this should be in first place. This is very important for setting specific culture
             //config.MessageHandlers.Insert(0, new LocalizationHandler(dateFormat));
-            config.MessageHandlers.Add(new EnzaJWTHandler());
+            //config.MessageHandlers.Add(new EnzaJWTHandler());
         }
     }
 }

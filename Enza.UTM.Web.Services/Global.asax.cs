@@ -10,9 +10,6 @@ namespace Enza.UTM.Web.Services
         protected void Application_Start()
         {
             log4net.Config.XmlConfigurator.Configure();
-
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-            AutofacConfig.Configure(GlobalConfiguration.Configuration);
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

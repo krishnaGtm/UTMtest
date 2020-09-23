@@ -12,13 +12,6 @@ namespace Enza.UTM.Web.Services.Externals
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-            var origins = ConfigurationManager.AppSettings["Cors:Origins"];
-            var cors = new EnableCorsAttribute(origins, "*", "*")
-            {
-                SupportsCredentials = true
-            };
-            config.EnableCors(cors);
-
             ConfigureServices(config);
 
             // Web API routes
@@ -42,7 +35,7 @@ namespace Enza.UTM.Web.Services.Externals
             config.Services.Add(typeof(IExceptionLogger), new GlobalErrorLogger());
             config.Services.Replace(typeof(IExceptionHandler), new GlobalExceptionHandler());
 
-            config.MessageHandlers.Add(new EnzaJWTHandler());
+            //config.MessageHandlers.Add(new EnzaJWTHandler());
         }
     }
 }

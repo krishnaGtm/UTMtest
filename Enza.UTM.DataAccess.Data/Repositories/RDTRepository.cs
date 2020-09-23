@@ -588,7 +588,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 new MaterialState{Code ="Parent",Name = "Parent"},
                 new MaterialState{Code ="Variety",Name = "Variety"},
             };
-            return list;
+            return await Task.FromResult(list);
         }
 
         public async Task<PlatePlanResult> GetRDTtestsOverviewAsync(PlatePlanRequestArgs requestArgs)
@@ -901,7 +901,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 "#plscore8",
                 "#plscore9"
             };
-            return list;
+            return await Task.FromResult(list);
         }
     }
     
