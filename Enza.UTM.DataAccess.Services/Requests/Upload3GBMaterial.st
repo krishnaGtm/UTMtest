@@ -26,7 +26,7 @@
             }$
           </bpm:TwoGBInfo>
           <bpm:Purpose>$p.Purpose$</bpm:Purpose>
-          <bpm:Remark>$p.Remark$</bpm:Remark>
+          <bpm:Remark>$p.Remark;format="xml"$</bpm:Remark>
         </bpm:PlantList>
         }$
       </bpm:PlantLists>
