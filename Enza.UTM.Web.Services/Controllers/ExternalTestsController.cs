@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.Common.Extensions;
+using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
 using Enza.UTM.Web.Services.Models;
@@ -35,7 +36,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("import")]
         [HttpPost]
-        [Authorize(Roles = "utm_importexternal")]
+        [Authorize(Roles = AppRoles.UTM_IMPORT_EXTERNAL)]
         public async Task<IHttpActionResult> ImportExcel()
         {
             if (!Request.Content.IsMimeMultipartContent())
@@ -103,7 +104,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("export")]
         [HttpGet]
-        [Authorize(Roles = "utm_importexternal")]
+        [Authorize(Roles = AppRoles.UTM_IMPORT_EXTERNAL)]
         public async Task<IHttpActionResult> ExportTest(int testID, bool mark = false, bool TraitScore = false)
         {
             var data = await _externalTestService.GetExcelFileForExternalTestAsync(testID, mark, TraitScore);

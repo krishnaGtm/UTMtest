@@ -81,7 +81,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         }
 
         [OverrideAuthorization]
-        [Authorize(Roles = "requesttest")]
+        [Authorize(Roles = AppRoles.REQUEST_TEST)]
         [HttpPost]
         [Route("editSlot")]
         public async Task<IHttpActionResult> EditSlot([FromBody]EditSlotRequestArgs args)

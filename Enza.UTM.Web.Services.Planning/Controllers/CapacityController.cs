@@ -17,7 +17,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             this.capacityService = capacityService;
         }
 
-        [Authorize(Roles = "handlelabcapacity")]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
         public async Task<IHttpActionResult> Get(int year)
         {
             var data = await capacityService.GetCapacityAsync(year);
@@ -26,7 +26,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
 
         [Route("saveCapacity")]
         [HttpPost]
-        [Authorize(Roles = "handlelabcapacity")]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
         public async Task<IHttpActionResult> SaveCapacity([FromBody] SaveCapacityRequestArgs args)
         {
             var data = await capacityService.SaveCapacityAsync(args);
@@ -35,7 +35,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
 
         [Route("reserveCapacity")]
         [HttpPost]
-        [Authorize(Roles = "requesttest")]
+        [Authorize(Roles = AppRoles.REQUEST_TEST)]
         public async Task<IHttpActionResult> ReserveCapacity([FromBody] ReserveCapacityRequestArgs args)
         {
             var data = await capacityService.ReserveCapacityAsync(args);
@@ -44,7 +44,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
 
         [HttpGet]
         [Route("getApprovalListForLab")]
-        [Authorize(Roles = "handlelabcapacity")]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
         public async Task<IHttpActionResult> GetApprovalListForLab(int periodID)
         {
             var data = await capacityService.GetPlanApprovalListForLabAsync(periodID);
@@ -53,7 +53,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
 
         [HttpPost]
         [Route("MoveSlot")]
-        [Authorize(Roles = "handlelabcapacity")]
+        [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
         public async Task<IHttpActionResult> MoveSlot([FromBody] MoveSlotRequestArgs args)
         {
             var data = await capacityService.MoveSlotAsync(args);
