@@ -1,4 +1,3 @@
-
 --EXEC PR_UpdateAndVerifyTraitDeterminationResult NULL,'Phenome',1
 ALTER PROCEDURE [dbo].[PR_UpdateAndVerifyTraitDeterminationResult]
 (
@@ -62,15 +61,14 @@ AS BEGIN
 						JOIN CropRD CRD ON CRD.CropCode = F.CropCode
 						JOIN dbo.Material M ON m.MaterialID = TMDW.MaterialID
 						JOIN dbo.Determination D ON D.DeterminationID = TR.DeterminationID AND D.CropCode = F.CropCode
-						LEFT JOIN dbo.RelationTraitDetermination RTD ON RTD.DeterminationID = TR.DeterminationID
-						LEFT JOIN dbo.CropTrait CT ON CT.CropTraitID = RTD.CropTraitID						
-						LEFT JOIN Trait T1 ON T1.TraitID = CT.TraitID
+						JOIN dbo.RelationTraitDetermination RTD ON RTD.DeterminationID = TR.DeterminationID
+						JOIN dbo.CropTrait CT ON CT.CropTraitID = RTD.CropTraitID						
+						JOIN Trait T1 ON T1.TraitID = CT.TraitID
 						LEFT JOIN dbo.TraitDeterminationResult TDR ON TDR.RelationID = RTD.RelationID AND TDR.DetResChar = TR.ObsValueChar 
 						WHERE T.RequestingSystem = @Source 
 						AND ((ISNULL(@TestID, 0) = 0 AND T.StatusCode BETWEEN 600 AND 650) OR T.TestID = @TestID)
 						AND ISNULL(TR.IsResultSent,0) <> 1
-						AND ISNULL(TR.ObsValueChar,'''') NOT IN ( ''-'','''')
-						
+						AND ISNULL(TR.ObsValueChar,'''') NOT IN ( ''-'','''')						
 						'+ @TraitQuery +'
 					)SELECT 
 							T1.TestID, 
