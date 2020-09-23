@@ -631,6 +631,10 @@ namespace Enza.UTM.BusinessAccess.Services
             //get test complete email body template
             var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate();
             //send test completion email to respective groups
+            if(!string.IsNullOrWhiteSpace(remark))
+            {
+                remark = "[" + remark + "]";
+            }
             var body = Template.Render(testCompleteBoy, new
             {
                 PlatePlanName = platePlanName,
