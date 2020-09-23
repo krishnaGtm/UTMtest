@@ -182,7 +182,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                         {
                                             var resultIds = string.Join(",", dataToCreate.Select(o => o.TestResultID));
                                             await rdtRepository.ErrorSentResultAsync(_test.TestID, resultIds);
-                                            await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName);
+                                            await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName,"");
                                         }
                                         continue;
                                     }
