@@ -34,5 +34,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<byte[]> TestToExcelAsync(int testID);
         Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName, string testName, int testID);
         Task<int> GetTotalMarkerAsync(int testID);
+        Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName, string remark);
     }
 }

@@ -373,7 +373,8 @@ namespace Enza.UTM.BusinessAccess.Services
                                     if(test.StatusCode < 650)
                                     {
                                         invalidTests.Add(dataPerTest.Key.TestID);
-                                        await SendAddColumnErrorEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName);
+                                        var slotDetail = await repository.GetSlotDetailForTestAsync(test.TestID);
+                                        await SendAddColumnErrorEmailAsync(cropCode, test.BrStationCode, test.PlatePlanName, slotDetail?.Remarks);
                                         //update test status
                                         await repository.UpdateTestStatusAsync(new UpdateTestStatusRequestArgs
                                         {
@@ -624,14 +625,15 @@ namespace Enza.UTM.BusinessAccess.Services
             return success;
         }
 
-        private async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName)
+        public async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName,string remark)
         {
             //get test complete email body template
             var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate();
             //send test completion email to respective groups
             var body = Template.Render(testCompleteBoy, new
             {
-                PlatePlanName = platePlanName
+                PlatePlanName = platePlanName,
+                Remark = remark,
             });
 
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
