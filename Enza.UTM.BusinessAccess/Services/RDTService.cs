@@ -273,7 +273,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     var csvData = CreateCSVForUploadObservationRecord(dataToCreate);
 
                                     //call upload observation service                                   
-                                    var uploadURL = "/api/v1/upload/upload/upload_file";
+                                    var uploadURL = "/api/v1/upload/upload/upload_file/Upload-23";
                                     var streamcontent =
                                         new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes(csvData.ToString())));
 
@@ -283,7 +283,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             { new StringContent("1"), "uploadType" },
                                             { new StringContent("1"), "fileFormat" },
                                             { new StringContent("Update"), "uploadMethod" },
-                                            { new StringContent("23"), "objectType" },
+                                            { new StringContent("5"), "objectType" },
                                             { new StringContent(fieldID), "objectId" },
                                             { new StringContent("UTF-8"), "fileEncoding" },
                                             { streamcontent, "uploadFileInputName", $"{fieldID}_RDTobservation.csv" }
@@ -320,7 +320,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             { new StringContent("1"), "uploadType" },
                                             { new StringContent("1"), "fileFormat" },
                                             { new StringContent("Update"), "uploadMethod" },
-                                            { new StringContent("23"), "objectType" },
+                                            { new StringContent("5"), "objectType" },
                                             { new StringContent(fieldID), "objectId" },
                                             { new StringContent("UTF-8"), "fileEncoding" },
                                             { streamcontent, "uploadFileInputName", $"{fieldID}_RDTobservation.csv" }
