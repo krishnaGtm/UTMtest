@@ -316,6 +316,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000387.15531.PR_RDT_SaveTraitDeterminationResult.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000388.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
