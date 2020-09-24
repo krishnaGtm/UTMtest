@@ -1,15 +1,10 @@
 name: 1.0.$(Rev:r)
 
-pr: 
-  branches:
-    include:
-      - master
-      - release
-
 trigger: 
   branches:
     include:
-      - '*'
+      - development
+      - release
   paths:
     include:
       - Enza.UTM.DbUp/*

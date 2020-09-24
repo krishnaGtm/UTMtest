@@ -11,6 +11,8 @@ using Enza.UTM.Common.Extensions;
 using System.Linq;
 using System.Data;
 using Enza.UTM.Common.Exceptions;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -897,6 +899,37 @@ namespace Enza.UTM.BusinessAccess.Services
                 result.TVPCells = dtCellTVP;
                 result.TVPList = dtListTVP;
                 return result;
+            }
+        }
+
+        public async Task<string> GetAccessTokenAsync(string jwtToken)
+        {
+            var config = new
+            {
+                instance = "https://login.microsoftonline.com",
+                tenant = ConfigurationManager.AppSettings["ida:tenant"],
+                client_id = ConfigurationManager.AppSettings["ida:audience"],
+                client_secret = ConfigurationManager.AppSettings["ida:client_secret"],
+                resource_id = ConfigurationManager.AppSettings["ida:resource_id"]
+            };
+            using (var client = new RestClient(config.instance))
+            {
+                var response = await client.PostAsync($"/{config.tenant}/oauth2/v2.0/token", values =>
+                {
+                    values.Add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+                    values.Add("client_id", config.client_id);
+                    values.Add("client_secret", config.client_secret);
+                    values.Add("requested_token_use", "on_behalf_of");
+                    values.Add("scope", config.resource_id);
+                    values.Add("assertion", jwtToken);
+                });
+                var result = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new BusinessException("Unable to retrieve the access token for Phenome.");
+                }
+                var tokens = (JObject)JsonConvert.DeserializeObject(result);
+                return tokens["access_token"].ToText();
             }
         }
     }

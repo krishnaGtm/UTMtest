@@ -132,5 +132,18 @@ namespace Enza.UTM.Web.Services.Controllers
             };
             return Ok(result);
         }
+
+
+        [HttpPost]
+        [Route("accessToken")]
+        public async Task<IHttpActionResult> AccessToken()
+        {
+            var jwtToken = Request.Headers.Authorization;
+            var token = await phenomeService.GetAccessTokenAsync(jwtToken.Parameter);
+            return Ok(new
+            {
+                accessToken = token
+            });
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
@@ -11,5 +10,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<ExcelDataResult> GetPhenomeDataAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
         Task<PhenoneImportDataResult> GetDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
         Task<PhenoneImportDataResult> GetListDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
+        Task<string> GetAccessTokenAsync(string jwtToken);
     }
 }
