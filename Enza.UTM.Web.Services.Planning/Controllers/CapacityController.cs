@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
+using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
@@ -12,9 +13,11 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
     public class CapacityController : BaseApiController
     {
         private readonly ICapacityService capacityService;
-        public CapacityController(ICapacityService capacityService)
+        private readonly IMasterService _masterService;
+        public CapacityController(ICapacityService capacityService, IMasterService masterService)
         {
             this.capacityService = capacityService;
+            _masterService = masterService;
         }
 
         [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
@@ -65,9 +68,10 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         [Authorize(Roles = AppRoles.MANAGE_MASTER_DATA_UTM_REQUEST_TEST)]
         public async Task<IHttpActionResult> DeleteSlot(int SlotID)
         {
+            var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             var args = new DeleteSlotRequestArgs
             {
-                Crops = string.Join(",", User.GetClaims("enzauth.crops")),
+                Crops = string.Join(",", cropCodes),
                 SlotID = SlotID,
                 IsSuperUser = User.IsInRole(AppRoles.MANAGE_MASTER_DATA_UTM)
             };

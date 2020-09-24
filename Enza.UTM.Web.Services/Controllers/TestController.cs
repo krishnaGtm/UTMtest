@@ -16,10 +16,11 @@ namespace Enza.UTM.Web.Services.Controllers
     public class TestController : BaseApiController
     {
         readonly ITestService testService;
-
-        public TestController(ITestService testService)
+        private readonly IMasterService _masterService;
+        public TestController(ITestService testService, IMasterService masterService)
         {
             this.testService = testService;
+            _masterService = masterService;
         }
 
         [HttpGet]
@@ -225,7 +226,8 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("getPlatePlanOverview")]
         public async Task<IHttpActionResult> GetPlatePlanOverview([FromBody] PlatePlanRequestArgs args)
         {
-            args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
+            var cropCodes = await _masterService.GetUserCropCodesAsync(User);
+            args.Crops = string.Join(",", cropCodes);
             return Ok(await testService.getPlatePlanOverviewAsync(args));
         }
 

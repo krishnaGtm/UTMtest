@@ -26,5 +26,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<DataTable> GetCNTTypesAsync();
         Task SaveCNTTypesAsync(IEnumerable<CNTTypeRequestArgs> items);
         Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user);
+        Task<IEnumerable<string>> GetUserCropCodesAsync(IPrincipal user);
     }
 }

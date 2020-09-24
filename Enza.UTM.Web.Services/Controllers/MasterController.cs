@@ -50,7 +50,7 @@ namespace Enza.UTM.Web.Services.Controllers
         public async Task<IHttpActionResult> GetImportSources()
         {
             var roles = User.GetClaims(ClaimTypes.Role);
-            if(roles.Any(x => x.EqualsIgnoreCase("UTM_importExternal")))
+            if(roles.Any(x => x.EqualsIgnoreCase(AppRoles.UTM_IMPORT_EXTERNAL)))
             {
                 var data1 = new[]
                 {

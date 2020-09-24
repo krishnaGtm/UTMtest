@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
+using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
@@ -12,9 +13,11 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
     public class MasterDataController : BaseApiController
     {
         readonly IMasterDataService masterDataService;
-        public MasterDataController(IMasterDataService masterDataService)
+        private readonly IMasterService _masterService;
+        public MasterDataController(IMasterDataService masterDataService, IMasterService masterService)
         {
             this.masterDataService = masterDataService;
+            _masterService = masterService;
         }
         [Route("breedingStationLookup")]
         public async Task<IHttpActionResult> GetBreedingStation()
@@ -55,7 +58,8 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         [Route("ReserveCapacityLookup")]
         public async Task<IHttpActionResult> GetReserveCapacityPlanning()
         {
-            var cropCodes = User.GetClaims("enzauth.crops");
+            //var cropCodes = User.GetClaims("enzauth.crops");
+            var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             var data = await masterDataService.GetReserveCapacityLookUp(cropCodes);
             return Ok(data);
         }
