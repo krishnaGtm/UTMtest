@@ -151,8 +151,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 return await GetCropAsync();
             }
             var allCrops = await GetCropAsync();
-            var cropCodes = crops.Select(x => string.Format("'{0}'", x));
-            return allCrops.Where(x => cropCodes.Contains(x.CropCode, StringComparer.OrdinalIgnoreCase));
+            return allCrops.Where(x => crops.Contains(x.CropCode, StringComparer.OrdinalIgnoreCase));
         }
     }
 }
