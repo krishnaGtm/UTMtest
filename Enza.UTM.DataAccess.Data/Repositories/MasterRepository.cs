@@ -10,6 +10,7 @@ using Enza.UTM.Entities.Results;
 using Enza.UTM.Entities;
 using System.Linq;
 using System;
+using System.Security.Principal;
 
 namespace Enza.UTM.DataAccess.Data.Repositories
 {
@@ -134,6 +135,24 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 SiteID = reader.Get<int>(0),
                 SiteName = reader.Get<string>(1)
             });
+        }
+        
+
+        
+        public async Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user)
+        {
+            var crops = user.GetCrops();
+            if (!crops.Any())
+            {
+                return Enumerable.Empty<Crop>();
+            }
+            if (crops.Any(x => x.ToUpper() == "ALL"))
+            {
+                return await GetCropAsync();
+            }
+            var allCrops = await GetCropAsync();
+            var cropCodes = crops.Select(x => string.Format("'{0}'", x));
+            return allCrops.Where(x => cropCodes.Contains(x.CropCode, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

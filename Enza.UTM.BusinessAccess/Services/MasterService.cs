@@ -6,6 +6,7 @@ using Enza.UTM.Entities.Results;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using System.Data;
+using System.Security.Principal;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -85,6 +86,10 @@ namespace Enza.UTM.BusinessAccess.Services
         public Task<IEnumerable<SiteLocation>> GetSitesAsync()
         {
             return repository.GetSitesAsync();
+        }
+        public Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user)
+        {
+            return repository.GetUserCropsAsync(user);
         }
     }
 }
