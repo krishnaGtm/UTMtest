@@ -1,0 +1,2 @@
+ALTER TABLE RDTTestResult
+ALTER COLUMN MappingColumn NVARCHAR(500);
