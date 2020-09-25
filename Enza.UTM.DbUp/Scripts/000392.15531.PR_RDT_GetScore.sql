@@ -80,9 +80,16 @@ BEGIN
 		JOIN TestMaterial TM ON TM.TestID = T.TestID
 		JOIN Material M ON M.MaterialID = TM.MaterialID
 		JOIN RDTTestResult TR ON TR.TestID = T.TestID AND M.MaterialID = TR.MaterialID
-		LEFT JOIN RelationTraitDetermination RTD ON RTD.DeterminationID = TR.DeterminationID
-		LEFT JOIN CropTrait CT ON CT.CropTraitID = RTD.CropTraitID AND CT.CropCode = @CropCode
-		LEFT JOIN Trait T1 ON T1.TraitID = CT.TraitID
+		JOIN RelationTraitDetermination RTD ON RTD.DeterminationID = TR.DeterminationID
+		JOIN CropTrait CT ON CT.CropTraitID = RTD.CropTraitID AND CT.CropCode = @CropCode
+		JOIN Trait T1 ON T1.TraitID = CT.TraitID
+		JOIN 
+		(
+			SELECT C.TraitID FROM [Column] C
+			JOIN [File] F ON F.FileID = C.FileID
+			JOIN [Test] T ON T.FileID = F.FileID
+			WHERE T.TestID = @TestID AND ISNULL(C.TraitID,0) > 0
+		) C1 ON C1.TraitID = T1.TraitID
 		LEFT JOIN RDTTraitDetResult TDR ON 
 					TDR.RelationID = RTD.RelationID
 					AND (CASE 
