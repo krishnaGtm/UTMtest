@@ -147,6 +147,15 @@
     <EmbeddedResource Include="EmailTemplates\SetColumnError.st">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\RDTTestCompleteNotification.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\RDTPartiallySentResult.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\RDTSetColumnError.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <EmbeddedResource Include="Requests\GetAvailable3GBProjects.st">
       <SubType>Designer</SubType>

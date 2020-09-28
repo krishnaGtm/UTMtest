@@ -626,10 +626,10 @@ namespace Enza.UTM.BusinessAccess.Services
             return success;
         }
 
-        public async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName,string remark)
+        private async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName,string remark)
         {
             //get test complete email body template
-            var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate();
+            var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate("2GB");
             //send test completion email to respective groups
             if(!string.IsNullOrWhiteSpace(remark))
             {
@@ -861,7 +861,7 @@ namespace Enza.UTM.BusinessAccess.Services
         public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName,string testName,int testID)
         {            
             //get test complete email body template
-            var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+            var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate("2GB");
             var slotDetail = await repository.GetSlotDetailForTestAsync(testID);
             //send test completion email to respective groups
             var body = Template.Render(testCompleteBody, new
