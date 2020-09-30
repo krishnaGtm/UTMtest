@@ -154,5 +154,13 @@ namespace Enza.UTM.Web.Services.Controllers
             await masterService.SaveCNTTypesAsync(requestArgs);
             return Ok();
         }
+
+        [Route("getUserCrops")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserGrops()
+        {
+            var crops = await masterService.GetUserCropsAsync(User);
+            return Ok(crops);
+        }
     }
 }
