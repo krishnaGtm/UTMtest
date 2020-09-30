@@ -6,8 +6,8 @@ using Enza.UTM.DataAccess.Abstract;
 using Enza.UTM.DataAccess.Data.Interfaces;
 using Enza.UTM.DataAccess.Interfaces;
 using Enza.UTM.Entities.Args;
-using Enza.UTM.Entities.Results;
 using Enza.UTM.Entities;
+using System.Security.Principal;
 using System.Linq;
 using System;
 
@@ -15,10 +15,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 {
     public class MasterRepository : Repository<object>, IMasterRepository
     {
-        private readonly IUserContext userContext;
-        public MasterRepository(IDatabase dbContext, IUserContext userContext) : base(dbContext)
+        public MasterRepository(IDatabase dbContext) : base(dbContext)
         {
-            this.userContext = userContext;
         }
 
 
@@ -120,6 +118,21 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return DbContext.ExecuteNonQueryAsync(DataConstants.PR_CNT_SAVE_TYPES,
                 CommandType.StoredProcedure,
                 args => args.Add("@DataAsJson", items.ToJson()));
+        }
+
+        public async Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user)
+        {
+            var crops = user.GetCrops();
+            if (!crops.Any())
+            {
+                return Enumerable.Empty<Crop>();
+            }
+            if (crops.Any(x => x.ToUpper() == "ALL"))
+            {
+                return await GetCropAsync();
+            }
+            var allCrops = await GetCropAsync();
+            return allCrops.Where(x => crops.Contains(x.CropCode, StringComparer.OrdinalIgnoreCase));
         }
     }
 }
