@@ -35,6 +35,10 @@ namespace Enza.UTM.BusinessAccess.Planning
             builder.RegisterType<EmailConfigService>().As<IEmailConfigService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
 
+            builder.RegisterType<MasterRepository>().As<IMasterRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<MasterService>().As<IMasterService>().InstancePerLifetimeScope();
+
+
             var env = ConfigurationManager.AppSettings["App:Environment"];
             if (env == "DEV")
             {
