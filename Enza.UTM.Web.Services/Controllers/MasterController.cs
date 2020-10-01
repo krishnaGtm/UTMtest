@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -11,7 +10,6 @@ using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Services.Abstract;
-using Enza.UTM.Services.Proxies;
 using Enza.UTM.Web.Services.Core.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -165,6 +163,7 @@ namespace Enza.UTM.Web.Services.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetUserGrops()
         {
+            //Solution 1 using on_behalf_flow
             /*var config = new
             {
                 instance = "https://login.microsoftonline.com",
@@ -189,18 +188,11 @@ namespace Enza.UTM.Web.Services.Controllers
                 var accessToken = tokens["access_token"].ToText();
 
 
-                //call api
-                using (var client2 = new HttpClient())
-                {
-                    var message = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
-                    message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-                    var resp = await client2.SendAsync(message);
-                    var json = await resp.Content.ReadAsStringAsync();
-                }
-            }
-
-            */
-
+                client.AddRequestHeaders(o => o.Add("Authorization", $"Bearer {accessToken}"));
+                response = await client.GetAsync("https://graph.microsoft.com/v1.0/me");
+                //response = await client.GetAsync("https://graph.microsoft.com/v1.0/me/?$select=userPrincipalName,onPremisesSamAccountName");
+                var json = await response.Content.ReadAsStringAsync();
+            }*/
 
             var crops = await masterService.GetUserCropsAsync(User);
             return Ok(crops);

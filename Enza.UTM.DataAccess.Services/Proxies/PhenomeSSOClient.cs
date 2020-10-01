@@ -47,20 +47,5 @@ namespace Enza.UTM.Services.Proxies
             }
             return response;
         }
-
-        public async Task<string> AcquireToken()
-        {
-            var tenant = "e0b10270-240b-4eda-affb-50fb2b5920de";
-            //var resource = "https://graph.microsoft.com/";
-            var resource = "https://graph.microsoft.com/";
-            var instance = "https://login.microsoftonline.com/";
-            var clientID = "4868298c-47aa-4370-b49b-a3162b1d81b9";
-            var secret = "yl4Rc1FtjH.8~dNvI0OQ6WTu9Cyk2_~64h";
-            var authority = $"{instance}{tenant}";
-            var authContext = new AuthenticationContext(authority);
-            var credentials = new ClientCredential(clientID, secret);
-            var authResult = await authContext.AcquireTokenAsync(resource, credentials);
-            return authResult.AccessToken;
-        }
     }
 }
