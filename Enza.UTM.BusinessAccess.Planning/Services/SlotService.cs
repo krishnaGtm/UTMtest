@@ -123,7 +123,8 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             };
             var from = ConfigurationManager.AppSettings["LAB:EmailSender"];
             //var userName = LDAP.GetUserName(_userContext.GetContext().FullName);
-            var recipient = LDAP.GetEmail(args.RequestUser);
+            //var recipient = LDAP.GetEmail(args.RequestUser);
+            var recipient = _userContext.GetContext()?.FullName;
             var body = string.Empty;
             switch (args.Action)
             {
