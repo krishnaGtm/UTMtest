@@ -6,6 +6,8 @@ using Enza.UTM.Entities.Results;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using System.Data;
+using System.Security.Principal;
+using System.Linq;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -80,6 +82,17 @@ namespace Enza.UTM.BusinessAccess.Services
         public Task SaveCNTTypesAsync(IEnumerable<CNTTypeRequestArgs> items)
         {
             return repository.SaveCNTTypesAsync(items);
+        }
+
+        public Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user)
+        {
+            return repository.GetUserCropsAsync(user);
+        }
+
+        public async Task<IEnumerable<string>> GetUserCropCodesAsync(IPrincipal user)
+        {
+            var crops = await GetUserCropsAsync(user);
+            return crops.Select(x => x.CropCode);
         }
     }
 }

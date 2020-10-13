@@ -11,5 +11,6 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<ExcelDataResult> GetPhenomeDataAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
         Task<PhenoneImportDataResult> GetDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
         Task<PhenoneImportDataResult> GetListDataFromPhenomeAsync(HttpRequestMessage request, PhenomeImportRequestArgs args);
+        Task<string> GetAccessTokenAsync(string jwtToken);
     }
 }
