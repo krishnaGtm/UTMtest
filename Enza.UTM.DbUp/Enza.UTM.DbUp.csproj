@@ -335,6 +335,9 @@
     <EmbeddedResource Include="Scripts\000393.15531.SchemaChanges.sql" />
     <EmbeddedResource Include="Scripts\000350.PR_Insert_ExcelData.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000394.PR_Insert_ExcelData.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
