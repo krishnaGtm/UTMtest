@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using log4net;
 using System.Web.UI.WebControls;
+using Enza.UTM.Services.EmailTemplates;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -140,9 +141,11 @@ namespace Enza.UTM.BusinessAccess.Services
                             var data = await rdtRepository.GetRDTScores(_test.TestID);
                             if (data.Any())
                             {
+                                var traits = new List<string>();
                                 var groupedData = data.GroupBy(x => x.FieldID);
                                 foreach (var _groupedData in groupedData)
                                 {
+                                    traits.Clear();
                                     var scoreData = _groupedData.ToList();
                                     var dataToCreate = new List<RDTScore>();
 
@@ -168,7 +171,7 @@ namespace Enza.UTM.BusinessAccess.Services
 
                                     }
 
-                                    var traits = dataToCreate.GroupBy(x => x.ColumnLabel).Select(y => y.Key).ToList();
+                                    traits = dataToCreate.GroupBy(x => x.ColumnLabel).Select(y => y.Key).ToList();
                                     var fieldID = _groupedData.Key;
                                     var level = dataToCreate.FirstOrDefault().ImportLevel;
 
@@ -180,9 +183,10 @@ namespace Enza.UTM.BusinessAccess.Services
                                         var list = dataToCreate.GroupBy(o => o.ColumnLabel).Select(x => new { x.Key, x.FirstOrDefault(y => y.ColumnLabel == x.Key).ResultStatus });
                                         if (list.Any(o => o.ResultStatus != 200))
                                         {
+                                            //this will update status to 300 so that next time when there is error on adding same trait it will not send email.
                                             var resultIds = string.Join(",", dataToCreate.Select(o => o.TestResultID));
                                             await rdtRepository.ErrorSentResultAsync(_test.TestID, resultIds);
-                                            await _testService.SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName);
+                                            await SendAddColumnErrorEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.TestName);
                                         }
                                         continue;
                                     }
@@ -244,9 +248,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                                                                    x.MaterialID,
                                                                                    y.Observationkey
                                                                                }).ToList();
-                                            ////update observationID on UTM table so that if new observation score is available then we can update create or update score on same row for same material 
-                                            //await rdtRepository.UpdateObsrvationID(_test.TestID, observationAndMaterialID);
-                                            //upldaing observato
+                                            //update observationID on UTM table so that if new observation score is available then we can update create or update score on same row for same material 
                                             LogInfo("Updating created observationIDs to UTM");
                                             DataTable dt = new DataTable();
                                             dt.Columns.Add("MaterialID", typeof(int));
@@ -264,7 +266,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                         }
                                         else
                                         {
-                                            //error break
                                             LogError("Unable to crete observation.");
                                             continue;
                                         }
@@ -273,7 +274,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                     var csvData = CreateCSVForUploadObservationRecord(dataToCreate);
 
                                     //call upload observation service                                   
-                                    var uploadURL = "/api/v1/upload/upload/upload_file";
+                                    var uploadURL = "/api/v1/upload/upload/upload_file/Upload-23";
                                     var streamcontent =
                                         new StreamContent(new MemoryStream(Encoding.ASCII.GetBytes(csvData.ToString())));
 
@@ -283,7 +284,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             { new StringContent("1"), "uploadType" },
                                             { new StringContent("1"), "fileFormat" },
                                             { new StringContent("Update"), "uploadMethod" },
-                                            { new StringContent("23"), "objectType" },
+                                            { new StringContent("5"), "objectType" },
                                             { new StringContent(fieldID), "objectId" },
                                             { new StringContent("UTF-8"), "fileEncoding" },
                                             { streamcontent, "uploadFileInputName", $"{fieldID}_RDTobservation.csv" }
@@ -295,11 +296,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                     respUploadCsv = respUploadCsv.Replace("<html>", "").Replace("</html>", "").Replace("<body>", "")
                                         .Replace("</body>", "").Replace("<textarea>", "")
                                         .Replace("</textarea>", "");
-
-                                    //var jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
-                                    //var status = jsonresp["status"];
-                                    //string upload_row_id = "";
-                                    //var message = jsonresp["message"];
 
                                     var uploadResp = new UploadObservationResponse();
 
@@ -320,7 +316,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             { new StringContent("1"), "uploadType" },
                                             { new StringContent("1"), "fileFormat" },
                                             { new StringContent("Update"), "uploadMethod" },
-                                            { new StringContent("23"), "objectType" },
+                                            { new StringContent("5"), "objectType" },
                                             { new StringContent(fieldID), "objectId" },
                                             { new StringContent("UTF-8"), "fileEncoding" },
                                             { streamcontent, "uploadFileInputName", $"{fieldID}_RDTobservation.csv" }
@@ -332,9 +328,6 @@ namespace Enza.UTM.BusinessAccess.Services
                                         respUploadCsv = respUploadCsv.Replace("<html>", "").Replace("</html>", "").Replace("<body>", "")
                                             .Replace("</body>", "").Replace("<textarea>", "")
                                             .Replace("</textarea>", "");
-
-                                        //jsonresp = (JObject)JsonConvert.DeserializeObject(respUploadCsv);
-                                        //status = jsonresp["status"];
 
                                         uploadResp = JsonConvert.DeserializeObject<UploadObservationResponse>(respUploadCsv);
 
@@ -395,7 +388,7 @@ namespace Enza.UTM.BusinessAccess.Services
                                             //check status if it is 700 then send test completed email
                                             if (testStatus == 700)
                                             {
-                                                await _testService.SendTestCompletionEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.PlatePlanName, _test.TestName, _test.TestID);
+                                                await SendTestCompletionEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.TestName);
 
                                             }
                                         }
@@ -403,6 +396,8 @@ namespace Enza.UTM.BusinessAccess.Services
                                     }
                                 }
 
+                                var traitsLabel = string.Join(", ", traits);
+                                await SendPartiallyResultSentEmailAsync(_test.CropCode, _test.BreedingStationCode, _test.TestName, traitsLabel);
                             }
 
 
@@ -417,6 +412,121 @@ namespace Enza.UTM.BusinessAccess.Services
                 }
             }
             return success;
+        }
+
+        private async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string TestName)
+        {
+            //get test complete email body template
+            var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate("RDT");
+            var body = Template.Render(testCompleteBoy, new
+            {
+                TestName
+            });
+
+            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
+            var recipients = config?.Recipients;
+            if (string.IsNullOrWhiteSpace(recipients))
+            {
+                //get default email
+                config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode);
+                recipients = config?.Recipients;
+                if (string.IsNullOrWhiteSpace(recipients))
+                {
+                    //get default email
+                    config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, "*");
+                    recipients = config?.Recipients;
+                }
+            }
+            if (string.IsNullOrWhiteSpace(recipients))
+                return;
+
+            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => o.Trim());
+            if (tos.Any())
+            {
+                var subject = $" Action needed for RDT Test {TestName}";
+                await _emailService.SendEmailAsync(tos, subject, body);
+            }
+        }
+        private async Task SendPartiallyResultSentEmailAsync(string cropCode, string brStationCode, string testName,string traits)
+        {
+            //get test complete email body template
+            var testCompleteBoy = EmailTemplate.GetPartiallyResultSentEmailTemplate();
+            if(!string.IsNullOrWhiteSpace(traits))
+            {
+                traits = "[" + traits + "]";
+            }
+            var body = Template.Render(testCompleteBoy, new
+            {
+                TestName = testName,
+                Traits = traits
+            });
+
+            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
+            var recipients = config?.Recipients;
+            if (string.IsNullOrWhiteSpace(recipients))
+            {
+                //get default email
+                config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode);
+                recipients = config?.Recipients;
+                if (string.IsNullOrWhiteSpace(recipients))
+                {
+                    //get default email
+                    config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, "*");
+                    recipients = config?.Recipients;
+                }
+            }
+            if (string.IsNullOrWhiteSpace(recipients))
+                return;
+
+            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => o.Trim());
+            if (tos.Any())
+            {
+                var subject = $" Partial result sent for RDT Test {testName}";
+                await _emailService.SendEmailAsync(tos, subject, body);
+            }
+        }
+        private async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string testName)
+        {
+            //get test complete email body template
+            var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate("RDT");
+            //send test completion email to respective groups
+            var body = Template.Render(testCompleteBody, new
+            {
+                TestName = testName
+            });
+
+            var config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
+            var recipients = config?.Recipients;
+            if (string.IsNullOrWhiteSpace(recipients))
+            {
+                //get default email
+                config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode);
+                recipients = config?.Recipients;
+                if (string.IsNullOrWhiteSpace(recipients))
+                {
+                    //get default email
+                    config = await _emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, "*");
+                    recipients = config?.Recipients;
+                }
+            }
+            if (string.IsNullOrWhiteSpace(recipients))
+                return;
+
+            var tos = recipients.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(o => !string.IsNullOrWhiteSpace(o))
+                .Select(o => o.Trim());
+            if (tos.Any())
+            {
+                LogInfo($"Sending Test completion email of RDT test: {testName} to following recipients: {string.Join(",", tos)}");
+                var subject = $"RDT test {testName} changed to completed";
+                var sender = ConfigurationManager.AppSettings["RDTTestCompletedEmailSender"];
+                await _emailService.SendEmailAsync(sender, tos, subject.AddEnv(), body);
+                LogInfo($"Sending Test completion email completed.");
+            }
         }
 
         private async Task<bool> CreateObservationColumns(RestClient client, List<string> distinctTraits, string fieldID, string level)
