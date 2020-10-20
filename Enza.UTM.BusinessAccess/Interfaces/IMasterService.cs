@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
@@ -24,5 +25,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
 
         Task<DataTable> GetCNTTypesAsync();
         Task SaveCNTTypesAsync(IEnumerable<CNTTypeRequestArgs> items);
+        Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user);
+        Task<IEnumerable<string>> GetUserCropCodesAsync(IPrincipal user);
     }
 }

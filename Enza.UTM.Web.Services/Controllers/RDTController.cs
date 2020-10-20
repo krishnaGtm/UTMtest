@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
@@ -18,13 +17,16 @@ namespace Enza.UTM.Web.Services.Controllers
         private readonly IPhenomeServices _phenomeServices;
         private readonly IFileService _fileService;
         private readonly ITestService _testService;
+        private readonly IMasterService _masterService;
 
-        public RDTController(IRDTService rdtService, IPhenomeServices phenomeServices, IFileService fileService, ITestService testService)
+        public RDTController(IRDTService rdtService, IPhenomeServices phenomeServices, IFileService fileService, 
+            ITestService testService, IMasterService masterService)
         {
             this._rdtService = rdtService;
             _phenomeServices = phenomeServices;
             _fileService = fileService;
             _testService = testService;
+            _masterService = masterService;
         }
        
         [HttpPost]
@@ -44,7 +46,7 @@ namespace Enza.UTM.Web.Services.Controllers
             var fileInfo = new ExcelFile();
             if(!(data.Errors.Any() || data.Warnings.Any()))
             {
-                fileInfo = fileInfo = await _fileService.GetFileAsync(args.TestID);
+                fileInfo = await _fileService.GetFileAsync(args.TestID);
             }
             var result = new
             {
@@ -108,8 +110,7 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("getmaterialstatus")]
         [HttpGet]
         public async Task<IHttpActionResult> getmaterialSatus()
-        {
-            
+        {            
             var rs = await _rdtService.GetmaterialStatusAsync();
             return Ok(rs);
         }
@@ -120,7 +121,8 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("getRDTtestOverview")]
         public async Task<IHttpActionResult> GetRDTtestsOverview([FromBody] PlatePlanRequestArgs args)
         {
-            args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
+            var cropCodes = await _masterService.GetUserCropCodesAsync(User);
+            args.Crops = string.Join(",", cropCodes);
             var rs = await _rdtService.GetRDTtestsOverviewAsync(args);
             return Ok(rs);
         }
@@ -166,6 +168,30 @@ namespace Enza.UTM.Web.Services.Controllers
         {
             var rs = await _rdtService.GetMappingColumnsAsync();
             return Ok(rs);
+        }
+
+        [HttpPost]
+        [Route("RequestSampleTestCallBack")]
+        //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
+        public async Task<IHttpActionResult> RequestSampleTestCallBack([FromBody] RequestSampleTestCallBackRequestArgs requestArgs)
+        {
+            if (requestArgs == null)
+                return InvalidRequest("Please provide required parameters.");
+
+            var result = await _rdtService.RequestSampleTestCallbackAsync(requestArgs);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("ReceiveRDTResults")]
+        //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
+        public async Task<IHttpActionResult> ReceiveRDTResults([FromBody] ReceiveRDTResultsRequestArgs requestArgs)
+        {
+            if (requestArgs == null)
+                return InvalidRequest("Please provide required parameters.");
+
+            var result = await _rdtService.ReceiveRDTResultsAsync(requestArgs);
+            return Ok(result);
         }
     }
 }
