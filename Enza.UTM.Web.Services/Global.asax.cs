@@ -1,7 +1,6 @@
 ﻿using Enza.UTM.Web.Services.Core.Helpers;
 using System;
 using System.Web;
-using System.Web.Http;
 
 namespace Enza.UTM.Web.Services
 {

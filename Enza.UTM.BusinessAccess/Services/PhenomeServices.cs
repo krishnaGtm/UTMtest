@@ -11,8 +11,8 @@ using Enza.UTM.Common.Extensions;
 using System.Linq;
 using System.Data;
 using Enza.UTM.Common.Exceptions;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Enza.UTM.BusinessAccess.Services
 {
@@ -901,7 +901,6 @@ namespace Enza.UTM.BusinessAccess.Services
                 return result;
             }
         }
-
         public async Task<string> GetAccessTokenAsync(string jwtToken)
         {
             var config = new

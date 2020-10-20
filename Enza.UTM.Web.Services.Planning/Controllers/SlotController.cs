@@ -44,7 +44,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         public async Task<IHttpActionResult> UpdateSlotPeriod([FromBody] UpdateSlotPeriodRequestArgs args)
         {
             //alllow overrides for this role only
-            args.AllowOverride = User.IsInRole("handlelabcapacity");
+            args.AllowOverride = User.IsInRole(AppRoles.HANDLE_LAB_CAPACITY);
 
             var data = await slotService.UpdateSlotPeriodAsync(args);
             return Ok(data);
@@ -102,6 +102,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             {
                 userName = User.Identity.Name;
             }
+            //var crops = string.Join(",", User.GetClaims("enzauth.crops"));
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             var crops = string.Join(",", cropCodes);
             var data = await slotService.GetApprovedSlotsAsync(userName, slotName, crops);

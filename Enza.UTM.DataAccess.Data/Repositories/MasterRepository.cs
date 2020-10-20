@@ -6,20 +6,17 @@ using Enza.UTM.DataAccess.Abstract;
 using Enza.UTM.DataAccess.Data.Interfaces;
 using Enza.UTM.DataAccess.Interfaces;
 using Enza.UTM.Entities.Args;
-using Enza.UTM.Entities.Results;
 using Enza.UTM.Entities;
+using System.Security.Principal;
 using System.Linq;
 using System;
-using System.Security.Principal;
 
 namespace Enza.UTM.DataAccess.Data.Repositories
 {
     public class MasterRepository : Repository<object>, IMasterRepository
     {
-        private readonly IUserContext userContext;
-        public MasterRepository(IDatabase dbContext, IUserContext userContext) : base(dbContext)
+        public MasterRepository(IDatabase dbContext) : base(dbContext)
         {
-            this.userContext = userContext;
         }
 
 

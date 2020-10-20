@@ -2,7 +2,6 @@
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.Entities;
-using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
 using System.Net.Http;
@@ -226,6 +225,7 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("getPlatePlanOverview")]
         public async Task<IHttpActionResult> GetPlatePlanOverview([FromBody] PlatePlanRequestArgs args)
         {
+            //args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             args.Crops = string.Join(",", cropCodes);
             return Ok(await testService.getPlatePlanOverviewAsync(args));

@@ -45,6 +45,7 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("getRelationTraitDetermination")]        
         public async Task<IHttpActionResult> GetRelationTraitDeterminationAsync([FromBody] RelationTraitDeterminationRequestArgs args)
         {
+            //args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             args.Crops = string.Join(",", cropCodes);
             var items = await service.GetRelationTraitDeterminationAsync(args);
@@ -60,6 +61,7 @@ namespace Enza.UTM.Web.Services.Controllers
                 
         public async Task<IHttpActionResult> GetTraitDeterminationResult([FromBody] TraitDeterminationResultRequestArgs args)
         {
+            //args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             args.Crops = string.Join(",", cropCodes);
             var items = await service.GetTraitDeterminationResultAsync(args);
@@ -77,13 +79,13 @@ namespace Enza.UTM.Web.Services.Controllers
             //var crops = User.GetClaims("enzauth.crops").ToList();
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             return Ok(await service.GetCropAsync(cropCodes.ToList()));
-            
         }
 
         [HttpPost]
         [Route("saveRelationTraitDetermination")]
         public async Task<IHttpActionResult> SaveRelationTraitMaterialDetermination([FromBody] SaveTraitDeterminationRelationRequestArgs args)
         {
+            //args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             args.Crops = string.Join(",", cropCodes);
             var items = await service.SaveRelationTraitMaterialDetermination(args);
@@ -98,6 +100,7 @@ namespace Enza.UTM.Web.Services.Controllers
         [Route("saveTraitDeterminationResult")]
         public async Task<IHttpActionResult> SaveTraitDeterminationResult([FromBody] SaveTraitDeterminationResultRequestArgs args)
         {
+            //args.Crops = string.Join(",", User.GetClaims("enzauth.crops"));
             var cropCodes = await _masterService.GetUserCropCodesAsync(User);
             args.Crops = string.Join(",", cropCodes);
             var items = await service.SaveTraitDeterminationResultAsync(args);

@@ -133,7 +133,6 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("accessToken")]
         public async Task<IHttpActionResult> AccessToken()
