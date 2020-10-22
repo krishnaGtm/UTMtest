@@ -486,7 +486,7 @@ namespace Enza.UTM.BusinessAccess.Services
             if (tos.Any())
             {
                 var subject = $" Partial result sent for RDT Test {testName}";
-                await _emailService.SendEmailAsync(tos, subject, body);
+                await _emailService.SendEmailAsync(tos, subject.AddEnv(), body);
             }
         }
         private async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string testName)

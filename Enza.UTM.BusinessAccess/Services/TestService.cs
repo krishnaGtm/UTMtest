@@ -664,7 +664,7 @@ namespace Enza.UTM.BusinessAccess.Services
             if (tos.Any())
             {
                 var subject = $" Action needed for {platePlanName}";               
-                await emailService.SendEmailAsync(tos, subject, body);
+                await emailService.SendEmailAsync(tos, subject.AddEnv(), body);
             }
         }
 
