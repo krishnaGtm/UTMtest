@@ -367,7 +367,11 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         public Task<IEnumerable<TraitDeterminationResultTest>> GetTestsForTraitDeterminationResultsAsync(string source)
         {
-            var query = @"SELECT 
+            //update DNA test type to status 700 when expected date is greater than 2 weeks
+            var query = @"UPDATE Test  SET StatusCode = 700 WHERE TestTypeID = 2 AND StatusCode > 400 AND GETDATE() > DATEADD(Week,2, ExpectedDate )";
+            DbContext.ExecuteScalarAsync(query);
+
+            query = @"SELECT 
 		                        T.TestID,
 		                        T.TestName,
 		                        T.StatusCode,
