@@ -22,22 +22,25 @@ AS BEGIN
 
 	--TestTypeID for DNA isolation is 2
 	--#16301: Change based on this BLI.
-	UPDATE Test  SET StatusCode = 600 WHERE TestTypeID = 2 AND StatusCode > 400 AND GETDATE() > DATEADD(Week,2, ExpectedDate )
+	UPDATE Test  SET StatusCode = 700 WHERE TestTypeID = 2 AND StatusCode > 400 AND GETDATE() > DATEADD(Week,2, ExpectedDate )
 
 
 	SET NOCOUNT ON;
 	DECLARE @TBL AS TABLE (TestID INT);
 	DECLARE @Query NVARCHAR(MAX) ='';
-	DECLARE @TraitIDS NVARCHAR(MAX)='';
+	DECLARE @TraitIDS NVARCHAR(MAX);
 	DECLARE @TraitQuery NVARCHAR(MAX) = '';
 
 	IF(ISNULL(@TestID,0) <> 0)
 	BEGIN
-		SELECT  @TraitIDS = COALESCE(@TraitIDS + ',', '') + CAST(C.TraitiD AS NVARCHAR(MAX))
+		SELECT  @TraitIDS = CASE 
+							WHEN @TraitIDS = '' THEN ''
+							ELSE COALESCE(@TraitIDS + ',', '') + CAST(C.TraitiD AS NVARCHAR(MAX))
+							END
 		FROM [Column] C
 		JOIN [File] F ON F.FileID = C.FileId
 		JOIN Test T ON T.FileID = F.FileID
-		WHERE T.TestID = @TestID;
+		WHERE T.TestID = @TestID AND C.TraitID IS NOT NULL;
 
 		SET @TraitQuery = 'AND T1.TraitID IN ('+@TraitIDs+')';
 	END
