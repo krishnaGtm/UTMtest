@@ -1,3 +1,13 @@
+
+/* 
+Author					 Date			Description
+Krishna Gautam			-				- Stored procedure created
+Krishna Gautam			2020-Nov-03		#16844:Change on stored procedure query.
+
+Example
+=============================================  
+
+*/
 --EXEC PR_UpdateAndVerifyTraitDeterminationResult NULL,'Phenome',1
 ALTER PROCEDURE [dbo].[PR_UpdateAndVerifyTraitDeterminationResult]
 (
@@ -10,6 +20,7 @@ AS BEGIN
 		SET @Source = 'Phenome'
 	END
 
+	
 	SET NOCOUNT ON;
 	DECLARE @TBL AS TABLE (TestID INT);
 	DECLARE @Query NVARCHAR(MAX) ='';
@@ -22,9 +33,9 @@ AS BEGIN
 		FROM [Column] C
 		JOIN [File] F ON F.FileID = C.FileId
 		JOIN Test T ON T.FileID = F.FileID
-		WHERE T.TestID = @TestID;
+		WHERE T.TestID = @TestID AND ISNULL(C.TraitID,'') <> '';
 
-		SET @TraitQuery = 'AND T1.TraitID IN ('+@TraitIDs+')';
+		SET @TraitQuery = 'AND T1.TraitID IN ('+ISNULL(@TraitIDs,'')+')';
 	END
 
 	SET @Query = N';WITH CTE1 AS
