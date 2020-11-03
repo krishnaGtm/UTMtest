@@ -2,7 +2,7 @@
 /* 
 Author					 Date			Description
 Krishna Gautam			-				- Stored procedure created
-Krishna Gautam			2020-Nov-03		#16844:Chaange on stored procedure query.
+Krishna Gautam			2020-Nov-03		#16844:Change on stored procedure query.
 
 Example
 =============================================  
@@ -29,16 +29,13 @@ AS BEGIN
 
 	IF(ISNULL(@TestID,0) <> 0)
 	BEGIN
-		SELECT  @TraitIDS = CASE 
-							WHEN @TraitIDS = '' THEN ''
-							ELSE COALESCE(@TraitIDS + ',', '') + CAST(C.TraitiD AS NVARCHAR(MAX))
-							END
+		SELECT  @TraitIDS = COALESCE(@TraitIDS + ',', '') + CAST(C.TraitiD AS NVARCHAR(MAX))
 		FROM [Column] C
 		JOIN [File] F ON F.FileID = C.FileId
 		JOIN Test T ON T.FileID = F.FileID
-		WHERE T.TestID = @TestID AND C.TraitID IS NOT NULL;
+		WHERE T.TestID = @TestID AND ISNULL(C.TraitID,'') <> '';
 
-		SET @TraitQuery = 'AND T1.TraitID IN ('+@TraitIDs+')';
+		SET @TraitQuery = 'AND T1.TraitID IN ('+ISNULL(@TraitIDs,'')+')';
 	END
 
 	SET @Query = N';WITH CTE1 AS
