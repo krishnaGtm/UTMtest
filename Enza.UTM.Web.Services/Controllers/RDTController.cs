@@ -14,16 +14,14 @@ namespace Enza.UTM.Web.Services.Controllers
     public class RDTController : BaseApiController
     {
         private readonly IRDTService _rdtService;
-        private readonly IPhenomeServices _phenomeServices;
         private readonly IFileService _fileService;
         private readonly ITestService _testService;
         private readonly IMasterService _masterService;
 
-        public RDTController(IRDTService rdtService, IPhenomeServices phenomeServices, IFileService fileService, 
+        public RDTController(IRDTService rdtService, IFileService fileService, 
             ITestService testService, IMasterService masterService)
         {
             this._rdtService = rdtService;
-            _phenomeServices = phenomeServices;
             _fileService = fileService;
             _testService = testService;
             _masterService = masterService;
@@ -170,6 +168,8 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(rs);
         }
 
+        [OverrideAuthorization]
+        [Authorize]
         [HttpPost]
         [Route("RequestSampleTestCallBack")]
         //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
@@ -182,6 +182,8 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(result);
         }
 
+        [OverrideAuthorization]
+        [Authorize]
         [HttpPost]
         [Route("ReceiveRDTResults")]
         //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
