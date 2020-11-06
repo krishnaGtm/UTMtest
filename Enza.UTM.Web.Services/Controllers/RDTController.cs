@@ -2,15 +2,13 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
-using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
 
 namespace Enza.UTM.Web.Services.Controllers
 {
-    [RoutePrefix("api/v1/rdt")]
-    [Authorize(Roles = AppRoles.PUBLIC)]
+    [RoutePrefix("api/v1/rdt")]    
     public class RDTController : BaseApiController
     {
         private readonly IRDTService _rdtService;
@@ -29,6 +27,7 @@ namespace Enza.UTM.Web.Services.Controllers
        
         [HttpPost]
         [Route("import")]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> Import([FromBody]PhenomeImportRequestArgs args)
         {
             if (string.IsNullOrWhiteSpace(args.TestName))
@@ -61,6 +60,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("getData")]
         [HttpPost]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> GetData([FromBody] ExcelDataRequestArgs args)
         {
             var result = await _rdtService.GetDataAsync(args);
@@ -69,6 +69,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("getmaterialwithtests")]
         [HttpPost]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> Getmaterialwithtests([FromBody] MaterialsWithMarkerRequestArgs args)
         {
             var ds = await _rdtService.GetMaterialWithTestsAsync(args);            
@@ -78,6 +79,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("assignTests")]
         [HttpPost]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> AssignTest([FromBody] AssignDeterminationForRDTRequestArgs args)
         {
             var ds = await _rdtService.AssignTestAsync(args);
@@ -91,6 +93,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("requestSampleTest")]
         [HttpPost]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> RequestSampleTest([FromBody] TestRequestArgs args)
         {
             var rs = await _rdtService.RequestSampleTestAsync(args);
@@ -107,13 +110,13 @@ namespace Enza.UTM.Web.Services.Controllers
         
         [Route("getmaterialstatus")]
         [HttpGet]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> getmaterialSatus()
         {            
             var rs = await _rdtService.GetmaterialStatusAsync();
             return Ok(rs);
         }
-
-        [OverrideAuthorization]
+        
         [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
         [HttpPost]
         [Route("getRDTtestOverview")]
@@ -151,6 +154,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("print")]
         [HttpPost]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> PrintLabel([FromBody]PrintLabelForRDTRequestArgs reqArgs)
         {
             if (reqArgs == null)
@@ -162,14 +166,13 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("getmappingcolumns")]
         [HttpGet]
+        [Authorize(Roles = AppRoles.PUBLIC)]
         public async Task<IHttpActionResult> GetMappingColumns()
         {
             var rs = await _rdtService.GetMappingColumnsAsync();
             return Ok(rs);
         }
-
-        [OverrideAuthorization]
-        [Authorize]
+       
         [HttpPost]
         [Route("RequestSampleTestCallBack")]
         //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
@@ -182,8 +185,7 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(result);
         }
 
-        [OverrideAuthorization]
-        [Authorize]
+       
         [HttpPost]
         [Route("ReceiveRDTResults")]
         //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
