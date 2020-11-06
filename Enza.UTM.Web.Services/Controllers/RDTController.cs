@@ -169,6 +169,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
 
         [OverrideAuthorization]
+        [Authorize]
         [HttpPost]
         [Route("RequestSampleTestCallBack")]
         //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
@@ -182,6 +183,7 @@ namespace Enza.UTM.Web.Services.Controllers
         }
 
         [OverrideAuthorization]
+        [Authorize]
         [HttpPost]
         [Route("ReceiveRDTResults")]
         //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY + "," + AppRoles.REQUEST_TEST)]
