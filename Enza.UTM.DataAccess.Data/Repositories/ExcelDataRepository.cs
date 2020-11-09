@@ -247,6 +247,14 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     }
                     table0.Columns.Remove("TotalRows");
                 }
+                if (table0.Columns.Contains("Total"))
+                {
+                    if (table0.Rows.Count > 0)
+                    {
+                        result.TotalCount = table0.Rows[0]["Total"].ToInt32();
+                    }
+                    table0.Columns.Remove("Total");
+                }
                 result.DataResult = new ExcelData
                 {
                     Columns = data.Tables[1],

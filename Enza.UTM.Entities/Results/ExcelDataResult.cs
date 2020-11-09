@@ -12,6 +12,7 @@ namespace Enza.UTM.Entities.Results
         }
         public bool Success { get; set; }
         public int Total { get; set; }
+        public int TotalCount { get; set; }
         public ExcelData DataResult { get; set; }
         public List<string> Errors { get; set; }
         public List<string> Warnings { get; set; }
