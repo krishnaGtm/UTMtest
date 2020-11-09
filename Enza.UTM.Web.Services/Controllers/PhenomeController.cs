@@ -128,6 +128,7 @@ namespace Enza.UTM.Web.Services.Controllers
                 data.Total,
                 data.DataResult,
                 args.TestID,
+                data.TotalCount,
                 File = fileInfo
             };
             return Ok(result);
