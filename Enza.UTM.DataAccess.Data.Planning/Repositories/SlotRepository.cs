@@ -39,6 +39,7 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                     args.Add("@CropCode", request.CropCode);
                     args.Add("@Isolated", request.Isolated);
                     args.Add("@PlannedDate", request.PlannedDate.ToDateTime());
+                    args.Add("@ExpectedDateIn", request.ExpectedDate.ToNDateTime());
                     args.Add("@DisplayPlannedWeek", p1);
                     args.Add("@ExpectedDate", p2);
                     args.Add("@DisplayExpectedWeek", p3);

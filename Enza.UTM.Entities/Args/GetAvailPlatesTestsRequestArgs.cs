@@ -6,5 +6,6 @@
         public string CropCode { get; set; }
         public bool Isolated { get; set; }
         public string PlannedDate { get; set; }
+        public string ExpectedDate { get; set; }
     }
 }
