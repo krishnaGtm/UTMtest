@@ -219,7 +219,7 @@ BEGIN
 	--check if total tests and plates falls within range of total marker and palates for this test
 	SET @ReturnValue = dbo.Validate_Capacity(@TestID);
 	IF(@ReturnValue = 0) BEGIN
-		EXEC PR_ThrowError N'Reservation Qouta exceed for tests or plates. Unassign some markers or change slot for this test.';
+		EXEC PR_ThrowError N'Reservation Quta exceed for tests or plates. Unassign some markers or change slot for this test.';
 		RETURN;
 	END
 
