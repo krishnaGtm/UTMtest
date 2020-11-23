@@ -220,6 +220,8 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                     param.Add("@SlotID", args.SlotID);
                     param.Add("@NrOfPlates", args.NrOfPlates);
                     param.Add("@NrOfTests", args.NrOfTests);
+                    param.Add("@PlannedDate", args.PlannedDate);
+                    param.Add("@ExpectedDate", args.ExpectedDate);
                     param.Add("@Forced", args.Forced);
                     param.Add("@Message", p1);
                 });
