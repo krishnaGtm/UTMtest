@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
@@ -107,6 +110,30 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             var crops = string.Join(",", cropCodes);
             var data = await slotService.GetApprovedSlotsAsync(userName, slotName, crops);
             return Ok(data);
+        }
+
+        [OverrideAuthorization]
+        [Authorize(Roles = AppRoles.MANAGE_MASTER_DATA_UTM_REQUEST_TEST)]
+        [HttpPost]
+        [Route("ExportCapacityPlanningToExcel")]
+        public async Task<IHttpActionResult> ExportCapacityPlanningToExcel([FromBody]BreedingOverviewRequestArgs args)
+        {
+
+            args.PageSize = 1000;
+            args.PageNumber = 1;
+            var data = await slotService.ExportCapacityPlanningToExcel(args);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(data)
+            };
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = $"CapacityPlanning.xlsx"
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            return ResponseMessage(result);
+
         }
     }
 }

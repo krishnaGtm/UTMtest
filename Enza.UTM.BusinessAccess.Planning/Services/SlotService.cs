@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Threading.Tasks;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
@@ -10,6 +11,7 @@ using Enza.UTM.DataAccess.Interfaces;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
+using NPOI.XSSF.UserModel;
 
 namespace Enza.UTM.BusinessAccess.Planning.Services
 {
@@ -180,6 +182,42 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
         public Task<DataTable> GetApprovedSlotsAsync(string userName, string slotName, string crops)
         {
             return _repository.GetApprovedSlotsAsync(userName, slotName,crops);
+        }
+
+        public async Task<byte[]> ExportCapacityPlanningToExcel(BreedingOverviewRequestArgs args)
+        {
+            var result = await _repository.GetBreedingOverviewAsync(args);
+
+            var rs = result.Data as DataTable;
+
+            using (var ms = new MemoryStream())
+            {
+                var book = new XSSFWorkbook();
+                var sheet = book.CreateSheet("Sheet1");
+                //add header row
+                var header = sheet.CreateRow(0);
+                for (var i = 0; i < rs.Columns.Count; i++)
+                {
+                    var column = rs.Columns[i];
+                    var cell = header.CreateCell(i);
+                    cell.SetCellValue(column.ColumnName);
+                }
+                //add data rows
+                var rowNr = 1;
+                foreach (DataRow dr in rs.Rows)
+                {
+                    var row = sheet.CreateRow(rowNr++);
+                    for (var i = 0; i < rs.Columns.Count; i++)
+                    {
+                        var column = rs.Columns[i];
+                        var cell = row.CreateCell(i);
+                        cell.SetCellValue(dr[column.ColumnName].ToText());
+                    }
+                }
+                book.Write(ms);
+
+                return ms.ToArray();
+            }
         }
     }
 }
