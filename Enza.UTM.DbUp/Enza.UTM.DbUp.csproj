@@ -358,6 +358,7 @@
     <EmbeddedResource Include="Scripts\000400.16339_Alter_PR_GetAvailPlatestests.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000403.16322_Alter_PR_PLAN_EditSlot.sql" />
     <EmbeddedResource Include="Scripts\000402.16339_Alter_PR_GetAvailPlatestests.sql" />
     <Content Include="Scripts\000401.16339_Alter_PR_GetAvailPlatestests.sql" />
   </ItemGroup>
