@@ -2,7 +2,6 @@
 Author					Date			Description
 Krishna Gautam			2019-Jul-24		Service created edit slot (nrofPlates and NrofTests).
 Krishna Gautam			2019-Nov-19		Update new requested value and approved value on different field that is used for furhter process (if denied only deny new request of approved slot).
-Krishna Gautam			2020-Nov-23		#16322: Update date and number of tests/plates.
 
 ===================================Example================================
 
@@ -28,8 +27,18 @@ BEGIN
 	--get period for provided slot. 
 	SELECT @PeriodID = PeriodID FROM Slot WHERE SlotID = @SlotID;
 
+	IF(ISNULL(@PlannedDate,'') = '')
+	BEGIN
+		SELECT @PlannedDate = PlannedDate, @ExpectedDate = ExpectedDate FROM Slot WHERE SlotID = @SlotID;
+	END
+
 	--get changed period ID
-	SELECT @ChangedPeriodID = PeriodID FROM Period WHERE @PlannedDate BETWEEN StartDate AND EndDate;
+	SELECT @ChangedPeriodID = PeriodID FROM [Period] WHERE @PlannedDate BETWEEN StartDate AND EndDate;
+
+	IF(@PeriodID = @ChangedPeriodID)
+	BEGIN
+		UPDATE Slot SET PlannedDate = @PlannedDate, ExpectedDate = @ExpectedDate WHERE SlotID = @SlotID;
+	END
 
 	--if no period fould return error.
 	IF(ISNULl(@PeriodID,0) = 0)
@@ -177,9 +186,9 @@ BEGIN
 			UPDATE ReservedCapacity SET NrOfTests = @NrOfTests WHERE SlotID  = @SlotID AND ISNULL(NrOfPlates,0) = 0
 
 			IF(ISNULL(@PlannedDate,'') <> '')
-				UPDATE Slot SET PlannedDate = @PlannedDate WHERE SlotID = @SlotID;
+				UPDATE Slot SET PlannedDate = @PlannedDate, PeriodID = @ChangedPeriodID WHERE SlotID = @SlotID;
 			IF(ISNULL(@ExpectedDate,'') <> '')
-				UPDATE Slot SET ExpectedDate = @ExpectedDate WHERE SlotID = @SlotID;
+				UPDATE Slot SET ExpectedDate = @ExpectedDate, PeriodID = @ChangedPeriodID WHERE SlotID = @SlotID;
 			RETURN;
 		END
 
@@ -225,9 +234,9 @@ BEGIN
 				
 				--UPDATE SLOT						
 				IF(ISNULL(@PlannedDate,'') <> '')
-					UPDATE Slot SET PlannedDate = @PlannedDate WHERE SlotID = @SlotID;
+					UPDATE Slot SET PlannedDate = @PlannedDate,PeriodID = @ChangedPeriodID  WHERE SlotID = @SlotID;
 				IF(ISNULL(@ExpectedDate,'') <> '')
-					UPDATE Slot SET ExpectedDate = @ExpectedDate WHERE SlotID = @SlotID;
+					UPDATE Slot SET ExpectedDate = @ExpectedDate, PeriodID = @ChangedPeriodID WHERE SlotID = @SlotID;
 
 				RETURN;
 			END
@@ -242,9 +251,9 @@ BEGIN
 				--UPDATE SLOT	
 				UPDATE Slot SET StatusCode = 100 WHERE SlotID = @SlotID;				
 				IF(ISNULL(@PlannedDate,'') <> '')
-					UPDATE Slot SET PlannedDate = @PlannedDate WHERE SlotID = @SlotID;
+					UPDATE Slot SET PlannedDate = @PlannedDate, PeriodID = @ChangedPeriodID WHERE SlotID = @SlotID;
 				IF(ISNULL(@ExpectedDate,'') <> '')
-					UPDATE Slot SET ExpectedDate = @ExpectedDate WHERE SlotID = @SlotID;
+					UPDATE Slot SET ExpectedDate = @ExpectedDate, PeriodID = @ChangedPeriodID WHERE SlotID = @SlotID;
 			END
 		END
 	END
