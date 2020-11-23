@@ -119,7 +119,7 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         public async Task<IHttpActionResult> ExportCapacityPlanningToExcel([FromBody]BreedingOverviewRequestArgs args)
         {
 
-            args.PageSize = 1000;
+            args.PageSize = 5000;
             args.PageNumber = 1;
             var data = await slotService.ExportCapacityPlanningToExcel(args);
 
