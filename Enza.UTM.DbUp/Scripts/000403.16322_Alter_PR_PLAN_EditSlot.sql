@@ -2,6 +2,7 @@
 Author					Date			Description
 Krishna Gautam			2019-Jul-24		Service created edit slot (nrofPlates and NrofTests).
 Krishna Gautam			2019-Nov-19		Update new requested value and approved value on different field that is used for furhter process (if denied only deny new request of approved slot).
+Krishna Gautam			2020-Nov-23		#16322:Update slot reservation to change planned date (expected date based on planned date) and change number of plates/tests.
 
 ===================================Example================================
 
@@ -258,3 +259,7 @@ BEGIN
 		END
 	END
 END
+
+GO
+
+
