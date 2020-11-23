@@ -190,6 +190,20 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
 
             var rs = result.Data as DataTable;
 
+            //remove unnecessary columns
+            if(rs.Columns.Contains("SlotID"))
+                rs.Columns.Remove("SlotID");
+            if (rs.Columns.Contains("RequestDate"))
+                rs.Columns.Remove("RequestDate");
+            if (rs.Columns.Contains("PlannedDate"))
+                rs.Columns.Remove("PlannedDate");
+            if (rs.Columns.Contains("ExpectedDate"))
+                rs.Columns.Remove("ExpectedDate");
+            if (rs.Columns.Contains("Isolated"))
+                rs.Columns.Remove("Isolated");
+            if (rs.Columns.Contains("StatusCode"))
+                rs.Columns.Remove("StatusCode");
+
             using (var ms = new MemoryStream())
             {
                 var book = new XSSFWorkbook();
