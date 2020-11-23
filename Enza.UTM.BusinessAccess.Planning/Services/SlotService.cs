@@ -64,36 +64,23 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             var slotData = await _repository.GetSlotDataAsync(request.SlotID);
             if(slotData !=null)
             {
-
-                resp1 = await EditSlotAsync(new EditSlotRequestArgs
+                if (request.PlannedDate != null && request.ExpectedDate != null)
                 {
-                    Forced = request.Forced,
-                    NrOfPlates = request.NrOfPlates,
-                    PlannedDate = request.PlannedDate,
-                    ExpectedDate = request.ExpectedDate,
-                    NrOfTests = request.NrOfTests,
-                    SlotID = request.SlotID
-                });
-
-                //if (request.PlannedDate != null && request.ExpectedDate != null)
-                //{
-                //    if(request.PlannedDate.Value.ToShortDateString() != slotData.PlannedDate.ToShortDateString() || request.ExpectedDate.Value.ToShortDateString() != slotData.ExpectedDate.ToShortDateString())
-                //    {
-                //        item = await _repository.UpdateSlotPeriodAsync(request);
-                //    }
-                //}
-                //if((request.NrOfPlates > 0) && (request.NrOfTests != slotData.NrOfTests || request.NrOfPlates != slotData.NrOfPlates))
-                //{
-                //    resp1 = await EditSlotAsync(new EditSlotRequestArgs
-                //    {
-                //        Forced = request.Forced,
-                //        NrOfPlates = request.NrOfPlates,
-                //        PlannedDate = request.PlannedDate,
-                //        ExpectedDate = request.ExpectedDate,
-                //        NrOfTests = request.NrOfTests,
-                //        SlotID = request.SlotID
-                //    });
-                //}
+                    if(request.PlannedDate.Value.ToShortDateString() != slotData.PlannedDate.ToShortDateString() || request.ExpectedDate.Value.ToShortDateString() != slotData.ExpectedDate.ToShortDateString())
+                    {
+                        item = await _repository.UpdateSlotPeriodAsync(request);
+                    }
+                }
+                if((request.NrOfPlates > 0) && (request.NrOfTests != slotData.NrOfTests || request.NrOfPlates != slotData.NrOfPlates))
+                {
+                    resp1 = await EditSlotAsync(new EditSlotRequestArgs
+                    {
+                        Forced = request.Forced,
+                        NrOfPlates = request.NrOfPlates,
+                        NrOfTests = request.NrOfTests,
+                        SlotID = request.SlotID
+                    });
+                }
 
             }
 
