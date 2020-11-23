@@ -77,6 +77,8 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
                     {
                         Forced = request.Forced,
                         NrOfPlates = request.NrOfPlates,
+                        PlannedDate = item.ChangedPlannedDate,
+                        ExpectedDate = item.ChangedExpectedDate,
                         NrOfTests = request.NrOfTests,
                         SlotID = request.SlotID
                     });
