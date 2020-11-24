@@ -1,7 +1,9 @@
+
 /*
 Author					Date			Description
 Krishna Gautam			2019-Jul-24		Service created edit slot (nrofPlates and NrofTests).
 Krishna Gautam			2019-Nov-19		Update new requested value and approved value on different field that is used for furhter process (if denied only deny new request of approved slot).
+Krishna Gautam			2020-Nov-23		#16322:Update slot reservation to change planned date (expected date based on planned date) and change number of plates/tests.
 
 ===================================Example================================
 
@@ -88,7 +90,7 @@ BEGIN
 		END
 	END
 	
-	IF(ISNULL(@ActualPlates,0) <> ISNULL(@NrOfPlates,0) OR ISNULL(@ActualTests,0) <> ISNULL(@NrOfTests,0))
+	IF(ISNULL(@ActualPlates,0) <> ISNULL(@NrOfPlates,0) OR ISNULL(@ActualTests,0) <> ISNULL(@NrOfTests,0) OR @PeriodID <> @ChangedPeriodID)
 	BEGIN
 		--SELECT @TestInLims = CASE WHEN COUNT(T.TestID) > 0 THEN 1 ELSE 0 END
 		--FROM SlotTest ST
@@ -258,3 +260,5 @@ BEGIN
 		END
 	END
 END
+
+GO
