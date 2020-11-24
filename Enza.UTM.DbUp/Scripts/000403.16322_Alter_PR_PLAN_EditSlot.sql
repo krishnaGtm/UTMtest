@@ -1,3 +1,4 @@
+
 /*
 Author					Date			Description
 Krishna Gautam			2019-Jul-24		Service created edit slot (nrofPlates and NrofTests).
@@ -89,7 +90,7 @@ BEGIN
 		END
 	END
 	
-	IF(ISNULL(@ActualPlates,0) <> ISNULL(@NrOfPlates,0) OR ISNULL(@ActualTests,0) <> ISNULL(@NrOfTests,0))
+	IF(ISNULL(@ActualPlates,0) <> ISNULL(@NrOfPlates,0) OR ISNULL(@ActualTests,0) <> ISNULL(@NrOfTests,0) OR @PeriodID <> @ChangedPeriodID)
 	BEGIN
 		--SELECT @TestInLims = CASE WHEN COUNT(T.TestID) > 0 THEN 1 ELSE 0 END
 		--FROM SlotTest ST
@@ -261,5 +262,3 @@ BEGIN
 END
 
 GO
-
-
