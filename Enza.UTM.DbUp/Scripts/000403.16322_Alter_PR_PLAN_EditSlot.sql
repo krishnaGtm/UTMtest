@@ -1,4 +1,3 @@
-
 /*
 Author					Date			Description
 Krishna Gautam			2019-Jul-24		Service created edit slot (nrofPlates and NrofTests).
@@ -92,10 +91,26 @@ BEGIN
 	
 	IF(ISNULL(@ActualPlates,0) <> ISNULL(@NrOfPlates,0) OR ISNULL(@ActualTests,0) <> ISNULL(@NrOfTests,0) OR @PeriodID <> @ChangedPeriodID)
 	BEGIN
-		--SELECT @TestInLims = CASE WHEN COUNT(T.TestID) > 0 THEN 1 ELSE 0 END
-		--FROM SlotTest ST
-		--JOIN Test T ON T.TestID = ST.TestID
-		--WHERE ST.SlotID = @SlotID AND T.StatusCode >= 400;
+		IF(@PeriodID <> @ChangedPeriodID)
+		BEGIN
+			IF EXISTS (SELECT * FROM SlotTest ST
+			JOIN Test T ON T.TestID = ST.TestID
+			WHERE ST.SlotID = @SlotID AND T.StatusCode > 400)
+			BEGIN
+				EXEC PR_ThrowError 'Plateplan/Test linked with this slot is already sent to LIMS. Cannot move slot to another week.';
+				RETURN;
+			END
+			ELSE
+			BEGIN
+				IF EXISTS (SELECT * FROM SlotTest ST
+				JOIN Test T ON T.TestID = ST.TestID
+				WHERE ST.SlotID = @SlotID)
+				BEGIN
+					EXEC PR_ThrowError 'PlatePlan/Test already linked to this slot. Either unlink test from this slot or change planned/expected date of test linked with this slot.';
+					RETURN;
+				END
+			END
+		END
 
 		SELECT @TotalPlatesUsed = ISNULL(COUNT(P.PlateID),0)
 		FROM SlotTest ST 
