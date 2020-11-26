@@ -218,6 +218,8 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args1.Add("@TVPList", dtListTVP);
                     args1.Add("@ExcludeControlPosition", requestArgs.ExcludeControlPosition);
                     args1.Add("@FileID", requestArgs.FileID);
+                    args1.Add("@BTR", requestArgs.BTR);
+                    args1.Add("@ResearcherName", requestArgs.ResearcherName);
                 });
             requestArgs.TestID = p1.Value.ToInt32();
         }
