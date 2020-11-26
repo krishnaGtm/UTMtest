@@ -118,6 +118,11 @@ namespace Enza.UTM.Web.Services.Controllers
                 res.Success = false;
                 return Ok(res);
             }
+            if (args.BTR && string.IsNullOrWhiteSpace(args.ResearcherName))
+            {
+                return InvalidRequest("Please fill Researcher name for BTR type.");
+            }
+
             var data = await phenomeService.GetPhenomeDataAsync(Request, args);
             var fileInfo = await fileService.GetFileAsync(args.TestID);
             var result = new

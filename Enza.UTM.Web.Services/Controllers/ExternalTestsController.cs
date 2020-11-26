@@ -70,6 +70,8 @@ namespace Enza.UTM.Web.Services.Controllers
                 ContainerTypeID = provider.FormData["containerTypeID"].ToInt32(),
                 Isolated = provider.FormData["isolated"].ToBoolean(),
                 Source = provider.FormData["source"],
+                BTR = provider.FormData["btr"].ToBoolean(),
+                ResearcherName = provider.FormData["researcherName"],
                 TestName = System.IO.Path.GetFileNameWithoutExtension(fileName),
                 ExpectedDate = provider.FormData["expectedDate"].ToNDateTime(),
                 PageSize = provider.FormData["pageSize"].ToInt32(),
