@@ -396,6 +396,7 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                 args =>
                 {
                     args.Add("@Active", requestArgs.Active);
+                    args.Add("@BTR", requestArgs.BTR);
                     args.Add("@Crops", requestArgs.Crops);
                     args.Add("@Filter", requestArgs.ToFilterString());
                     args.Add("@Sort", "");
