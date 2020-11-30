@@ -78,6 +78,12 @@ namespace Enza.UTM.Web.Services.Controllers
                 ExcludeControlPosition = provider.FormData["excludeControlPosition"].ToBoolean(),
                 DataStream = fs
             };
+
+            if (args.BTR && string.IsNullOrWhiteSpace(args.ResearcherName))
+            {
+                return InvalidRequest("Please fill Researcher name for BTR type.");
+            }
+
             var result = await _externalTestService.ImportDataAsync(args);
             if (!result.Success)
             {
