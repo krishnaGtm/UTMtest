@@ -30,7 +30,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task SaveNrOfSamplesAsync(SaveNrOfSamplesRequestArgs args);
         Task<string> DeleteTestAsync(DeleteTestRequestArgs args);
         Task<PlatePlanResult> getPlatePlanOverviewAsync(PlatePlanRequestArgs args);
-        Task<byte[]> PlatePlanResultToExcelAsync(int testID);
+        Task<byte[]> PlatePlanResultToExcelAsync(int testID, bool? withControlPosition);
         Task<byte[]> TestToExcelAsync(int testID);
         Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName, string testName, int testID);
         Task<int> GetTotalMarkerAsync(int testID);

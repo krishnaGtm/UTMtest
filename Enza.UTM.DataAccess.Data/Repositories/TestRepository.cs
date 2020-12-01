@@ -444,11 +444,12 @@ namespace Enza.UTM.DataAccess.Data.Repositories
 
         }
 
-        public async Task<DataSet> PlatePlanResultAsync(int testID)
+        public async Task<DataSet> PlatePlanResultAsync(int testID, bool? withControlPosition)
         {
             return await DbContext.ExecuteDataSetAsync(DataConstants.PR_GET_PLATEPLAN_WITH_RESULT, CommandType.StoredProcedure, args =>
             {
                 args.Add("@TestID", testID);
+                args.Add("@WithControlPosition", withControlPosition);
             });
             
         }

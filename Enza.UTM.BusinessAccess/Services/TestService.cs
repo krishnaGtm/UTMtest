@@ -819,10 +819,10 @@ namespace Enza.UTM.BusinessAccess.Services
 
         }
 
-        public async Task<byte[]> PlatePlanResultToExcelAsync(int testID)
+        public async Task<byte[]> PlatePlanResultToExcelAsync(int testID, bool? withControlPosition)
         {
             //get data
-            var data = await repository.PlatePlanResultAsync(testID);
+            var data = await repository.PlatePlanResultAsync(testID, withControlPosition);
             //create excel
             var createExcel = CreateExcelFile(data);
             //apply formating 
