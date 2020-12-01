@@ -234,9 +234,9 @@ namespace Enza.UTM.Web.Services.Controllers
         
         [HttpGet]
         [Route("PlatePlanResultToExcel")]
-        public async Task<IHttpActionResult> PlatePlanResultToExcel(int testID)
+        public async Task<IHttpActionResult> PlatePlanResultToExcel(int testID, bool? withControlPosition = null)
         {
-            var data = await testService.PlatePlanResultToExcelAsync(testID);
+            var data = await testService.PlatePlanResultToExcelAsync(testID, withControlPosition);
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new ByteArrayContent(data)
