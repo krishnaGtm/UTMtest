@@ -262,6 +262,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000351.16646_Alter_PR_RDT_ReceiveResults.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000408.16646_Alter_Data_for_SiteLocation.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
