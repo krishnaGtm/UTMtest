@@ -58,10 +58,8 @@ namespace Enza.UTM.Web.Services.Soap
                         {
                             LimsPlateID = x.LimsPlateID,
                             Position = y.PlateRow + $"{y.PlateColumn:00}",
-                            //PlateColumn = y.PlateColumn,
-                            //PlateRow = y.PlateRow,
                             Determination = z.MarkerNr,
-                            ScoreVal = z.Scores[0].AlleleScore
+                            ScoreVal = z.Scores.FirstOrDefault()?.AlleleScore
                         }))).ToList()
 
             }));
