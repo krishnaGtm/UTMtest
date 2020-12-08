@@ -8,7 +8,7 @@ namespace Enza.UTM.Entities
 {
     public class EmailDataArgs
     {
-        public String ReservationNumber { get; set; }
+        public string ReservationNumber { get; set; }
         public DateTime PlannedDate { get; set; }
         public DateTime ChangedPlannedDate { get; set; }
         public DateTime ExpectedDate { get; set; }

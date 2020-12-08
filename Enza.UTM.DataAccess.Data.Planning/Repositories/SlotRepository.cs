@@ -119,14 +119,20 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
         }
 
         
-        public async Task<EmailDataArgs> ApproveSlotAsync(int SlotID)
+        
+        public async Task<ApproveSlotResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs)
         {
             //logic to approve request here
+            var p1 = DbContext.CreateOutputParameter("@IsSuccess", DbType.Boolean);
+            var p2 = DbContext.CreateOutputParameter("@Message", DbType.String, 2000);
             var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_PLAN_APPROVE_SLOT, CommandType.StoredProcedure,
                args =>
                {
-                   args.Add("@SlotID", SlotID);
-               }, reader => new EmailDataArgs
+                   args.Add("@SlotID", requestArgs.SlotID);
+                   args.Add("@Forced", requestArgs.Forced);
+                   args.Add("@IsSuccess", p1);
+                   args.Add("@Message", p2);
+               }, reader => new ApproveSlotResult
                {
                    ReservationNumber = reader.Get<string>(0),
                    SlotName = reader.Get<string>(1),
@@ -135,10 +141,25 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                    PlannedDate = reader.Get<DateTime>(4),
                    ChangedPlannedDate = reader.Get<DateTime>(5),
                    RequestUser = reader.Get<string>(6),
-                   Action = "Approved"
-
+                   Action = "Approved",
+                   Message = p2.Value.ToString(),
+                   Success = Convert.ToBoolean(p1.Value)
                });
-            return data.FirstOrDefault();
+            var result = data.FirstOrDefault();
+            if(result !=null && result.Success)
+            {
+                return result;
+            }
+            else
+            {
+                return new ApproveSlotResult
+                {
+                    Message = p2.Value.ToString(),
+                    Success = Convert.ToBoolean(p1.Value)
+                };
+                
+            }
+           
             //send email
             //return await SendMail(data.FirstOrDefault());
         }
