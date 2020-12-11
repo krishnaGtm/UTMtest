@@ -51,9 +51,9 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         }
         [Route("approveSlot")]
         [HttpPost]
-        public async Task<IHttpActionResult> ApproveSlotAsync(int slotID)
+        public async Task<IHttpActionResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs)
         {
-            var data = await slotService.ApproveSlotAsync(slotID);
+            var data = await slotService.ApproveSlotAsync(requestArgs);
             return Ok(data);
         }
         [Route("denySlot")]

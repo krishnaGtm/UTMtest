@@ -93,10 +93,20 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             };            
             return res;
         }
-        public async Task<SlotApprovalResult> ApproveSlotAsync(int SlotID)
+        public async Task<SlotApprovalResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs)
         {
-            var item = await _repository.ApproveSlotAsync(SlotID);
-            return await SendEmailAsync(item);
+            var item = await _repository.ApproveSlotAsync(requestArgs);
+            if (item.Success)
+                return await SendEmailAsync(item);
+            else
+            {
+                return new SlotApprovalResult
+                {
+                    Success = item.Success,
+                    Message = item.Message
+                };
+            }
+                
         }
         public async Task<SlotApprovalResult> DenySlotAsync(int SlotID)
         {
@@ -119,7 +129,7 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             var res = new SlotApprovalResult
             {
                 Message = "Error on sending mail",
-                Success = false
+                Success = true
             };
             var from = ConfigurationManager.AppSettings["LAB:EmailSender"];
             //var userName = LDAP.GetUserName(_userContext.GetContext().FullName);
