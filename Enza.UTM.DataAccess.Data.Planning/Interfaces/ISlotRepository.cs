@@ -12,7 +12,7 @@ namespace Enza.UTM.DataAccess.Data.Planning.Interfaces
         Task<GetAvailPlatesTestsResult> GetAvailPlatesTestsAsync(GetAvailPlatesTestsRequestArgs request);
         Task<SlotLookUp> GetSlotDataAsync(int id);
         Task<EmailDataArgs> UpdateSlotPeriodAsync(UpdateSlotPeriodRequestArgs request);
-        Task<EmailDataArgs> ApproveSlotAsync(int SlotID);
+        Task<ApproveSlotResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs);
         Task<EmailDataArgs> DenySlotAsync(int SlotID);
         Task<DataTable> GetPlannedOverviewAsync(int year, int? periodID);
         Task<BreedingOverviewResult> GetBreedingOverviewAsync(BreedingOverviewRequestArgs requestArgs);

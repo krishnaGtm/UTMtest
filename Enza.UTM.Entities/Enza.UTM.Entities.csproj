@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="AppRoles.cs" />
     <Compile Include="Args\Abstract\RequestArgs.cs" />
+    <Compile Include="Args\ApproveSlotRequestArgs.cs" />
     <Compile Include="Args\AssignDeterminationForRDTRequestArgs.cs" />
     <Compile Include="Args\PrintLabelForRDTRequestArgs.cs" />
     <Compile Include="Args\ReceiveRDTResultsRequestArgs.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="PlateLabel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RDTPrintData.cs" />
+    <Compile Include="Results\ApproveSlotResult.cs" />
     <Compile Include="SiteLocation.cs" />
     <Compile Include="Results\RequestSampleTest.cs" />
     <Compile Include="Results\ExecutableError.cs" />
