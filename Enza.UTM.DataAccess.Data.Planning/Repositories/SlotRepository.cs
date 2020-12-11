@@ -141,12 +141,10 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                    PlannedDate = reader.Get<DateTime>(4),
                    ChangedPlannedDate = reader.Get<DateTime>(5),
                    RequestUser = reader.Get<string>(6),
-                   Action = "Approved",
-                   Message = p2.Value.ToString(),
-                   Success = Convert.ToBoolean(p1.Value)
+                   Action = "Approved"
                });
             var result = data.FirstOrDefault();
-            if(result !=null && result.Success)
+            if(result !=null && Convert.ToBoolean(p1?.Value))
             {
                 return result;
             }
