@@ -5,6 +5,7 @@ using Enza.UTM.BusinessAccess.Planning.Interfaces;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
+using Enza.UTM.Entities.Results;
 using Enza.UTM.Web.Services.Core.Controllers;
 
 namespace Enza.UTM.Web.Services.Planning.Controllers
@@ -51,8 +52,8 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         }
         [Route("approveSlot")]
         [HttpPost]
-        public async Task<IHttpActionResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs)
-        {
+        public async Task<IHttpActionResult> ApproveSlotAsync([FromBody]ApproveSlotRequestArgs requestArgs)
+        {           
             var data = await slotService.ApproveSlotAsync(requestArgs);
             return Ok(data);
         }
