@@ -11,7 +11,7 @@ using Enza.UTM.Web.Services.Core.Controllers;
 namespace Enza.UTM.Web.Services.Planning.Controllers
 {
     [RoutePrefix("api/v1/Slot")]
-    //[Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
+    [Authorize(Roles = AppRoles.HANDLE_LAB_CAPACITY)]
     public class SlotController : BaseApiController
     {
         readonly ISlotService slotService;

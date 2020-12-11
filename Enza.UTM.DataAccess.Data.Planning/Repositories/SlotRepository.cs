@@ -129,9 +129,7 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                args =>
                {
                    args.Add("@SlotID", requestArgs.SlotID);
-                   args.Add("@Forced", requestArgs.Forced);
-                   args.Add("@IsSuccess", p1);
-                   args.Add("@Message", p2);
+
                }, reader => new ApproveSlotResult
                {
                    ReservationNumber = reader.Get<string>(0),
@@ -144,19 +142,24 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                    Action = "Approved"
                });
             var result = data.FirstOrDefault();
-            if(result !=null && Convert.ToBoolean(p1?.Value))
-            {
-                return result;
-            }
-            else
-            {
-                return new ApproveSlotResult
-                {
-                    Message = p2.Value.ToString(),
-                    Success = Convert.ToBoolean(p1.Value)
-                };
+            result.Success = true;
+            return result;
+
+
+            //if(result !=null && Convert.ToBoolean(p1?.Value))
+            //{
+            //    return result;
+
+            //}
+            //else
+            //{
+            //    return new ApproveSlotResult
+            //    {
+            //        Message = p2.Value.ToString(),
+            //        Success = false
+            //    };
                 
-            }
+            //}
            
             //send email
             //return await SendMail(data.FirstOrDefault());

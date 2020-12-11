@@ -129,7 +129,7 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             var res = new SlotApprovalResult
             {
                 Message = "Error on sending mail",
-                Success = true
+                Success = false
             };
             var from = ConfigurationManager.AppSettings["LAB:EmailSender"];
             //var userName = LDAP.GetUserName(_userContext.GetContext().FullName);
