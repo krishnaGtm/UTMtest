@@ -1,0 +1,1 @@
+DISABLE TRIGGER TRG_Insert_TestTypeDetermination ON Determination
