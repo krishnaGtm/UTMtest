@@ -626,10 +626,10 @@ namespace Enza.UTM.BusinessAccess.Services
             return success;
         }
 
-        public async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName,string remark)
+        private async Task SendAddColumnErrorEmailAsync(string cropCode, string brStationCode, string platePlanName,string remark)
         {
             //get test complete email body template
-            var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate();
+            var testCompleteBoy = EmailTemplate.GetColumnSetErrorEmailTemplate("2GB");
             //send test completion email to respective groups
             if(!string.IsNullOrWhiteSpace(remark))
             {
@@ -638,7 +638,7 @@ namespace Enza.UTM.BusinessAccess.Services
             var body = Template.Render(testCompleteBoy, new
             {
                 PlatePlanName = platePlanName,
-                Remakr = remark
+                Remark = remark
             });
 
             var config = await emailConfigService.GetEmailConfigAsync(EmailConfigGroups.TEST_COMPLETE_NOTIFICATION, cropCode, brStationCode);
@@ -664,7 +664,7 @@ namespace Enza.UTM.BusinessAccess.Services
             if (tos.Any())
             {
                 var subject = $" Action needed for {platePlanName}";               
-                await emailService.SendEmailAsync(tos, subject, body);
+                await emailService.SendEmailAsync(tos, subject.AddEnv(), body);
             }
         }
 
@@ -753,6 +753,7 @@ namespace Enza.UTM.BusinessAccess.Services
                     if (tobeDefinedVariables.FirstOrDefault(x => x.variable_id == platID) == null && tobeDefined.Contains("PlatID"))
                     {
                         tobeDefinedVariables.Add(new { variable_id = platID, desc = "PlatID" });
+
                     }
                 }
 
@@ -819,10 +820,10 @@ namespace Enza.UTM.BusinessAccess.Services
 
         }
 
-        public async Task<byte[]> PlatePlanResultToExcelAsync(int testID)
+        public async Task<byte[]> PlatePlanResultToExcelAsync(int testID, bool? withControlPosition)
         {
             //get data
-            var data = await repository.PlatePlanResultAsync(testID);
+            var data = await repository.PlatePlanResultAsync(testID, withControlPosition);
             //create excel
             var createExcel = CreateExcelFile(data);
             //apply formating 
@@ -860,7 +861,7 @@ namespace Enza.UTM.BusinessAccess.Services
         public async Task SendTestCompletionEmailAsync(string cropCode, string brStationCode, string platePlanName,string testName,int testID)
         {            
             //get test complete email body template
-            var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate();
+            var testCompleteBody = EmailTemplate.GetTestCompleteNotificationEmailTemplate("2GB");
             var slotDetail = await repository.GetSlotDetailForTestAsync(testID);
             //send test completion email to respective groups
             var body = Template.Render(testCompleteBody, new
@@ -1344,7 +1345,7 @@ namespace Enza.UTM.BusinessAccess.Services
                 return await svc.FillPlatesInLimsAsync();
             }
         }
-        private async Task<HttpResponseMessage> SignInAsync(RestClient client)
+        public async Task<HttpResponseMessage> SignInAsync(RestClient client)
         {
             var ssoEnabled = ConfigurationManager.AppSettings["SSO:Enabled"].ToBoolean();
             if (!ssoEnabled)

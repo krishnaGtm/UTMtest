@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Threading.Tasks;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
@@ -10,6 +11,7 @@ using Enza.UTM.DataAccess.Interfaces;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Entities.Results;
+using NPOI.XSSF.UserModel;
 
 namespace Enza.UTM.BusinessAccess.Planning.Services
 {
@@ -93,10 +95,20 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
             };            
             return res;
         }
-        public async Task<SlotApprovalResult> ApproveSlotAsync(int SlotID)
+        public async Task<SlotApprovalResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs)
         {
-            var item = await _repository.ApproveSlotAsync(SlotID);
-            return await SendEmailAsync(item);
+            var item = await _repository.ApproveSlotAsync(requestArgs);
+            if (item.Success)
+                return await SendEmailAsync(item);
+            else
+            {
+                return new SlotApprovalResult
+                {
+                    Success = item.Success,
+                    Message = item.Message
+                };
+            }
+                
         }
         public async Task<SlotApprovalResult> DenySlotAsync(int SlotID)
         {
@@ -180,6 +192,56 @@ namespace Enza.UTM.BusinessAccess.Planning.Services
         public Task<DataTable> GetApprovedSlotsAsync(string userName, string slotName, string crops)
         {
             return _repository.GetApprovedSlotsAsync(userName, slotName,crops);
+        }
+
+        public async Task<byte[]> ExportCapacityPlanningToExcel(BreedingOverviewRequestArgs args)
+        {
+            var result = await _repository.GetBreedingOverviewAsync(args);
+
+            var rs = result.Data as DataTable;
+
+            //remove unnecessary columns
+            if(rs.Columns.Contains("SlotID"))
+                rs.Columns.Remove("SlotID");
+            if (rs.Columns.Contains("RequestDate"))
+                rs.Columns.Remove("RequestDate");
+            if (rs.Columns.Contains("PlannedDate"))
+                rs.Columns.Remove("PlannedDate");
+            if (rs.Columns.Contains("ExpectedDate"))
+                rs.Columns.Remove("ExpectedDate");
+            if (rs.Columns.Contains("Isolated"))
+                rs.Columns.Remove("Isolated");
+            if (rs.Columns.Contains("StatusCode"))
+                rs.Columns.Remove("StatusCode");
+
+            using (var ms = new MemoryStream())
+            {
+                var book = new XSSFWorkbook();
+                var sheet = book.CreateSheet("Sheet1");
+                //add header row
+                var header = sheet.CreateRow(0);
+                for (var i = 0; i < rs.Columns.Count; i++)
+                {
+                    var column = rs.Columns[i];
+                    var cell = header.CreateCell(i);
+                    cell.SetCellValue(column.ColumnName);
+                }
+                //add data rows
+                var rowNr = 1;
+                foreach (DataRow dr in rs.Rows)
+                {
+                    var row = sheet.CreateRow(rowNr++);
+                    for (var i = 0; i < rs.Columns.Count; i++)
+                    {
+                        var column = rs.Columns[i];
+                        var cell = row.CreateCell(i);
+                        cell.SetCellValue(dr[column.ColumnName].ToText());
+                    }
+                }
+                book.Write(ms);
+
+                return ms.ToArray();
+            }
         }
     }
 }

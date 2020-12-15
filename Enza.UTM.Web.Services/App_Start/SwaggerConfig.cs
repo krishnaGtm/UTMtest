@@ -1,11 +1,8 @@
 using Enza.UTM.Common.Attributes;
-using Enza.UTM.Web.Services;
 using Swashbuckle.Application;
-using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Web.Http;
-using WebActivatorEx;
 
 //[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 

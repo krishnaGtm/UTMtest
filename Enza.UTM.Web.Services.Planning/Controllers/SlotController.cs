@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.BusinessAccess.Planning.Interfaces;
 using Enza.UTM.Common.Extensions;
 using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
+using Enza.UTM.Entities.Results;
 using Enza.UTM.Web.Services.Core.Controllers;
 
 namespace Enza.UTM.Web.Services.Planning.Controllers
@@ -51,9 +55,9 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
         }
         [Route("approveSlot")]
         [HttpPost]
-        public async Task<IHttpActionResult> ApproveSlotAsync(int slotID)
-        {
-            var data = await slotService.ApproveSlotAsync(slotID);
+        public async Task<IHttpActionResult> ApproveSlotAsync([FromBody]ApproveSlotRequestArgs requestArgs)
+        {           
+            var data = await slotService.ApproveSlotAsync(requestArgs);
             return Ok(data);
         }
         [Route("denySlot")]
@@ -107,6 +111,30 @@ namespace Enza.UTM.Web.Services.Planning.Controllers
             var crops = string.Join(",", cropCodes);
             var data = await slotService.GetApprovedSlotsAsync(userName, slotName, crops);
             return Ok(data);
+        }
+
+        [OverrideAuthorization]
+        [Authorize(Roles = AppRoles.MANAGE_MASTER_DATA_UTM_REQUEST_TEST)]
+        [HttpPost]
+        [Route("ExportCapacityPlanningToExcel")]
+        public async Task<IHttpActionResult> ExportCapacityPlanningToExcel([FromBody]BreedingOverviewRequestArgs args)
+        {
+
+            args.PageSize = 5000;
+            args.PageNumber = 1;
+            var data = await slotService.ExportCapacityPlanningToExcel(args);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(data)
+            };
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = $"CapacityPlanning.xlsx"
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            return ResponseMessage(result);
+
         }
     }
 }

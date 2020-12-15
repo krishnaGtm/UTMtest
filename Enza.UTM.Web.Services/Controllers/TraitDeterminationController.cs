@@ -110,5 +110,34 @@ namespace Enza.UTM.Web.Services.Controllers
                 Data = items
             });
         }
+
+        [HttpPost]
+        [Route("saveTraitDeterminationResultRDT")]
+        public async Task<IHttpActionResult> SaveTraitDeterminationResultRDT([FromBody] RDTSaveTraitDeterminationResultRequestArgs args)
+        {
+            var cropCodes = await _masterService.GetUserCropCodesAsync(User);
+            args.Crops = string.Join(",", cropCodes);
+            var items = await service.SaveTraitDeterminationResultRDTAsync(args);
+            return Ok(new
+            {
+                args.TotalRows,
+                Data = items
+            });
+        }
+
+        [HttpPost]
+        [Route("getTraitDeterminationResultRDT")]
+
+        public async Task<IHttpActionResult> GetTraitDeterminationResultRDT([FromBody] TraitDeterminationResultRequestArgs args)
+        {
+            var cropCodes = await _masterService.GetUserCropCodesAsync(User);
+            args.Crops = string.Join(",", cropCodes);
+            var items = await service.GetTraitDeterminationResultRDTAsync(args);
+            return Ok(new
+            {
+                args.TotalRows,
+                Data = items
+            });
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace Enza.UTM.BusinessAccess.Planning
             builder.RegisterType<MasterDataRepository>().As<IMasterDataRepository>().InstancePerRequest();
             builder.RegisterType<SlotRepository>().As<ISlotRepository>().InstancePerRequest();
             builder.RegisterType<EmailConfigRepository>().As<IEmailConfigRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<MasterRepository>().As<IMasterRepository>().InstancePerLifetimeScope();
 
             //Services
             builder.RegisterType<CapacityService>().As<ICapacityService>().InstancePerRequest();
@@ -34,6 +35,7 @@ namespace Enza.UTM.BusinessAccess.Planning
             builder.RegisterType<SlotService>().As<ISlotService>().InstancePerRequest();
             builder.RegisterType<EmailConfigService>().As<IEmailConfigService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
+            builder.RegisterType<MasterService>().As<IMasterService>().InstancePerLifetimeScope();
 
             builder.RegisterType<MasterRepository>().As<IMasterRepository>().InstancePerLifetimeScope();
             builder.RegisterType<MasterService>().As<IMasterService>().InstancePerLifetimeScope();

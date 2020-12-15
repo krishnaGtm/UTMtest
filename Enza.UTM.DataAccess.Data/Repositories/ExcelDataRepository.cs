@@ -217,7 +217,10 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                     args1.Add("@ImportLevel", requestArgs.ImportLevel);
                     args1.Add("@TVPList", dtListTVP);
                     args1.Add("@ExcludeControlPosition", requestArgs.ExcludeControlPosition);
+                    args1.Add("@SiteID", requestArgs.SiteID);
                     args1.Add("@FileID", requestArgs.FileID);
+                    args1.Add("@BTR", requestArgs.BTR);
+                    args1.Add("@ResearcherName", requestArgs.ResearcherName);
                 });
             requestArgs.TestID = p1.Value.ToInt32();
         }
@@ -245,6 +248,14 @@ namespace Enza.UTM.DataAccess.Data.Repositories
                         result.Total = table0.Rows[0]["TotalRows"].ToInt32();
                     }
                     table0.Columns.Remove("TotalRows");
+                }
+                if (table0.Columns.Contains("Total"))
+                {
+                    if (table0.Rows.Count > 0)
+                    {
+                        result.TotalCount = table0.Rows[0]["Total"].ToInt32();
+                    }
+                    table0.Columns.Remove("Total");
                 }
                 result.DataResult = new ExcelData
                 {

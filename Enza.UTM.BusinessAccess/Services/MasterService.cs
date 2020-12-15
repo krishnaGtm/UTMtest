@@ -84,6 +84,10 @@ namespace Enza.UTM.BusinessAccess.Services
             return repository.SaveCNTTypesAsync(items);
         }
 
+        public Task<IEnumerable<SiteLocation>> GetSitesAsync()
+        {
+            return repository.GetSitesAsync();
+        }
         public Task<IEnumerable<Crop>> GetUserCropsAsync(IPrincipal user)
         {
             return repository.GetUserCropsAsync(user);

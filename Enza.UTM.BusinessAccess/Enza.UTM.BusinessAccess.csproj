@@ -112,6 +112,7 @@
     <Compile Include="Interfaces\IExternalTestService.cs" />
     <Compile Include="Interfaces\IEmailConfigService.cs" />
     <Compile Include="Interfaces\ICNTService.cs" />
+    <Compile Include="Interfaces\IRDTService.cs" />
     <Compile Include="Interfaces\IS2SService.cs" />
     <Compile Include="Interfaces\IMaterialTypeTestProtocolService.cs" />
     <Compile Include="Interfaces\IThreeGBService.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Services\MasterService.cs" />
     <Compile Include="Services\EmailConfigService.cs" />
     <Compile Include="Services\CNTService.cs" />
+    <Compile Include="Services\RDTService.cs" />
     <Compile Include="Services\S2SService.cs" />
     <Compile Include="Services\MaterialTypeTestProtocolService.cs" />
     <Compile Include="Services\ThreeGBService.cs" />

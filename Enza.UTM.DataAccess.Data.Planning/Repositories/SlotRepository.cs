@@ -39,6 +39,7 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                     args.Add("@CropCode", request.CropCode);
                     args.Add("@Isolated", request.Isolated);
                     args.Add("@PlannedDate", request.PlannedDate.ToDateTime());
+                    args.Add("@ExpectedDateIn", request.ExpectedDate.ToNDateTime());
                     args.Add("@DisplayPlannedWeek", p1);
                     args.Add("@ExpectedDate", p2);
                     args.Add("@DisplayExpectedWeek", p3);
@@ -118,14 +119,18 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
         }
 
         
-        public async Task<EmailDataArgs> ApproveSlotAsync(int SlotID)
+        
+        public async Task<ApproveSlotResult> ApproveSlotAsync(ApproveSlotRequestArgs requestArgs)
         {
             //logic to approve request here
+            var p1 = DbContext.CreateOutputParameter("@IsSuccess", DbType.Boolean);
+            var p2 = DbContext.CreateOutputParameter("@Message", DbType.String, 2000);
             var data = await DbContext.ExecuteReaderAsync(DataConstants.PR_PLAN_APPROVE_SLOT, CommandType.StoredProcedure,
                args =>
                {
-                   args.Add("@SlotID", SlotID);
-               }, reader => new EmailDataArgs
+                   args.Add("@SlotID", requestArgs.SlotID);
+
+               }, reader => new ApproveSlotResult
                {
                    ReservationNumber = reader.Get<string>(0),
                    SlotName = reader.Get<string>(1),
@@ -135,9 +140,27 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                    ChangedPlannedDate = reader.Get<DateTime>(5),
                    RequestUser = reader.Get<string>(6),
                    Action = "Approved"
-
                });
-            return data.FirstOrDefault();
+            var result = data.FirstOrDefault();
+            result.Success = true;
+            return result;
+
+
+            //if(result !=null && Convert.ToBoolean(p1?.Value))
+            //{
+            //    return result;
+
+            //}
+            //else
+            //{
+            //    return new ApproveSlotResult
+            //    {
+            //        Message = p2.Value.ToString(),
+            //        Success = false
+            //    };
+                
+            //}
+           
             //send email
             //return await SendMail(data.FirstOrDefault());
         }
@@ -219,6 +242,8 @@ namespace Enza.UTM.DataAccess.Data.Planning.Repositories
                     param.Add("@SlotID", args.SlotID);
                     param.Add("@NrOfPlates", args.NrOfPlates);
                     param.Add("@NrOfTests", args.NrOfTests);
+                    param.Add("@PlannedDate", args.PlannedDate);
+                    param.Add("@ExpectedDate", args.ExpectedDate);
                     param.Add("@Forced", args.Forced);
                     param.Add("@Message", p1);
                 });

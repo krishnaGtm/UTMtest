@@ -99,6 +99,7 @@
     <Compile Include="Abstract\RestClient.cs" />
     <Compile Include="Abstract\SoapClient.cs" />
     <Compile Include="EmailTemplates\EmailTemplate.cs" />
+    <Compile Include="Proxies\LimsServiceRestClient.cs" />
     <Compile Include="Proxies\PhenomeSSOClient.cs" />
     <Compile Include="Proxies\ThreeGBSoapClient.cs" />
     <Compile Include="Proxies\S2SSoapClient.cs" />
@@ -144,6 +145,15 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="EmailTemplates\SetColumnError.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\RDTTestCompleteNotification.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\RDTPartiallySentResult.st">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\RDTSetColumnError.st">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />

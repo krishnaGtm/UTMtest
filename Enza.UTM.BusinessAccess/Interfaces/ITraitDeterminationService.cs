@@ -17,5 +17,7 @@ namespace Enza.UTM.BusinessAccess.Interfaces
         Task<DataTable> SaveTraitDeterminationResultAsync(SaveTraitDeterminationResultRequestArgs requestArgs);
         Task<IEnumerable<TraitValueLookup>> GetTraitListOfValuesAsync(int cropTraitID);
         Task<IEnumerable<Crop>> GetCropAsync(List<string> crops);
+        Task<DataTable> SaveTraitDeterminationResultRDTAsync(RDTSaveTraitDeterminationResultRequestArgs args);
+        Task<DataTable> GetTraitDeterminationResultRDTAsync(TraitDeterminationResultRequestArgs args);
     }
 }

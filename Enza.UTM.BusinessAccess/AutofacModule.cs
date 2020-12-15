@@ -62,6 +62,10 @@ namespace Enza.UTM.BusinessAccess
             builder.RegisterType<CNTRepository>().As<ICNTRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CNTService>().As<ICNTService>().InstancePerLifetimeScope();
 
+            //RDT
+            builder.RegisterType<RDTRepository>().As<IRDTRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<RDTService>().As<IRDTService>().InstancePerLifetimeScope();
+
 
             var env = ConfigurationManager.AppSettings["App:Environment"];
             if (env == "DEV")

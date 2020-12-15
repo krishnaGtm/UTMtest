@@ -35,7 +35,7 @@ namespace Enza.UTM.DataAccess.Data.Interfaces
         Task<string> GetCropOfTestAsync(int testID);
         Task<PlatePlanResult> getPlatePlanOverviewAsync(PlatePlanRequestArgs args);
         Task<TraitDeterminationValue> GetTraitValue(string cropCode, string columnLabel);
-        Task<DataSet> PlatePlanResultAsync(int testID);
+        Task<DataSet> PlatePlanResultAsync(int testID, bool? withControlPosition);
         Task<DataSet> TestToExcelAsync(int testID);
         Task<bool> GetSettingToExcludeScoreAsync(int testId);
         Task<int> GetTotalMarkerAsync(int testID);

@@ -76,6 +76,12 @@
   <ItemGroup>
     <Compile Include="AppRoles.cs" />
     <Compile Include="Args\Abstract\RequestArgs.cs" />
+    <Compile Include="Args\ApproveSlotRequestArgs.cs" />
+    <Compile Include="Args\AssignDeterminationForRDTRequestArgs.cs" />
+    <Compile Include="Args\PrintLabelForRDTRequestArgs.cs" />
+    <Compile Include="Args\ReceiveRDTResultsRequestArgs.cs" />
+    <Compile Include="Args\RequestSampleTestCallBackRequestArgs.cs" />
+    <Compile Include="Args\RDTSaveTraitDeterminationResultRequestArgs.cs" />
     <Compile Include="Args\TestRequestArgs.cs" />
     <Compile Include="Args\CNTManageInfoRequestArgs.cs" />
     <Compile Include="Args\CNTManageMarkersRequestArgs.cs" />
@@ -151,6 +157,10 @@
     <Compile Include="PlanPeriod.cs" />
     <Compile Include="PlateLabel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RDTPrintData.cs" />
+    <Compile Include="Results\ApproveSlotResult.cs" />
+    <Compile Include="SiteLocation.cs" />
+    <Compile Include="Results\RequestSampleTest.cs" />
     <Compile Include="Results\ExecutableError.cs" />
     <Compile Include="Results\CreateSelectionJobResp.cs" />
     <Compile Include="Results\CreatedDH.cs" />
@@ -195,6 +205,7 @@
     <Compile Include="Results\DHSyncConfig.cs" />
     <Compile Include="Results\MissingConversionResult.cs" />
     <Compile Include="Results\GetMethodResult.cs" />
+    <Compile Include="Results\UploadObservationResponse.cs" />
     <Compile Include="Results\WellTypeResult.cs" />
     <Compile Include="Slot.cs" />
     <Compile Include="Status.cs" />
@@ -210,6 +221,8 @@
     <Compile Include="S2SDonorMaterial.cs" />
     <Compile Include="TraitDeterminationValue.cs" />
     <Compile Include="MissingConversion.cs" />
+    <Compile Include="MaterialState.cs" />
+    <Compile Include="RDTScore.cs" />
     <Compile Include="Well.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Enza.UTM.BusinessAccess.Interfaces;
 using Enza.UTM.Common.Extensions;
+using Enza.UTM.Entities;
 using Enza.UTM.Entities.Args;
 using Enza.UTM.Web.Services.Core.Controllers;
 using Enza.UTM.Web.Services.Models;
@@ -35,7 +36,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("import")]
         [HttpPost]
-        [Authorize(Roles = "utm_importexternal")]
+        [Authorize(Roles = AppRoles.UTM_IMPORT_EXTERNAL)]
         public async Task<IHttpActionResult> ImportExcel()
         {
             if (!Request.Content.IsMimeMultipartContent())
@@ -69,12 +70,20 @@ namespace Enza.UTM.Web.Services.Controllers
                 ContainerTypeID = provider.FormData["containerTypeID"].ToInt32(),
                 Isolated = provider.FormData["isolated"].ToBoolean(),
                 Source = provider.FormData["source"],
+                BTR = provider.FormData["btr"].ToBoolean(),
+                ResearcherName = provider.FormData["researcherName"],
                 TestName = System.IO.Path.GetFileNameWithoutExtension(fileName),
                 ExpectedDate = provider.FormData["expectedDate"].ToNDateTime(),
                 PageSize = provider.FormData["pageSize"].ToInt32(),
                 ExcludeControlPosition = provider.FormData["excludeControlPosition"].ToBoolean(),
                 DataStream = fs
             };
+
+            if (args.BTR && string.IsNullOrWhiteSpace(args.ResearcherName))
+            {
+                return InvalidRequest("Please fill Researcher name for BTR type.");
+            }
+
             var result = await _externalTestService.ImportDataAsync(args);
             if (!result.Success)
             {
@@ -96,6 +105,7 @@ namespace Enza.UTM.Web.Services.Controllers
                 args.TestID,
                 data.DataResult,
                 data.Total,
+                data.TotalCount,
                 File = fileInfo
             };
             return Ok(resp);
@@ -103,7 +113,7 @@ namespace Enza.UTM.Web.Services.Controllers
 
         [Route("export")]
         [HttpGet]
-        [Authorize(Roles = "utm_importexternal")]
+        [Authorize(Roles = AppRoles.UTM_IMPORT_EXTERNAL)]
         public async Task<IHttpActionResult> ExportTest(int testID, bool mark = false, bool TraitScore = false)
         {
             var data = await _externalTestService.GetExcelFileForExternalTestAsync(testID, mark, TraitScore);

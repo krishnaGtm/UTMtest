@@ -101,6 +101,7 @@
     <Compile Include="Interfaces\IExternalTestRepository.cs" />
     <Compile Include="Interfaces\IMasterRepository.cs" />
     <Compile Include="Interfaces\ICNTRepository.cs" />
+    <Compile Include="Interfaces\IRDTRepository.cs" />
     <Compile Include="Interfaces\IS2SRepository.cs" />
     <Compile Include="Interfaces\IMaterialTypeTestProtocolRepository.cs" />
     <Compile Include="Interfaces\IThreeGBRepository.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Repositories\ExternalTestRepository.cs" />
     <Compile Include="Repositories\MasterRepository.cs" />
     <Compile Include="Repositories\CNTRepository.cs" />
+    <Compile Include="Repositories\RDTRepository.cs" />
     <Compile Include="Repositories\S2SRepository.cs" />
     <Compile Include="Repositories\MaterialTypeTestProtocolRepository.cs" />
     <Compile Include="Repositories\ThreeGBRepository.cs" />

@@ -54,7 +54,7 @@ namespace Enza.UTM.Web.Services.Controllers
         public async Task<IHttpActionResult> GetImportSources()
         {
             var roles = User.GetClaims(ClaimTypes.Role);
-            if (roles.Any(x => x.EqualsIgnoreCase("UTM_importExternal")))
+            if(roles.Any(x => x.EqualsIgnoreCase(AppRoles.UTM_IMPORT_EXTERNAL)))
             {
                 var data1 = new[]
                 {
@@ -81,8 +81,14 @@ namespace Enza.UTM.Web.Services.Controllers
             return Ok(items);
         }
 
-
-
+        [Route("getSites")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetSites()
+        {
+            var items = await masterService.GetSitesAsync();
+            return Ok(items);
+        }
+        
         [HttpGet]
         [Route("getCNTProcesses")]
         public async Task<IHttpActionResult> GetCNTProcesses()

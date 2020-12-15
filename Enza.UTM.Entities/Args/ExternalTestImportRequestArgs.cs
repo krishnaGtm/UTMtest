@@ -21,6 +21,8 @@ namespace Enza.UTM.Entities.Args
         public bool Isolated { get; set; }
         public string Source { get; set; }
         public bool ExcludeControlPosition { get; set; }
+        public bool BTR { get; set; }
+        public string ResearcherName { get; set; }
 
         [SwaggerExclude]
         public Stream DataStream { get; set; }

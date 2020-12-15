@@ -160,5 +160,32 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             });
 
         }
+
+        public Task SaveTraitDeterminationResultRDTAsync(RDTSaveTraitDeterminationResultRequestArgs requestArgs)
+        {
+            return DbContext.ExecuteNonQueryAsync(DataConstants.PR_RDT_SAVE_TRAIT_DETERMINATION_RESULT,
+                CommandType.StoredProcedure, args =>
+                {
+                    args.Add("@TVP", requestArgs.ToTvp());
+                });
+        }
+        public async Task<DataTable> GetTraitDeterminationResultRDTAsync(TraitDeterminationResultRequestArgs requestArgs)
+        {
+            var ds = await DbContext.ExecuteDataSetAsync(DataConstants.PR_RDT_GET_TRAIT_DETERMINATION_RESULT,
+                CommandType.StoredProcedure, args =>
+                {
+                    args.Add("@PageSize", requestArgs.PageSize);
+                    args.Add("@PageNumber", requestArgs.PageNumber);
+                    args.Add("@Crops", requestArgs.Crops);
+                    args.Add("@Filter", requestArgs.ToFilterString());
+                });
+            var dt = ds.Tables[0];
+            if (dt.Rows.Count > 0)
+            {
+                requestArgs.TotalRows = dt.Rows[0]["TotalRows"].ToInt32();
+            }
+            dt.Columns.Remove("TotalRows");
+            return dt;
+        }
     }
 }

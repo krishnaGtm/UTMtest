@@ -254,13 +254,157 @@
     <EmbeddedResource Include="Scripts\000348.16024_Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000343.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+    <EmbeddedResource Include="Scripts\000344.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Scripts\000349.16024_Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000345.14147.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+    <EmbeddedResource Include="Scripts\000346.13045.Add_RDT_TestType.sql" />
+    <EmbeddedResource Include="Scripts\000347.12045.Update_RDT_TestType.sql" />
+    <EmbeddedResource Include="Scripts\000347.12046.AlterTable.sql" />
+    <EmbeddedResource Include="Scripts\000347.15159.Alter_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+    <EmbeddedResource Include="Scripts\000348.12046.TVP_Added.sql" />
+    <EmbeddedResource Include="Scripts\000349.12046.SP_Added.sql" />
+    <EmbeddedResource Include="Scripts\000350.13782.Changes.sql" />
+    <EmbeddedResource Include="Scripts\000351.13782.PR_RDT_GetMaterialWithTests.sql" />
+    <EmbeddedResource Include="Scripts\000352.13344.PR_RDT_GetTestOverview.sql" />
+    <EmbeddedResource Include="Scripts\000352.13552.Add_PR_RDT_GetMaterialForUpload.sql" />
+    <EmbeddedResource Include="Scripts\000353.13551.Schema_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000353.13782.Changes.sql" />
+    <EmbeddedResource Include="Scripts\000354.13782.PR_RDT_GetMaterialWithTests.sql" />
+    <EmbeddedResource Include="Scripts\000354.13782.SchemaChanges.sql" />
+    <EmbeddedResource Include="Scripts\000355.13782.PR_RDT_GetMaterialWithTests.sql" />
+    <EmbeddedResource Include="Scripts\000356.13782.Schema_And_Sp_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000357.13782.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000358.13344.PR_RDT_GetTestOverview.sql" />
+    <EmbeddedResource Include="Scripts\000359.12048.PR_RDT_GetMaterialToPrint.sql" />
+    <EmbeddedResource Include="Scripts\000360.15159.Alter_PR_Save_Score.sql" />
+    <EmbeddedResource Include="Scripts\000361.13344.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000362.13344.PR_RDT_GetTestOverview.sql" />
+    <EmbeddedResource Include="Scripts\000363.13344.PR_RDT_GetTestOverview.sql" />
+    <EmbeddedResource Include="Scripts\000364.13344.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000365.12048.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000366.12048.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000367.12048.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000367.15150.SchemaChanges.sql" />
+    <EmbeddedResource Include="Scripts\000368.12048.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000368.15150.SP_Chagnes.sql" />
+    <EmbeddedResource Include="Scripts\000369.12048.PR_RDT_GetMaterialToPrint.sql" />
+    <EmbeddedResource Include="Scripts\000370.15265.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000371.15265.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000372.15265.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000373.13344.Alter_PR_RDT_GetTestOverview.sql" />
+    <EmbeddedResource Include="Scripts\000374.13344.Schema_Changes_and_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000375.13344.Schema_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000376.13344.SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000377.13551_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000378.15582_Alter_PR_GetExternalTestsLookup.sql" />
+    <None Include="Scripts\000379.15683_Schema_changes_and_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000380.156265_Schema_Changes_and_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000381.156265_Schema_Changes_and_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000382.15683.[PR_RDT_GetTestOverview.sql" />
+    <EmbeddedResource Include="Scripts\000383.15531.SP_Created.sql" />
+    <EmbeddedResource Include="Scripts\000384.15683.PR_Insert_ExcelData.sql" />
+    <EmbeddedResource Include="Scripts\000385.15531.PR_RDT_SaveTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000386.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000387.15531.PR_RDT_SaveTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000388.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000389.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000390.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000391.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000392.15531.PR_RDT_GetScore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000393.15531.SchemaChanges.sql" />
     <EmbeddedResource Include="Scripts\000350.PR_Insert_ExcelData.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000394.PR_Insert_ExcelData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000395.PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000396.SP_Changes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000397.16324_PR_GetPlatesForLims.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000398.16323_Alter_PR_PLAN_EditSlot.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000399.16339_SP_Changes.sql" />
     <EmbeddedResource Include="Scripts\000351.16844_PR_UpdateAndVerifyTraitDeterminationResult.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000400.16339_Alter_PR_GetAvailPlatestests.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000414.PR_GetDeterminationsForExternalTests.sql" />
+    <EmbeddedResource Include="Scripts\000413.DisableTrigger.sql" />
+    <EmbeddedResource Include="Scripts\000411.17668_Alter_.sql" />
+    <EmbeddedResource Include="Scripts\000403.16325_Alter_PR_PLAN_GetSlotsForBreeder.sql" />
+    <EmbeddedResource Include="Scripts\000403.16322_Alter_PR_PLAN_EditSlot.sql" />
+    <EmbeddedResource Include="Scripts\000403.16339_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000402.16339_Alter_PR_GetAvailPlatestests.sql" />
+    <Content Include="Scripts\000401.16339_Alter_PR_GetAvailPlatestests.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000351.16443_Alter_PR_Get_PlatePlanOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000351.16445_SP_Changes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000351.16446_Alter_PR_Get_Plateplan_Overview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000404.17632_Alter_PR_PLAN_GetApprovedSlots.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000351.16646_Alter_PR_RDT_ReceiveResults.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000405.16443_Alter_PR_Get_PlatePlanOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000406.16446_Alter_PR_GET_PlatePlan_With_Result.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000407.16443_Alter_PR_Get_PlatePlanOverview.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000408.16646_Alter_Data_for_SiteLocation.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000409.16446_Alter_PR_GET_PlatePlan_With_Result.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000410.16446_Alter_PR_GET_PlatePlan_With_Result.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000411.16446_Alter_PR_GET_PlatePlan_With_Result.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\000412.16443_Alter_PR_Get_PlatePlanOverview.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

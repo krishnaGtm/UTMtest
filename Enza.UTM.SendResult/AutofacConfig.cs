@@ -30,12 +30,15 @@ namespace Enza.UTM.SendResult
             //Repositories
             builder.RegisterType<DataValidationRepository>().As<IDataValidationRepository>().InstancePerLifetimeScope();
             builder.RegisterType<TestRepository>().As<ITestRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<RDTRepository>().As<IRDTRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<ExcelDataRepository>().As<IExcelDataRepository>().InstancePerLifetimeScope();
             builder.RegisterType<EmailConfigRepository>().As<IEmailConfigRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ExternalTestRepository>().As<IExternalTestRepository>().InstancePerLifetimeScope();
             //Services
 
             builder.RegisterType<DataValidationService>().As<IDataValidationService>().InstancePerLifetimeScope();
             builder.RegisterType<TestService>().As<ITestService>().InstancePerLifetimeScope();
+            builder.RegisterType<RDTService>().As<IRDTService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailConfigService>().As<IEmailConfigService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<ExternalTestService>().As<IExternalTestService>().InstancePerLifetimeScope();

@@ -1,4 +1,4 @@
-﻿namespace Enza.UTM.DataAccess.Data
+namespace Enza.UTM.DataAccess.Data
 {
     public class DataConstants
     {
@@ -108,6 +108,21 @@
         public const string PR_CNT_GET_DATA_WITH_MARKER = "PR_CNT_GetDataWithMarker";
         public const string PR_CNT_GET_DATA_WITH_MARKER_FOR_EXCEL = "PR_CNT_GetDataWithMarkerForExcel";
 
+        //RDT test type
+        public const string PR_RDT_GET_MATERIAL_WITH_TESTS = "PR_RDT_GetMaterialWithTests";
+        public const string PR_SAVE_TEST_MATERIAL_DETERMINATION_ForRDT = "PR_SaveTestMaterialDetermination_ForRDT"; 
+        public const string PR_RDT_GetMaterialForUpload = "PR_RDT_GetMaterialForUpload"; 
+        public const string PR_RDT_GET_TEST_OVERVIEW = "PR_RDT_GetTestOverview";
+        public const string PR_RDT_REQUEST_SAMPLE_TEST_CALLBACK = "PR_RDT_RequestSampleTestCallback";
+        public const string PR_RDT_RECEIVE_RESULTS = "PR_RDT_ReceiveResults";
+        public const string PR_RDT_GET_MATERIAL_TO_PRINT = "PR_RDT_GetMaterialToPrint";
+        public const string PR_RDT_GET_TEST_TO_SEND_SCORE = "PR_RDT_GetTestToSendScore";
+        public const string PR_RDT_GET_SCORE = "PR_RDT_GetScore";
+        public const string PR_RDT_UPDATE_OBSERVATIONID = "PR_RDT_UpdateObservationID";
+        public const string PR_RDT_MARK_SENT_RESULT = "PR_RDT_MarkSentResult";
+        public const string PR_RDT_MARK_RESULT_ERROR = "PR_RDT_MarkResultError";
+        public const string PR_RDT_GET_TRAIT_DETERMINATION_RESULT = "PR_RDT_Get_TraitDeterminationResult";
+        public const string PR_RDT_SAVE_TRAIT_DETERMINATION_RESULT = "PR_RDT_SaveTraitDeterminationResult";
 
         //MASTER DATA
         public const string PR_CNT_GET_PROCESSES = "PR_CNT_GetProcesses";

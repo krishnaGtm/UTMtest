@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Enza.UTM.Entities.Args.Abstract;
 using System;
 using Enza.UTM.Common.Attributes;
@@ -30,6 +30,9 @@ namespace Enza.UTM.Entities.Args
         public bool Cumulate { get; set; }
         public string ImportLevel { get; set; }
         public bool ExcludeControlPosition { get; set; }
+        public int SiteID { get; set; }
+        public bool BTR { get; set; }
+        public string ResearcherName { get; set; }
     }
 
 

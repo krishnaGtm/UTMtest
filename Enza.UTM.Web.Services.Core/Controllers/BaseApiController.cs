@@ -4,6 +4,7 @@ using System.Web.Http.Results;
 
 namespace Enza.UTM.Web.Services.Core.Controllers
 {
+    [Authorize]
     public abstract class BaseApiController : ApiController
     {
         protected ResponseMessageResult InvalidRequest(string message)

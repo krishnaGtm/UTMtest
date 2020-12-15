@@ -9,6 +9,6 @@ namespace Enza.UTM.Entities.Args
     {
         public bool? Active { get; set; }
         public string Crops { get; set; }
-
+        public bool BTR { get; set; }
     }
 }
