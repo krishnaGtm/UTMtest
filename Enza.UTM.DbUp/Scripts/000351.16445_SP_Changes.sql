@@ -1,9 +1,24 @@
-ALTER TABLE Test
-ADD BTR BIT;
+IF NOT EXISTS(SELECT 1 FROM sys.columns 
+          WHERE Name = N'BTR'
+          AND Object_ID = Object_ID(N'Test'))
+BEGIN
+
+    ALTER TABLE Test
+	ADD BTR BIT;
+	
+END
+
 GO
 
-ALTER TABLE Test
-ADD Researcher NVARCHAR(50);
+IF NOT EXISTS(SELECT 1 FROM sys.columns 
+          WHERE Name = N'Researcher'
+          AND Object_ID = Object_ID(N'Test'))
+BEGIN
+
+	ALTER TABLE Test
+	ADD Researcher NVARCHAR(50);
+
+END
 GO
 
 DROP PROCEDURE IF EXISTS [dbo].[PR_Import_ExternalData]
