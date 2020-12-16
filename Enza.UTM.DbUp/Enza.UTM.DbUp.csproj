@@ -358,6 +358,7 @@
     <EmbeddedResource Include="Scripts\000400.16339_Alter_PR_GetAvailPlatestests.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000415.Alter_PR_Get_RDT_RecieveResults.sql" />
     <EmbeddedResource Include="Scripts\000414.PR_GetDeterminationsForExternalTests.sql" />
     <EmbeddedResource Include="Scripts\000413.DisableTrigger.sql" />
     <EmbeddedResource Include="Scripts\000411.17668_Alter_.sql" />
