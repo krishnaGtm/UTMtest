@@ -1,27 +1,49 @@
 
-CREATE TABLE [SiteLocation](
-	[SiteID] [int] IDENTITY(1,1) NOT NULL,
-	[SiteName] NVARCHAR(50) NOT NULL,
-	[StatusCode] [int] NULL,
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'SiteLocation')
+BEGIN
 
-	CONSTRAINT PK_SiteID PRIMARY KEY (SiteID)
-	)
+	CREATE TABLE [SiteLocation](
+		[SiteID] [int] IDENTITY(1,1) NOT NULL,
+		[SiteName] NVARCHAR(50) NOT NULL,
+		[StatusCode] [int] NULL,
 
-GO
+		CONSTRAINT PK_SiteID PRIMARY KEY (SiteID)
+		)
 
-ALTER TABLE TEST
-ADD TestFlowType INT
-
-GO
-
-ALTER TABLE TEST
-ADD SiteID  INT
+END
 
 GO
 
-INSERT SiteLocation (SiteName, StatusCode)
-VALUES ('ENZA-BTA-RDT-NL', 100)
+IF NOT EXISTS(SELECT 1 FROM sys.columns 
+          WHERE Name = N'TestFlowType'
+          AND Object_ID = Object_ID(N'Test'))
+BEGIN
 
+	ALTER TABLE TEST
+	ADD TestFlowType INT
+
+END
+GO
+
+IF NOT EXISTS(SELECT 1 FROM sys.columns 
+          WHERE Name = N'SiteID'
+          AND Object_ID = Object_ID(N'Test'))
+BEGIN
+
+	ALTER TABLE TEST
+	ADD SiteID  INT
+
+END
+
+GO
+
+IF NOT EXISTS (SELECT * FROM SiteLocation WHERE SiteName = 'ENZA-BTA-RDT-NL')
+BEGIN
+
+	INSERT SiteLocation (SiteName, StatusCode)
+	VALUES ('ENZA-BTA-RDT-NL', 100)
+
+END
 GO
 
 DROP PROCEDURE IF EXISTS [dbo].[PR_Insert_ExcelData]
