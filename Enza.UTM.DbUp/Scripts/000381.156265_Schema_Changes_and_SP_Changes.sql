@@ -14,18 +14,18 @@ SET NOCOUNT ON;
 	BEGIN TRY
 		BEGIN TRANSACTION;
 					
-			INSERT INTO RDTTestResult(TestID, DeterminationID, MaterialID, Score, ResultStatus, SusceptibilityPercent, MappingColumn)
-			SELECT @TestID, T1.OriginID, T1.MaterialID, T1.Score, 100, SusceptibilityPercent, ValueColumn	
-			FROM @TVP_RDTScore T1
-			JOIN Determination D ON D.OriginID = T1.OriginID AND D.Source = 'StarLims'
-			JOIN TestMaterialDetermination TMD ON TMD.DeterminationID = D.DeterminationID AND TMD.MaterialID = T1.MaterialID
-			WHERE TMD.TestID = @TestID
-			GROUP BY T1.OriginID, T1.MaterialID, T1.Score, T1.SusceptibilityPercent, T1.ValueColumn;
+			--INSERT INTO RDTTestResult(TestID, DeterminationID, MaterialID, Score, ResultStatus, SusceptibilityPercent, MappingColumn)
+			--SELECT @TestID, T1.OriginID, T1.MaterialID, T1.Score, 100, SusceptibilityPercent, ValueColumn	
+			--FROM @TVP_RDTScore T1
+			--JOIN Determination D ON D.OriginID = T1.OriginID AND D.Source = 'StarLims'
+			--JOIN TestMaterialDetermination TMD ON TMD.DeterminationID = D.DeterminationID AND TMD.MaterialID = T1.MaterialID
+			--WHERE TMD.TestID = @TestID
+			--GROUP BY T1.OriginID, T1.MaterialID, T1.Score, T1.SusceptibilityPercent, T1.ValueColumn;
 
-			UPDATE Test 
-				SET StatusCode = 550, --Partially Received
-					TestFlowType = @TestFlowType
-			WHERE TestID = @TestID;
+			--UPDATE Test 
+			--	SET StatusCode = 550, --Partially Received
+			--		TestFlowType = @TestFlowType
+			--WHERE TestID = @TestID;
 			
 		COMMIT;
 	END TRY

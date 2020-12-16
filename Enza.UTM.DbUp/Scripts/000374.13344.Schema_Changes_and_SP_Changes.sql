@@ -33,16 +33,16 @@ SET NOCOUNT ON;
 	BEGIN TRY
 		BEGIN TRANSACTION;
 					
-			INSERT INTO RDTTestResult(TestID, DeterminationID, MaterialID, Score, ResultStatus)
-			SELECT @TestID, T1.DeterminationID, T1.MaterialID, T1.Score, 100		
-			FROM @TVP_RDTScore T1
-			JOIN TestMaterialDetermination TMD ON TMD.DeterminationID = T1.DeterminationID AND TMD.MaterialID = T1.MaterialID
-			WHERE TMD.TestID = @TestID
-			GROUP BY T1.DeterminationID, T1.MaterialID, T1.Score;
+			--INSERT INTO RDTTestResult(TestID, DeterminationID, MaterialID, Score, ResultStatus)
+			--SELECT @TestID, T1.DeterminationID, T1.MaterialID, T1.Score, 100		
+			--FROM @TVP_RDTScore T1
+			--JOIN TestMaterialDetermination TMD ON TMD.DeterminationID = T1.DeterminationID AND TMD.MaterialID = T1.MaterialID
+			--WHERE TMD.TestID = @TestID
+			--GROUP BY T1.DeterminationID, T1.MaterialID, T1.Score;
 
-			UPDATE Test 
-				SET StatusCode = 550 --Partially Received
-			WHERE TestID = @TestID;
+			--UPDATE Test 
+			--	SET StatusCode = 550 --Partially Received
+			--WHERE TestID = @TestID;
 			
 		COMMIT;
 	END TRY

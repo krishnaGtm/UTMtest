@@ -21,6 +21,45 @@ BEGIN
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'SiteLocation')
+BEGIN
+
+	CREATE TABLE [SiteLocation](
+		[SiteID] [int] IDENTITY(1,1) NOT NULL,
+		[SiteName] NVARCHAR(50) NOT NULL,
+		[StatusCode] [int] NULL,
+
+		CONSTRAINT PK_SiteID PRIMARY KEY (SiteID)
+		)
+
+END
+
+GO
+
+IF NOT EXISTS(SELECT 1 FROM sys.columns 
+          WHERE Name = N'TestFlowType'
+          AND Object_ID = Object_ID(N'Test'))
+BEGIN
+
+	ALTER TABLE TEST
+	ADD TestFlowType INT
+
+END
+GO
+
+IF NOT EXISTS(SELECT 1 FROM sys.columns 
+          WHERE Name = N'SiteID'
+          AND Object_ID = Object_ID(N'Test'))
+BEGIN
+
+	ALTER TABLE TEST
+	ADD SiteID  INT
+
+END
+
+GO
+
+
 DROP PROCEDURE IF EXISTS [dbo].[PR_Import_ExternalData]
 GO
 
