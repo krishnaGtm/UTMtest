@@ -1,15 +1,15 @@
-IF TYPE_ID(N'TVP_RDTScore') IS NULL
-BEGIN
-
-	CREATE TYPE [dbo].[TVP_RDTScore] AS TABLE(
-		[DeterminationID] [int] NULL,
-		[MaterialID] [int] NULL,
-		[Score] [nvarchar](255) NULL
-	)
-
-END
+DROP PROCEDURE IF EXISTS [dbo].[PR_RDT_ReceiveResults]
 GO
 
+DROP TYPE IF EXISTS [dbo].[TVP_RDTScore]
+GO
+
+CREATE TYPE [dbo].[TVP_RDTScore] AS TABLE(
+	[OriginID] [int] NULL,
+	[MaterialID] [int] NULL,
+	[Score] [nvarchar](255) NULL
+)
+GO
 
 
 IF NOT EXISTS(SELECT 1 FROM sys.columns 
@@ -34,10 +34,6 @@ BEGIN
 
 END
 GO
-
-DROP PROCEDURE IF EXISTS [dbo].[PR_RDT_ReceiveResults]
-GO
-
 
 
 CREATE PROCEDURE [dbo].[PR_RDT_ReceiveResults]
