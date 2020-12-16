@@ -1,9 +1,13 @@
+IF TYPE_ID(N'TVP_RDTScore') IS NULL
+BEGIN
 
-CREATE TYPE [dbo].[TVP_RDTScore] AS TABLE(
-	[DeterminationID] [int] NULL,
-	[MaterialID] [int] NULL,
-	[Score] [nvarchar](255) NULL
-)
+	CREATE TYPE [dbo].[TVP_RDTScore] AS TABLE(
+		[DeterminationID] [int] NULL,
+		[MaterialID] [int] NULL,
+		[Score] [nvarchar](255) NULL
+	)
+
+END
 GO
 
 

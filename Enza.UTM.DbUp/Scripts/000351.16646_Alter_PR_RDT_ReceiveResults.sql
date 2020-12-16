@@ -1,3 +1,10 @@
+CREATE TYPE [dbo].[TVP_RDTScore] AS TABLE(
+	[DeterminationID] [int] NULL,
+	[MaterialID] [int] NULL,
+	[Score] [nvarchar](255) NULL
+)
+GO
+
 DROP PROCEDURE IF EXISTS [dbo].[PR_RDT_ReceiveResults]
 GO
 
