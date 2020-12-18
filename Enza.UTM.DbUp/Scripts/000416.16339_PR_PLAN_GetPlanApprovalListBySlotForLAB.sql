@@ -1,3 +1,23 @@
+DROP PROCEDURE IF EXISTS [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
+GO
+
+DROP TYPE IF EXISTS [dbo].[TVP_ReservedCapacity]
+GO
+
+CREATE TYPE [dbo].[TVP_ReservedCapacity] AS TABLE(
+	[SlotID] [int] NULL,
+	[PeriodID] [int] NULL,
+	[UsedFor] NVARCHAR(MAX) NULL,
+	[TestProtocolID] [int] NULL,
+	[NrOfPlates] [int] NULL,
+	[NrOfTests] [int] NULL,
+	[StatusCode] [int] NULL
+)
+GO
+
+
+
+
 /*
 	DECLARE @PeriodID INT;
 	DECLARE @Periods TVP_PLAN_Period;
@@ -19,7 +39,7 @@
 	ORDER BY PeriodID;
 	EXEC PR_PLAN_GetPlanApprovalListBySlotForLAB @Periods
 */
-ALTER PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
+CREATE PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
 (
 	@Periods TVP_PLAN_Period READONLY
 ) AS BEGIN
