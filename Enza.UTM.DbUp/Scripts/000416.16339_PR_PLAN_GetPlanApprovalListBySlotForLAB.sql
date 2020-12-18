@@ -15,15 +15,12 @@ CREATE TYPE [dbo].[TVP_ReservedCapacity] AS TABLE(
 )
 GO
 
-
-
-
 /*
 	DECLARE @PeriodID INT;
 	DECLARE @Periods TVP_PLAN_Period;
 
 	--EXEC @PeriodID = PR_PLAN_GetCurrentPeriod;
-	SET @PeriodID =4844
+	SET @PeriodID =4846
 	INSERT INTO @Periods(PeriodID)
 	SELECT TOP 5 
 		PeriodID
@@ -100,10 +97,11 @@ CREATE PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
 	LEFT JOIN AvailCapacity EC ON EC.PeriodID = T.EPID AND EC.TestProtocolID = T.TestProtocolID
 	GROUP BY T.SlotID
 
-	INSERT @TblReservedCapacityTemp(SlotID, PeriodID, TestProtocolID, NrOfPlates, StatusCode)
+	INSERT @TblReservedCapacityTemp(SlotID, PeriodID, UsedFor, TestProtocolID, NrOfPlates, StatusCode)
 	SELECT
 	   T2.SlotID,
 	   T2.PeriodID,
+	   'PlannedPeriod',
 	   T1.TestProtocolID,
 	   NrOfPlates = COALESCE(NULLIF(T1.NewNrOfPlates, 0), T1.NrOfPlates, 0),
 	   T2.StatusCode
@@ -112,10 +110,11 @@ CREATE PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
     JOIN @Periods P ON P.PeriodID = T2.PeriodID
 	
 
-	INSERT @TblReservedCapacityTemp(SlotID, PeriodID, TestProtocolID, NrOfTests, StatusCode)
+	INSERT @TblReservedCapacityTemp(SlotID, PeriodID, UsedFor, TestProtocolID, NrOfTests, StatusCode)
 	SELECT
 	   T2.SlotID,
 	   P.PeriodID,
+	   'ExpectedPeriod',
 	   T1.TestProtocolID,
 	   NrOfTests = COALESCE( NULLIF(T1.NewNrOfTests, 0), T1.NrOfTests, 0),
 	   T2.StatusCode
@@ -124,10 +123,10 @@ CREATE PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
 	JOIN [Period] P ON T2.ExpectedDate BETWEEN P.StartDate AND P.EndDate
     JOIN @Periods P1 ON P1.PeriodID = P.PeriodID;
 
-	INSERT  @TblReservedCapicity(SlotID, PeriodID, TestProtocolID, NrOfTests, NrOfPlates, StatusCode)
-	SELECT SlotID, PeriodID, TestProtocolID, NrOfTests = MAX(NrOfTests), MAX(NrOfPlates), MAX(StatusCode)
+	INSERT  @TblReservedCapicity(SlotID, PeriodID, UsedFor, TestProtocolID, NrOfTests, NrOfPlates, StatusCode)
+	SELECT SlotID, PeriodID, UsedFor, TestProtocolID, NrOfTests = MAX(NrOfTests), MAX(NrOfPlates), MAX(StatusCode)
 	FROM @TblReservedCapacityTemp 
-	GROUP BY SlotID,PeriodID, TestProtocolID;
+	GROUP BY SlotID,PeriodID, TestProtocolID,UsedFor;
 
 	
 
@@ -147,6 +146,7 @@ CREATE PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
 	GROUP BY C.PeriodID,TestProtocolID,NrOfPlates,NrOfTests
 
 	DECLARE @ReservedCapacity TABLE(PeriodID INT, TestProtocolID INT, NrOfPlates INT, NrOfTests INT)
+	DECLARE @NonReservedCapacityTemp TABLE(SlotID INT, PeriodID INT, TestProtocolID INT, NrOfPlates INT, NrOfTests INT)
 	DECLARE @NonReservedCapacity TABLE(SlotID INT, PeriodID INT, TestProtocolID INT, NrOfPlates INT, NrOfTests INT)
 	DECLARE @MarkerTestProtocolID INT;
 
@@ -208,22 +208,56 @@ CREATE PROCEDURE [dbo].[PR_PLAN_GetPlanApprovalListBySlotForLAB]
 		  T1.SlotID,
 		  T1.TestProtocolID,
 		  NrOfPlates = SUM(ISNULL(T1.NrOfPlates,0)),
-		  NrOfTests = SUM(ISNULL(T1.NrOfTests,0))
+		  NrOfTests = SUM(ISNULL(T1.NrOfTests,0)),
+		  UsedFor
 	   FROM @TblReservedCapicity T1
 	   WHERE T1.StatusCode = 100
-	   GROUP BY T1.PeriodID, T1.SlotID, T1.TestProtocolID
+	   GROUP BY T1.PeriodID, T1.SlotID, T1.TestProtocolID,UsedFor
 	)
-	INSERT INTO @NonReservedCapacity(PeriodID, SlotID, TestProtocolID, NrOfPlates, NrOfTests)
+	INSERT INTO @NonReservedCapacityTemp(PeriodID, SlotID, TestProtocolID, NrOfTests)
+	SELECT 
+		T1.PeriodID, 
+		T1.SlotID, 
+		T1.TestProtocolID,
+		SUM(T2.NrOfTests)
+	FROM CTE T1
+	JOIN CTE T2 ON T1.SlotID >= T2.SlotID AND T1.TestProtocolID = T2.TestProtocolID AND T1.PeriodID = T2.PeriodID AND T1.UsedFor = ''ExpectedPeriod'' AND T2.UsedFor = ''ExpectedPeriod''
+	GROUP BY T1.PeriodID, T1.SlotID, T1.TestProtocolID;
+
+
+	;WITH CTE1 AS 
+	(
+	   SELECT 
+		  T1.PeriodID,
+		  T1.SlotID,
+		  T1.TestProtocolID,
+		  NrOfPlates = SUM(ISNULL(T1.NrOfPlates,0)),
+		  NrOfTests = SUM(ISNULL(T1.NrOfTests,0)),
+		  UsedFor
+	   FROM @TblReservedCapicity T1
+	   WHERE T1.StatusCode = 100
+	   GROUP BY T1.PeriodID, T1.SlotID, T1.TestProtocolID,UsedFor
+	)
+	INSERT INTO @NonReservedCapacityTemp(PeriodID, SlotID, TestProtocolID, NrOfPlates)
 	SELECT 
 		T1.PeriodID, 
 		T1.SlotID, 
 		T1.TestProtocolID, 
-		SUM(T2.NrOfPlates), 
-		SUM(T2.NrOfTests)
-	FROM CTE T1
-	JOIN CTE T2 ON T1.SlotID >= T2.SlotID AND T1.TestProtocolID = T2.TestProtocolID AND T1.PeriodID = T2.PeriodID
+		SUM(T2.NrOfPlates)
+	FROM CTE1 T1
+	JOIN CTE1 T2 ON T1.SlotID >= T2.SlotID AND T1.TestProtocolID = T2.TestProtocolID AND T1.PeriodID = T2.PeriodID  AND T1.UsedFor = ''PlannedPeriod'' AND T2.UsedFor = ''PlannedPeriod''
 	GROUP BY T1.PeriodID, T1.SlotID, T1.TestProtocolID;
 
+
+	INSERT INTO @NonReservedCapacity(PeriodID, SlotID, TestProtocolID, NrOfPlates, NrOfTests)
+	SELECT 
+		PeriodID, 
+		SlotID, 
+		TestProtocolID, 
+		SUM(NrOfPlates), 
+		SUM(NrOfTests)
+	FROM @NonReservedCapacityTemp
+	GROUP BY SlotID,PeriodID,TestProtocolID
 	
 
 	;WITH CTE2 AS
