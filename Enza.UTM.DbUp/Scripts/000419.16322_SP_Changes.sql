@@ -41,6 +41,20 @@ BEGIN
 	SELECT @ChangedPlannedPeriodID = PeriodID FROM [Period] WHERE @PlannedDate BETWEEN StartDate AND EndDate;
 	SELECT @ChangedExpectedPeriodID = PeriodID FROM [Period] WHERE @ExpectedDate BETWEEN StartDate AND EndDate;
 
+
+	--Check if planned date is changed and test linked to this slot is already sent to lims
+	IF EXISTS (SELECT St.SlotID FROM SlotTest ST
+			JOIN Test T ON T.TestID = ST.TestID
+			WHERE ST.SlotID = @SlotID AND T.StatusCode > 400)
+	BEGIN				
+		SELECT @CurrentPlannedDate = PlannedDate FROM Slot WHERE SlotID = @SlotID;
+		IF(CAST(@CurrentPlannedDate AS DATETIME) <> CAST(@PlannedDate AS DATETIME))
+		BEGIN
+			EXEC PR_ThrowError 'Plateplan/Test linked with this slot is already sent to LIMS. Cannot change planned date.';
+			RETURN;
+		END
+	END
+
 	IF(@PeriodID = @ChangedPlannedPeriodID)
 	BEGIN
 		UPDATE Slot SET PlannedDate = @PlannedDate, ExpectedDate = @ExpectedDate WHERE SlotID = @SlotID;
@@ -69,19 +83,6 @@ BEGIN
 	FROM [Period]
 	WHERE StartDate > @CurrentPeriodEndDate
 	ORDER BY StartDate;
-
-	--Check if planned date is changed and test linked to this slot is already sent to lims
-	IF EXISTS (SELECT St.SlotID FROM SlotTest ST
-			JOIN Test T ON T.TestID = ST.TestID
-			WHERE ST.SlotID = @SlotID AND T.StatusCode > 400)
-	BEGIN				
-		SELECT @CurrentPlannedDate = PlannedDate FROM Slot WHERE SlotID = @SlotID;
-		IF(CAST(@CurrentPlannedDate AS DATETIME) <> CAST(@PlannedDate AS DATETIME))
-		BEGIN
-			EXEC PR_ThrowError 'Plateplan/Test linked with this slot is already sent to LIMS. Cannot change planned date.';
-			RETURN;
-		END
-	END
 
 	--check if next period is available to get next period end date.
 	IF(ISNULL(@NextPeriod,0)=0) BEGIN
