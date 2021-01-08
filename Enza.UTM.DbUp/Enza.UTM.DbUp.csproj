@@ -358,6 +358,7 @@
     <EmbeddedResource Include="Scripts\000400.16339_Alter_PR_GetAvailPlatestests.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\000418.16322_SP_Changes.sql" />
     <EmbeddedResource Include="Scripts\000417.Alter_PR_GetDeterminations.sql" />
     <EmbeddedResource Include="Scripts\000416.Alter_PR_Get_PlateplanOverview.sql" />
     <EmbeddedResource Include="Scripts\000416.16339_PR_PLAN_GetPlanApprovalListBySlotForLAB.sql" />
