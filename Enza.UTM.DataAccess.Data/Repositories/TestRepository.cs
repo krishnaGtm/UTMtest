@@ -346,6 +346,24 @@ namespace Enza.UTM.DataAccess.Data.Repositories
             return true;
         }
 
+        public async Task<bool> MarkExcludedScoreAsSent(int testID)
+        {
+            var query =     @"UPDATE TR 
+                                SET TR.IsResultSent = 1
+                            FROM TestResult TR
+                            JOIN Well W ON W.WellID = TR.WellID
+                            JOIN Plate P ON P.PlateID = W.PlateID
+                            WHERE P.TestID = @TestID
+                            AND TR.ObsValueChar = '9999'";
+            await DbContext.ExecuteNonQueryAsync(query,
+              CommandType.Text,
+            args =>
+            {                
+                args.Add("@TestID", testID);
+            });
+            return true;
+        }
+
         public async Task DeleteTestAsync(DeleteTestRequestArgs requestargs)
         {
             

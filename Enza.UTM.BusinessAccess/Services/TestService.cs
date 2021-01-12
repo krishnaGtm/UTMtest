@@ -159,6 +159,12 @@ namespace Enza.UTM.BusinessAccess.Services
             return await repository.MarkSentResult(wellIDS,TestID);
 
         }
+
+        private async Task<bool> MarkExcludedScoreAsSent(int TestID)
+        {
+            return await repository.MarkExcludedScoreAsSent(TestID);
+
+        }
         public Task SaveNrOfSamplesAsync(SaveNrOfSamplesRequestArgs args)
         {
             return repository.SaveNrOfSamplesAsync(args);
@@ -586,7 +592,9 @@ namespace Enza.UTM.BusinessAccess.Services
                                     excludeList.Clear();
 
                                     var wells = string.Join(",", wellIDs.Distinct());
-                                    await MarkSentResult(wells, test.TestID);
+                                    //now mark excluded score as sent 
+                                    await MarkExcludedScoreAsSent(test.TestID);
+
                                     LogInfo("Sent result are marked as sent and test will be updated to 700 if all result are sent");
 
                                     //only send test completing email for completed status (statusCode = 700)
