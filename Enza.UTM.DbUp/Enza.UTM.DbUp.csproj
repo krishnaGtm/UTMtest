@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -359,6 +359,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\000422.18525_SP_Changes.sql" />
+    <EmbeddedResource Include="Scripts\000421.18479_Alter_PR_PlanEditSlot.sql" />
+    <EmbeddedResource Include="Scripts\000420.18479_Alter_PR_PlanEditSlot.sql" />
     <EmbeddedResource Include="Scripts\000419.18426_PR_GetTestInfoForLIMS.sql" />
     <EmbeddedResource Include="Scripts\000418.Alter_PR_PLAN_GetSlotsForBreeder.sql" />
     <EmbeddedResource Include="Scripts\000419.16322_SP_Changes.sql" />
